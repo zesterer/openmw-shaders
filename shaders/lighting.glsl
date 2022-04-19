@@ -31,8 +31,10 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     lambert *= clamp(-8.0 * (1.0 - 0.3) * eyeCosine + 1.0, 0.3, 1.0);
 #endif
 
+    const vec3 rayleigh = vec3(0.65, 0.9, 1.0);
+
     diffuseOut = lcalcDiffuse(0).xyz * lambert * mix(fresnel, 1, max(0.25, roughness));
-    ambientOut = gl_LightModel.ambient.xyz * mix(fresnel, 1, max(0.5, roughness));
+    ambientOut = gl_LightModel.ambient.xyz * rayleigh * mix(fresnel, 1, max(0.5, roughness));
 }
 
 void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec3 viewPos, vec3 viewNormal, float roughness)
