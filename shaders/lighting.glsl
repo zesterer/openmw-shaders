@@ -2,7 +2,7 @@
 
 float getFresnel(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
     return (0.0
-        + pow(max(dot(-viewDir, reflect(viewNormal, lightDir)) * 0.5 + 0.5, 0), 1)
+        + max(dot(-viewDir, reflect(viewNormal, lightDir)), 0)
         + max(dot(-viewDir, viewNormal) * 0.5 + 0.5, 0)
     ) * 1.75;
 }
@@ -38,10 +38,11 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     lambert *= clamp(-8.0 * (1.0 - 0.3) * eyeCosine + 1.0, 0.3, 1.0);
 #endif
 
-    const vec3 rayleigh = vec3(0.65, 0.9, 1.0);
+    const vec3 diffuse_tone = vec3(1.0, 0.9, 0.8);
+    const vec3 ambient_tone = vec3(0.65, 0.9, 1.0);
 
-    diffuseOut = lcalcDiffuse(0).xyz * lambert * mix(fresnel, 1, max(0.25, roughness));
-    ambientOut = gl_LightModel.ambient.xyz * rayleigh * mix(fresnel, 1, max(0.5, roughness));
+    diffuseOut = lcalcDiffuse(0).xyz * diffuse_tone * lambert * mix(fresnel, 1, max(0.25, roughness));
+    ambientOut = gl_LightModel.ambient.xyz * ambient_tone * mix(fresnel, 1, max(0.5, roughness));
 }
 
 void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec3 viewPos, vec3 viewNormal, float roughness)
