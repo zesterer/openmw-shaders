@@ -1,9 +1,21 @@
 #include "lighting_util.glsl"
 
-void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 viewNormal)
+void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 viewNormal, float roughness, bool isBack)
 {
     vec3 lightDir = normalize(lcalcPosition(0));
-    float lambert = dot(viewNormal.xyz, lightDir);
+    viewNormal = normalize(viewNormal);
+
+    float lambert;
+    if (roughness > 0.5) {
+        //if (dot(viewPos, viewNormal) > 0) {
+        //    viewNormal *= -1;
+        //}
+        //lambert = (dot(viewNormal.xyz, lightDir) + 1) * 0.5;
+        lambert = (dot(normalize(viewPos.xyz), -lightDir) + 1) * 0.5;
+    } else {
+        lambert = dot(viewNormal.xyz, lightDir);
+    }
+
     float fresnel = 1;
 
 #ifndef GROUNDCOVER
@@ -19,11 +31,11 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     lambert *= clamp(-8.0 * (1.0 - 0.3) * eyeCosine + 1.0, 0.3, 1.0);
 #endif
 
-    diffuseOut = lcalcDiffuse(0).xyz * lambert * mix(fresnel, 1, 0.25);
-    ambientOut = gl_LightModel.ambient.xyz * mix(fresnel, 1, 0.5);
+    diffuseOut = lcalcDiffuse(0).xyz * lambert * mix(fresnel, 1, max(0.25, roughness));
+    ambientOut = gl_LightModel.ambient.xyz * mix(fresnel, 1, max(0.5, roughness));
 }
 
-void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec3 viewPos, vec3 viewNormal)
+void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec3 viewPos, vec3 viewNormal, float roughness)
 {
     vec3 lightPos = lcalcPosition(lightIndex) - viewPos;
     float lightDistance = length(lightPos);
@@ -60,18 +72,24 @@ void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec
     lambert *= clamp(-8.0 * (1.0 - 0.3) * eyeCosine + 1.0, 0.3, 1.0);
 #endif
 
-    diffuseOut = lcalcDiffuse(lightIndex) * lambert * mix(fresnel, 1, 0.5);
+    diffuseOut = lcalcDiffuse(lightIndex) * lambert * mix(lambert, 1, max(0.5, roughness));
 }
 
 #if PER_PIXEL_LIGHTING
-void doLighting(vec3 viewPos, vec3 viewNormal, float shadowing, out vec3 diffuseLight, out vec3 ambientLight)
+void doLighting(vec3 viewPos, vec3 viewNormal, float shadowing, out vec3 diffuseLight, out vec3 ambientLight, float roughness, bool isBack)
 #else
 void doLighting(vec3 viewPos, vec3 viewNormal, out vec3 diffuseLight, out vec3 ambientLight, out vec3 shadowDiffuse)
 #endif
 {
     vec3 ambientOut, diffuseOut;
 
-    perLightSun(diffuseOut, ambientOut, viewPos, viewNormal);
+#if !PER_PIXEL_LIGHTING
+    float roughness = 1;
+    bool isBack = false;
+#endif
+
+    perLightSun(diffuseOut, ambientOut, viewPos, viewNormal, roughness, isBack);
+
 #if PER_PIXEL_LIGHTING
     diffuseLight = diffuseOut * shadowing;
     ambientLight = ambientOut;
@@ -83,9 +101,9 @@ void doLighting(vec3 viewPos, vec3 viewNormal, out vec3 diffuseLight, out vec3 a
     for (int i = @startLight; i < @endLight; ++i)
     {
 #if @lightingMethodUBO
-        perLightPoint(ambientOut, diffuseOut, PointLightIndex[i], viewPos, viewNormal);
+        perLightPoint(ambientOut, diffuseOut, PointLightIndex[i], viewPos, viewNormal, roughness);
 #else
-        perLightPoint(ambientOut, diffuseOut, i, viewPos, viewNormal);
+        perLightPoint(ambientOut, diffuseOut, i, viewPos, viewNormal, roughness);
 #endif
         ambientLight += ambientOut;
         diffuseLight += diffuseOut;

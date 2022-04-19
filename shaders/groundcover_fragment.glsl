@@ -71,7 +71,7 @@ void main()
     lighting = passLighting + gl_LightModel.ambient.xyz + shadowDiffuseLighting * shadowing;
 #else
     vec3 diffuseLight, ambientLight;
-    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight);
+    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, 1, false);
     lighting = diffuseLight + ambientLight;
     clampLightingResult(lighting);
 #endif

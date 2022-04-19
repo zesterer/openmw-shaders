@@ -88,7 +88,7 @@ void main()
     lighting = passLighting + shadowDiffuseLighting * shadowing;
 #else
     vec3 diffuseLight, ambientLight;
-    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight);
+    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, 0, false);
     lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + getEmissionColor().xyz;
     clampLightingResult(lighting);
 #endif

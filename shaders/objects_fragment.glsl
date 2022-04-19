@@ -67,6 +67,7 @@ uniform bool simpleWater;
 
 varying float euclideanDepth;
 varying float linearDepth;
+varying float roughness;
 
 #define PER_PIXEL_LIGHTING (@normalMap || @forcePPL)
 
@@ -189,13 +190,13 @@ void main()
 
 #endif
 
-    float shadowing = unshadowedLightRatio(linearDepth);
+    float shadowing = mix(unshadowedLightRatio(linearDepth), 1, roughness);
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
     lighting = passLighting + shadowDiffuseLighting * shadowing;
 #else
     vec3 diffuseLight, ambientLight;
-    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight);
+    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, roughness, !gl_FrontFacing);
     vec3 emission = getEmissionColor().xyz * emissiveMult;
     lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + emission;
     clampLightingResult(lighting);

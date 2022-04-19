@@ -69,7 +69,7 @@ void main()
 
     float shadowing = unshadowedLightRatio(linearDepth);
     vec3 diffuseLight, ambientLight;
-    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight);
+    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, 1, false);
     vec3 emission = getEmissionColor().xyz * emissiveMult;
 #if @emissiveMap
     emission *= texture2D(emissiveMap, emissiveMapUV).xyz;

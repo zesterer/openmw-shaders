@@ -4,6 +4,8 @@
 
 - Fresnel diffusion
 - Underwater light attenuation
+- Leaves and other thin objects move in the wind
+- Improved leaf shading
 
 ## Installing
 
