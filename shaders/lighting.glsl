@@ -20,7 +20,10 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
 
 #ifndef GROUNDCOVER
     lambert = max(lambert, 0.0);
-    fresnel = max(dot(-normalize(viewPos), viewNormal.xyz), 0) * 2;
+    fresnel = (0.0
+        + pow(max(dot(-normalize(viewPos), reflect(viewNormal, lightDir)), 0), 1)
+        + max(dot(-normalize(viewPos), viewNormal), 0)
+    ) * 2;
 #else
     float eyeCosine = dot(normalize(viewPos), viewNormal.xyz);
     if (lambert < 0.0)
