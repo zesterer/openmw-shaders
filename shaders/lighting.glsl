@@ -1,5 +1,12 @@
 #include "lighting_util.glsl"
 
+float getFresnel(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
+    return (0.0
+        + pow(max(dot(-viewDir, reflect(viewNormal, lightDir)) * 0.5 + 0.5, 0), 1)
+        + max(dot(-viewDir, viewNormal) * 0.5 + 0.5, 0)
+    ) * 1.75;
+}
+
 void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 viewNormal, float roughness, bool isBack)
 {
     vec3 lightDir = normalize(lcalcPosition(0));
@@ -20,10 +27,7 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
 
 #ifndef GROUNDCOVER
     lambert = max(lambert, 0.0);
-    fresnel = (0.0
-        + pow(max(dot(-normalize(viewPos), reflect(viewNormal, lightDir)), 0), 1)
-        + max(dot(-normalize(viewPos), viewNormal), 0)
-    ) * 2;
+    fresnel = getFresnel(normalize(viewPos), viewNormal, lightDir);
 #else
     float eyeCosine = dot(normalize(viewPos), viewNormal.xyz);
     if (lambert < 0.0)
@@ -66,7 +70,7 @@ void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec
 
 #ifndef GROUNDCOVER
     lambert = max(lambert, 0.0);
-    fresnel = max(dot(-normalize(viewPos), viewNormal.xyz), 0) * 2;
+    fresnel = getFresnel(normalize(viewPos), viewNormal, lightPos);
 #else
     float eyeCosine = dot(normalize(viewPos), viewNormal.xyz);
     if (lambert < 0.0)
