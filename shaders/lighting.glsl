@@ -24,10 +24,10 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     // Leaves
     if (roughness > 0.5) {
         //viewNormal = viewDir;
-        lambert = max(0, dot(viewDir, -lightDir) * 0.5 + 0.5);
+        lambert = max(0, dot(viewDir, -lightDir) * 0.5 + 0.5) * shadowing;
         #ifdef GROUNDCOVER
             // Hacky
-            lambert = (lambert + pow(max(0, (dot(viewDir, lightDir) * 0.5 + 0.5)), 3) * 0.75) * 0.5 * shadowing;
+            lambert = (lambert + pow(max(0, (dot(viewDir, lightDir) * 0.5 + 0.5)), 3) * shadowing * 0.75) * 0.5;
         #endif
         // Sub-surface scattering
         //if (dot(viewNormal, lightDir) < 0 /*isBack*/) { // TODO: Make this work for front faces too!
@@ -160,6 +160,7 @@ void doLighting(vec3 viewPos, vec3 viewNormal, out vec3 diffuseLight, out vec3 a
 
 vec3 getSpecular(vec3 viewNormal, vec3 viewDirection, float shininess, vec3 matSpec)
 {
+    return vec3(0); // TODO: Use specularity
     vec3 lightDir = normalize(lcalcPosition(0));
     float NdotL = dot(viewNormal, lightDir);
     if (NdotL <= 0.0)
