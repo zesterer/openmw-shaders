@@ -50,10 +50,12 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
 #endif
 
     const vec3 diffuse_tone = vec3(2.2, 2.0, 1.6);
-    const vec3 ambient_tone = vec3(0.5, 0.75, 1.1);
+    const vec3 ambient_tone = vec3(0.7, 0.85, 1.1);
 
     diffuseOut = lcalcDiffuse(0).xyz * diffuse_tone * lambert * mix(fresnelSpecular, 1, max(0.65, roughness));
+#ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
     ambientOut = gl_LightModel.ambient.xyz * ambient_tone * mix(fresnelDiffuse, 1, max(0.0, roughness));
+#endif
 }
 
 void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec3 viewPos, vec3 viewNormal, float roughness)

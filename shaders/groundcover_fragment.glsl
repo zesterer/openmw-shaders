@@ -70,7 +70,7 @@ void main()
 
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
-    lighting = passLighting + gl_LightModel.ambient.xyz * 0 + shadowDiffuseLighting * shadowing;
+    lighting = passLighting + gl_LightModel.ambient.xyz + shadowDiffuseLighting * shadowing;
 #else
     vec3 diffuseLight, ambientLight;
     doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, 1, false);
