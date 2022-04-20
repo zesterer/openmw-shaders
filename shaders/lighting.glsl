@@ -22,10 +22,10 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     float lambert;
     // Leaves
     if (roughness > 0.5) {
-        viewNormal = viewDir;
-        lambert = mix(max(0, (dot(viewDir, -lightDir))) * shadowing, 1, 0.25);
+        //viewNormal = viewDir;
+        lambert = mix(max(0, (dot(viewDir, -lightDir) * 0.5 + 0.5)) * shadowing, 1, 0.25);
         // Sub-surface scattering
-        if (isBack) { // TODO: Make this work for front faces too!
+        if (dot(viewNormal, lightDir) < 0 /*isBack*/) { // TODO: Make this work for front faces too!
             lambert += pow(max(dot(viewDir, lightDir), 0), 4) * shadowing;
         }
     } else {
