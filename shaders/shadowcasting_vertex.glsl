@@ -16,13 +16,16 @@ uniform sampler2D diffuseMap;
 void main(void)
 {
     vec4 pos = gl_Vertex;
-    if (texture2D(diffuseMap, vec2(1)).a < 1 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
-        //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
-        pos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
-            * 0.01
-            * gl_Vertex.z
-        ;
-    }
+    #if @diffuseMap
+        vec2 diffuseMapUV = (gl_TextureMatrix[@diffuseMapUV] * gl_MultiTexCoord@diffuseMapUV).xy;
+        if (texture2D(diffuseMap, diffuseMapUV).a < 1 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
+            //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
+            pos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
+                * 0.01
+                * gl_Vertex.z
+            ;
+        }
+    #endif
     gl_Position = gl_ModelViewProjectionMatrix * pos;
 
     vec4 viewPos = (gl_ModelViewMatrix * gl_Vertex);

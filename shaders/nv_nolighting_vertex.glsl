@@ -28,14 +28,21 @@ uniform sampler2D diffuseMap;
 
 void main(void)
 {
+    #if @diffuseMap
+        diffuseMapUV = (gl_TextureMatrix[@diffuseMapUV] * gl_MultiTexCoord@diffuseMapUV).xy;
+    #endif
+
     vec4 pos = gl_Vertex;
-    if (texture2D(diffuseMap, vec2(1)).a < 1 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
-        //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
-        pos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
-            * 0.01
-            * gl_Vertex.z
-        ;
-    }
+    #if @diffuseMap
+        if (texture2D(diffuseMap, diffuseMapUV).a < 0.2 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
+            //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
+            modelPos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
+                * 0.01
+                * gl_Vertex.z
+            ;
+            roughness = 1.0;
+        }
+    #endif
     gl_Position = projectionMatrix * (gl_ModelViewMatrix * pos);
 
     vec4 viewPos = (gl_ModelViewMatrix * gl_Vertex);
@@ -44,10 +51,6 @@ void main(void)
     euclideanDepth = length(viewPos.xyz);
 #else
     linearDepth = getLinearDepth(gl_Position.z, viewPos.z);
-#endif
-
-#if @diffuseMap
-    diffuseMapUV = (gl_TextureMatrix[@diffuseMapUV] * gl_MultiTexCoord@diffuseMapUV).xy;
 #endif
 
     passColor = gl_Color;
