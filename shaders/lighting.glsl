@@ -24,7 +24,7 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     // Leaves
     if (roughness > 0.5) {
         //viewNormal = viewDir;
-        lambert = mix(max(0, (dot(viewDir, -lightDir) * 0.5 + 0.5)) * shadowing, 1, 0.25);
+        lambert = mix(pow(max(0, (dot(viewDir, -lightDir) * 0.5 + 0.5)), 1.5) * shadowing, 1, 0.0);
         // Sub-surface scattering
         if (dot(viewNormal, lightDir) < 0 /*isBack*/) { // TODO: Make this work for front faces too!
             lambert += pow(max(dot(viewDir, lightDir), 0), 4) * shadowing;
@@ -58,9 +58,9 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
         mix(fresnelSpecular, 1, max(0.5, roughness)) * pow(lambert, 0.5),
         lambert,
     0.5) * direct_light;
-#ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
+//#ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
     ambientOut = indirect_light * mix(fresnelDiffuse, 1, max(0.3, roughness));
-#endif
+//#endif
 }
 
 void perLightPoint(out vec3 diffuseOut, out vec3 ambientOut, int lightIndex, vec3 viewPos, vec3 viewNormal, float roughness)
@@ -110,9 +110,9 @@ void perLightPoint(out vec3 diffuseOut, out vec3 ambientOut, int lightIndex, vec
         mix(fresnelSpecular, 1, max(0.5, roughness)) * pow(lambert, 0.5),
         lambert,
     0.5) * directLight;
-#ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
+//#ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
     ambientOut = indirectLight * gl_LightModel.ambient.xyz * mix(fresnelDiffuse, 1, max(0.0, roughness));
-#endif
+//#endif
 }
 
 #if PER_PIXEL_LIGHTING
