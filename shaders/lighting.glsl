@@ -1,14 +1,14 @@
 #include "lighting_util.glsl"
 
 float getFresnelSpecular(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
-    const float lift = 0.25;
+    const float lift = 0.0;
     return (0.0
         + max((dot(viewDir, reflect(lightDir, viewNormal)) + lift) / (1 + lift), 0)
     ) * 1.75;
 }
 
 float getFresnelDiffuse(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
-    const float lift = 1.0;
+    const float lift = 0.0;
     return (0.0
         + max((dot(-viewDir, viewNormal) + lift) / (1 + lift), 0)
     ) * 1.75;
@@ -51,12 +51,15 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
 #endif
 
     const float intensity = 0.85;
-    const vec3 diffuse_tone = vec3(2.2, 2.0, 1.6) * intensity;
-    const vec3 ambient_tone = vec3(0.7, 0.85, 1.1) / intensity;
+    vec3 direct_light = lcalcDiffuse(0).xyz * vec3(2.2, 2.0, 1.6) * intensity;
+    vec3 indirect_light = gl_LightModel.ambient.xyz * vec3(0.7, 0.85, 1.1) / intensity;
 
-    diffuseOut = lcalcDiffuse(0).xyz * diffuse_tone * lambert * mix(fresnelSpecular, 1, max(0.65, roughness));
+    diffuseOut = mix(
+        mix(fresnelSpecular, 1, max(0.5, roughness)) * pow(lambert, 0.5),
+        lambert,
+    0.5) * direct_light;
 #ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
-    ambientOut = gl_LightModel.ambient.xyz * ambient_tone * mix(fresnelDiffuse, 1, max(0.0, roughness));
+    ambientOut = indirect_light * mix(fresnelDiffuse, 1, max(0.3, roughness));
 #endif
 }
 
@@ -100,12 +103,15 @@ void perLightPoint(out vec3 diffuseOut, out vec3 ambientOut, int lightIndex, vec
     lambert *= clamp(-8.0 * (1.0 - 0.3) * eyeCosine + 1.0, 0.3, 1.0);
 #endif
 
-    vec3 lightColor = lcalcDiffuse(lightIndex) * 4.5 / (vec3(1) + lcalcDiffuse(0).r * 2.5);
-    vec3 indirectColor = lightColor * 0.3;
+    vec3 directLight = illumination * lcalcDiffuse(lightIndex) * 4.5 / (vec3(1) + lcalcDiffuse(0).r * 2.5);
+    vec3 indirectLight = directLight * 0.3;
 
-    diffuseOut = lightColor * illumination * lambert * mix(fresnelSpecular, 1, max(0.0, roughness));
+    diffuseOut = mix(
+        mix(fresnelSpecular, 1, max(0.5, roughness)) * pow(lambert, 0.5),
+        lambert,
+    0.5) * directLight;
 #ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
-    ambientOut = indirectColor * illumination * gl_LightModel.ambient.xyz * mix(fresnelDiffuse, 1, max(0.0, roughness));
+    ambientOut = indirectLight * gl_LightModel.ambient.xyz * mix(fresnelDiffuse, 1, max(0.0, roughness));
 #endif
 }
 
