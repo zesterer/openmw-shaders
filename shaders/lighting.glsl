@@ -98,7 +98,7 @@ void perLightPoint(out vec3 diffuseOut, out vec3 ambientOut, int lightIndex, vec
     lambert *= clamp(-8.0 * (1.0 - 0.3) * eyeCosine + 1.0, 0.3, 1.0);
 #endif
 
-    vec3 lightColor = lcalcDiffuse(lightIndex) * 2.0 / (vec3(0.25) + lcalcDiffuse(0).r * 3);
+    vec3 lightColor = lcalcDiffuse(lightIndex) * 4.5 / (vec3(1) + lcalcDiffuse(0).r * 1.5);
 
     diffuseOut = lightColor * illumination * lambert * mix(fresnelSpecular, 1, max(0.0, roughness));
 #ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
