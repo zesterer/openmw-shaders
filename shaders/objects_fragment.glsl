@@ -194,7 +194,7 @@ void main()
 
 #endif
 
-    float shadowing = mix(unshadowedLightRatio(linearDepth), 1, roughness);
+    float shadowing = unshadowedLightRatio(linearDepth);
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
     lighting = passLighting + shadowDiffuseLighting * shadowing;
@@ -202,6 +202,7 @@ void main()
     vec3 diffuseLight, ambientLight;
     doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, roughness, !gl_FrontFacing);
     vec3 emission = getEmissionColor().xyz * emissiveMult;
+
     lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + emission;
     clampLightingResult(lighting);
 #endif

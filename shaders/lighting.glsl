@@ -13,19 +13,21 @@ float getFresnelDiffuse(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
     ) * 1.75;
 }
 
-void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 viewNormal, float roughness, bool isBack)
+void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 viewNormal, float roughness, float shadowing, bool isBack)
 {
     vec3 lightDir = normalize(lcalcPosition(0));
+    vec3 viewDir = normalize(viewPos);
     viewNormal = normalize(viewNormal);
 
     float lambert;
     // Leaves
     if (roughness > 0.5) {
-        //if (dot(viewPos, viewNormal) > 0) {
-        //    viewNormal *= -1;
-        //}
-        //lambert = (dot(viewNormal.xyz, lightDir) + 1) * 0.5;
-        lambert = (dot(normalize(viewPos.xyz), -lightDir) + 1) * 0.5;
+        viewNormal = viewDir;
+        lambert = mix(max(0, (dot(viewDir, -lightDir))) * shadowing, 1, 0.25);
+        // Sub-surface scattering
+        if (isBack) { // TODO: Make this work for front faces too!
+            lambert += pow(max(dot(viewDir, lightDir), 0), 4) * shadowing;
+        }
     } else {
         lambert = dot(viewNormal.xyz, lightDir);
     }
@@ -35,10 +37,10 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
 
 #ifndef GROUNDCOVER
     lambert = max(lambert, 0.0);
-    fresnelSpecular = getFresnelSpecular(normalize(viewPos), viewNormal, lightDir);
-    fresnelDiffuse = getFresnelDiffuse(normalize(viewPos), viewNormal, lightDir);
+    fresnelSpecular = getFresnelSpecular(viewDir, viewNormal, lightDir);
+    fresnelDiffuse = getFresnelDiffuse(viewDir, viewNormal, lightDir);
 #else
-    float eyeCosine = dot(normalize(viewPos), viewNormal.xyz);
+    float eyeCosine = dot(viewDir, viewNormal.xyz);
     if (lambert < 0.0)
     {
         lambert = -lambert;
@@ -104,14 +106,15 @@ void doLighting(vec3 viewPos, vec3 viewNormal, out vec3 diffuseLight, out vec3 a
     vec3 ambientOut, diffuseOut;
 
 #if !PER_PIXEL_LIGHTING
-    float roughness = 1;
+    float roughness = 0;
+    float shadowing = 1;
     bool isBack = false;
 #endif
 
-    perLightSun(diffuseOut, ambientOut, viewPos, viewNormal, roughness, isBack);
+    perLightSun(diffuseOut, ambientOut, viewPos, viewNormal, roughness, shadowing, isBack);
 
 #if PER_PIXEL_LIGHTING
-    diffuseLight = diffuseOut * shadowing;
+    diffuseLight = diffuseOut * mix(shadowing, 1, roughness);
     ambientLight = ambientOut;
 #else
     shadowDiffuse = diffuseOut;
