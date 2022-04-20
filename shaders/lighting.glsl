@@ -50,7 +50,7 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     lambert *= clamp(-8.0 * (1.0 - 0.3) * eyeCosine + 1.0, 0.3, 1.0);
 #endif
 
-    const float intensity = 0.85;
+    const float intensity = 1.0;
     vec3 direct_light = lcalcDiffuse(0).xyz * vec3(2.2, 2.0, 1.6) * intensity;
     vec3 indirect_light = gl_LightModel.ambient.xyz * vec3(0.7, 0.85, 1.1) / intensity;
 
@@ -104,7 +104,7 @@ void perLightPoint(out vec3 diffuseOut, out vec3 ambientOut, int lightIndex, vec
 #endif
 
     vec3 directLight = illumination * lcalcDiffuse(lightIndex) * 4.5 / (vec3(1) + lcalcDiffuse(0).r * 2.5);
-    vec3 indirectLight = directLight * 0.3;
+    vec3 indirectLight = directLight * 0.5;
 
     diffuseOut = mix(
         mix(fresnelSpecular, 1, max(0.5, roughness)) * pow(lambert, 0.5),
