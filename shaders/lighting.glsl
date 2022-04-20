@@ -58,10 +58,11 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
 #endif
 }
 
-void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec3 viewPos, vec3 viewNormal, float roughness)
+void perLightPoint(out vec3 diffuseOut, out vec3 ambientOut, int lightIndex, vec3 viewPos, vec3 viewNormal, float roughness)
 {
     vec3 lightPos = lcalcPosition(lightIndex) - viewPos;
     float lightDistance = length(lightPos);
+    vec3 viewDir = normalize(viewPos);
 
 // cull non-FFP point lighting by radius, light is guaranteed to not fall outside this bound with our cutoff
 #if !@lightingMethodFFP
@@ -79,13 +80,14 @@ void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec
 
     float illumination = lcalcIllumination(lightIndex, lightDistance);
     ambientOut = lcalcAmbient(lightIndex) * illumination;
-    float lambert = dot(viewNormal.xyz, lightPos) * illumination;
+    float lambert = dot(viewNormal.xyz, lightPos);
     float fresnelSpecular = 1;
     float fresnelDiffuse = 1;
 
 #ifndef GROUNDCOVER
     lambert = max(lambert, 0.0);
-    fresnelSpecular = getFresnelSpecular(normalize(viewPos), viewNormal, lightPos);
+    fresnelSpecular = getFresnelSpecular(viewDir, viewNormal, lightPos);
+    fresnelDiffuse = getFresnelDiffuse(viewDir, viewNormal, lightPos);
 #else
     float eyeCosine = dot(normalize(viewPos), viewNormal.xyz);
     if (lambert < 0.0)
@@ -96,7 +98,12 @@ void perLightPoint(out vec3 ambientOut, out vec3 diffuseOut, int lightIndex, vec
     lambert *= clamp(-8.0 * (1.0 - 0.3) * eyeCosine + 1.0, 0.3, 1.0);
 #endif
 
-    diffuseOut = lcalcDiffuse(lightIndex) * lambert * mix(fresnelSpecular, 1, max(0.5, roughness));
+    vec3 lightColor = lcalcDiffuse(lightIndex) * 2.0 / (vec3(0.25) + lcalcDiffuse(0).r * 3);
+
+    diffuseOut = lightColor * illumination * lambert * mix(fresnelSpecular, 1, max(0.0, roughness));
+#ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
+    ambientOut = lightColor * illumination * gl_LightModel.ambient.xyz * mix(fresnelDiffuse, 1, max(0.0, roughness));
+#endif
 }
 
 #if PER_PIXEL_LIGHTING
@@ -113,22 +120,25 @@ void doLighting(vec3 viewPos, vec3 viewNormal, out vec3 diffuseLight, out vec3 a
     bool isBack = false;
 #endif
 
-    perLightSun(diffuseOut, ambientOut, viewPos, viewNormal, roughness, shadowing, isBack);
+    #if SHADOWS
+        perLightSun(diffuseOut, ambientOut, viewPos, viewNormal, roughness, shadowing, isBack);
+    #endif
 
 #if PER_PIXEL_LIGHTING
     diffuseLight = diffuseOut * mix(shadowing, 1, roughness);
     ambientLight = ambientOut;
 #else
-    shadowDiffuse = diffuseOut;
+    shadowDiffuse = diffuseOut * shadowing;
+    ambientLight = ambientOut;
     diffuseLight = vec3(0.0);
 #endif
 
     for (int i = @startLight; i < @endLight; ++i)
     {
 #if @lightingMethodUBO
-        perLightPoint(ambientOut, diffuseOut, PointLightIndex[i], viewPos, viewNormal, roughness);
+        perLightPoint(diffuseOut, ambientOut, PointLightIndex[i], viewPos, viewNormal, roughness);
 #else
-        perLightPoint(ambientOut, diffuseOut, i, viewPos, viewNormal, roughness);
+        perLightPoint(diffuseOut, ambientOut, i, viewPos, viewNormal, roughness);
 #endif
         ambientLight += ambientOut;
         diffuseLight += diffuseOut;
