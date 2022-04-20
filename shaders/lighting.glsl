@@ -7,8 +7,9 @@ float getFresnelSpecular(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
 }
 
 float getFresnelDiffuse(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
+    const float lift = 0.5;
     return (0.0
-        + max(dot(-viewDir, viewNormal), 0)
+        + max((dot(-viewDir, viewNormal) + lift) / (1 + lift), 0)
     ) * 1.75;
 }
 
@@ -47,7 +48,7 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
 #endif
 
     const vec3 diffuse_tone = vec3(2.2, 2.0, 1.6);
-    const vec3 ambient_tone = vec3(0.4, 0.6, 0.8);
+    const vec3 ambient_tone = vec3(0.5, 0.75, 1.1);
 
     diffuseOut = lcalcDiffuse(0).xyz * diffuse_tone * lambert * mix(fresnelSpecular, 1, max(0.65, roughness));
     ambientOut = gl_LightModel.ambient.xyz * ambient_tone * mix(fresnelDiffuse, 1, max(0.0, roughness));

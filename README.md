@@ -2,7 +2,7 @@
 
 ## Features
 
-- Fresnel diffusion
+- Improved lighting (fresnel illumination, better shadows)
 - Underwater light attenuation
 - Leaves and other thin objects move in the wind
 - Improved leaf shading

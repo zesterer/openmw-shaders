@@ -53,6 +53,7 @@ varying vec2 glossMapUV;
 
 varying float euclideanDepth;
 varying float linearDepth;
+varying vec4 modelPos;
 
 #define PER_PIXEL_LIGHTING (@normalMap || @forcePPL)
 
@@ -85,19 +86,19 @@ void main(void)
     #endif
 
     // Waving in the wind
-    vec4 pos = gl_Vertex;
+    modelPos = gl_Vertex;
     roughness = 0.0;
     #if @diffuseMap
         if (texture2D(diffuseMap, diffuseMapUV).a < 0.2 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
             //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
-            pos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
+            modelPos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
                 * 0.01
                 * gl_Vertex.z
             ;
             roughness = 1.0;
         }
     #endif
-    gl_Position = projectionMatrix * (gl_ModelViewMatrix * pos);
+    gl_Position = projectionMatrix * (gl_ModelViewMatrix * modelPos);
 
     vec4 viewPos = (gl_ModelViewMatrix * gl_Vertex);
 

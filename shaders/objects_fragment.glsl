@@ -68,6 +68,7 @@ uniform bool simpleWater;
 varying float euclideanDepth;
 varying float linearDepth;
 varying float roughness;
+varying vec4 modelPos;
 
 #define PER_PIXEL_LIGHTING (@normalMap || @forcePPL)
 
@@ -80,6 +81,9 @@ uniform float emissiveMult;
 uniform float specStrength;
 varying vec3 passViewPos;
 varying vec3 passNormal;
+
+uniform mat4 osg_ViewMatrixInverse;
+uniform mat4 osg_ModelViewMatrix;
 
 #include "vertexcolors.glsl"
 #include "shadows_fragment.glsl"
@@ -139,7 +143,7 @@ void main()
     vec4 diffuseColor = getDiffuseColor();
     gl_FragData[0].a *= diffuseColor.a;
 
-    vec3 wPos = (gl_ModelViewMatrixInverse * vec4(passViewPos, 1)).xyz;
+    vec3 wPos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * modelPos).xyz;
     float underwater = max(-wPos.z / 120, 0);
     diffuseColor.rgb *= pow(vec3(0.5, 0.8, 0.9), vec3(underwater));
 
