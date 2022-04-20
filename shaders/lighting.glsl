@@ -24,13 +24,17 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     // Leaves
     if (roughness > 0.5) {
         //viewNormal = viewDir;
-        lambert = mix(pow(max(0, (dot(viewDir, -lightDir) * 0.5 + 0.5)), 1.5) * shadowing, 1, 0.0);
+        lambert = max(0, dot(viewDir, -lightDir) * 0.5 + 0.5);
+        #ifdef GROUNDCOVER
+            // Hacky
+            lambert = (lambert + pow(max(0, (dot(viewDir, lightDir) * 0.5 + 0.5)), 3) * 0.75) * 0.5 * shadowing;
+        #endif
         // Sub-surface scattering
-        if (dot(viewNormal, lightDir) < 0 /*isBack*/) { // TODO: Make this work for front faces too!
-            lambert += pow(max(dot(viewDir, lightDir), 0), 4) * shadowing;
-        }
+        //if (dot(viewNormal, lightDir) < 0 /*isBack*/) { // TODO: Make this work for front faces too!
+        //    lambert += pow(max(dot(viewDir, lightDir), 0), 4) * shadowing;
+        //}
     } else {
-        lambert = dot(viewNormal.xyz, lightDir);
+        lambert = dot(viewNormal, lightDir);
     }
 
     float fresnelSpecular = 1;
