@@ -23,7 +23,7 @@ varying vec4 passTangent;
 
 // Other shaders respect forcePPL, but legacy groundcover mods were designed to work with vertex lighting.
 // They may do not look as intended with per-pixel lighting, so ignore this setting for now.
-#define PER_PIXEL_LIGHTING @normalMap
+#define PER_PIXEL_LIGHTING 1//@normalMap
 
 varying float euclideanDepth;
 varying float linearDepth;
@@ -51,6 +51,8 @@ void main()
     mat3 tbnTranspose = mat3(normalizedTangent, binormal, normalizedNormal);
 
     vec3 viewNormal = gl_NormalMatrix * normalize(tbnTranspose * (normalTex.xyz * 2.0 - 1.0));
+#else
+    vec3 viewNormal = gl_NormalMatrix * normalize(passNormal);
 #endif
 
 #if @diffuseMap
@@ -68,7 +70,7 @@ void main()
 
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
-    lighting = passLighting + gl_LightModel.ambient.xyz + shadowDiffuseLighting * shadowing;
+    lighting = passLighting + gl_LightModel.ambient.xyz * 0 + shadowDiffuseLighting * shadowing;
 #else
     vec3 diffuseLight, ambientLight;
     doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, 1, false);

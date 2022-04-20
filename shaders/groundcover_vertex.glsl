@@ -24,7 +24,7 @@ varying vec4 passTangent;
 
 // Other shaders respect forcePPL, but legacy groundcover mods were designed to work with vertex lighting.
 // They may do not look as intended with per-pixel lighting, so ignore this setting for now.
-#define PER_PIXEL_LIGHTING @normalMap
+#define PER_PIXEL_LIGHTING 1//@normalMap
 
 varying float euclideanDepth;
 varying float linearDepth;

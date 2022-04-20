@@ -202,7 +202,6 @@ void main()
     vec3 diffuseLight, ambientLight;
     doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, roughness, !gl_FrontFacing);
     vec3 emission = getEmissionColor().xyz * emissiveMult;
-
     lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + emission;
     clampLightingResult(lighting);
 #endif
