@@ -21,6 +21,9 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     viewNormal = normalize(viewNormal);
 
     float lambert;
+    #ifdef GROUNDCOVER
+        lambert = dot(viewNormal, lightDir) * shadowing;
+    #else
     // Leaves
     if (roughness > 0.5) {
         //viewNormal = viewDir;
@@ -36,6 +39,7 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     } else {
         lambert = dot(viewNormal, lightDir);
     }
+    #endif
 
     float fresnelSpecular = 1;
     float fresnelDiffuse = 1;
@@ -59,11 +63,11 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     vec3 indirect_light = gl_LightModel.ambient.xyz * vec3(0.7, 0.85, 1.1) / intensity;
 
     diffuseOut = mix(
-        mix(fresnelSpecular, 1, max(0.5, roughness)) * pow(lambert, 0.5),
+        mix(fresnelSpecular, 1, max(0.35, roughness)) * pow(lambert, 0.5),
         lambert,
     0.5) * direct_light;
 //#ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
-    ambientOut = indirect_light * mix(fresnelDiffuse, 1, max(0.3, roughness));
+    ambientOut = indirect_light * mix(fresnelDiffuse, 1, max(0.0, roughness));
 //#endif
 }
 
