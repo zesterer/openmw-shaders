@@ -36,6 +36,9 @@ centroid varying vec3 passLighting;
 centroid varying vec3 shadowDiffuseLighting;
 #endif
 
+uniform mat4 osg_ViewMatrixInverse;
+uniform mat4 osg_ModelViewMatrix;
+
 #include "shadows_fragment.glsl"
 #include "lighting.glsl"
 #include "alpha.glsl"
@@ -61,6 +64,9 @@ void main()
     gl_FragData[0] = vec4(1.0);
 #endif
 
+    vec3 wPos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * vec4(passViewPos, 1)).xyz;
+    float waterDepth = max(-wPos.z, 0);
+
     if (euclideanDepth > @groundcoverFadeStart)
         gl_FragData[0].a *= 1.0-smoothstep(@groundcoverFadeStart, @groundcoverFadeEnd, euclideanDepth);
 
@@ -71,14 +77,36 @@ void main()
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
     lighting = passLighting + gl_LightModel.ambient.xyz + shadowDiffuseLighting * shadowing;
+    gl_FragData[0].xyz *= lighting;
 #else
+    /*
     vec3 diffuseLight, ambientLight;
     doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, 1, false);
     lighting = diffuseLight + ambientLight;
     clampLightingResult(lighting);
+    */
+
+    vec3 color = gl_FragData[0].rgb;
+
+    // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
+    // As a result, this entire thing is an enormous hack that lets us do that!
+    vec3 albedo = clamp(pow(normalize(color), vec3(1.5)) * 1.5 - 0.25, vec3(0), vec3(1));
+    float ao = min(length(color), 1);
+
+    gl_FragData[0].xyz = getPbr(
+        passViewPos,
+        normalize(viewNormal),
+        albedo,
+        0.65, // roughness
+        1.0, // base reflectance
+        0.0, // metalness
+        shadowing,
+        ao,
+        vec3(0),
+        waterDepth
+    );
 #endif
 
-    gl_FragData[0].xyz *= lighting;
 
 #if @radialFog
     float fogValue = clamp((euclideanDepth - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);

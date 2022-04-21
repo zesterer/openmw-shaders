@@ -1,6 +1,6 @@
 # Zesterer's OpenMW Shaders
 
-Play Morrowind like it's 2022, not 2002.
+Play Morrowind with PBR shaders like it's 2022, not 2002.
 
 [![A warrior and a guar](https://i.imgur.com/YoKDhJc.png)](https://i.imgur.com/YoKDhJc.png)
 [![Light attenuation in water](https://i.imgur.com/2CvUPkp.png)](https://i.imgur.com/2CvUPkp.png)
@@ -16,7 +16,9 @@ Play Morrowind like it's 2022, not 2002.
 
 ## Features
 
-- Improved lighting (fresnel illumination, ambiance, etc.)
+- Relatively cheap: should run well on all but the most underpowered hardware
+- PBR lighting
+- Tweaking lighting
 - Underwater light attenuation
 - Leaves and other thin objects move in the wind
 - Improved leaf shading

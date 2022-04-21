@@ -84,6 +84,7 @@ varying vec3 passNormal;
 
 uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ModelViewMatrix;
+uniform mat4 osg_ViewMatrix;
 
 #include "vertexcolors.glsl"
 #include "shadows_fragment.glsl"
@@ -143,9 +144,10 @@ void main()
     vec4 diffuseColor = getDiffuseColor();
     gl_FragData[0].a *= diffuseColor.a;
 
-    vec3 wPos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * modelPos).xyz;
-    float underwater = max(-wPos.z / 120, 0);
-    diffuseColor.rgb *= pow(vec3(0.5, 0.8, 0.9), vec3(underwater));
+    vec3 wPos = ((osg_ViewMatrixInverse * gl_ModelViewMatrix) * vec4(modelPos.xyz, 1)).xyz;
+    // Hack to avoid reflections appearing as if they are underwater
+    float wFlip = sign(((gl_ModelViewMatrixInverse * osg_ViewMatrix) * vec4(vec3(0, 0, 1), 0)).z);
+    float waterDepth = max(-wPos.z * wFlip, 0);
 
 #if @darkMap
     gl_FragData[0] *= texture2D(darkMap, darkMapUV);
@@ -194,28 +196,6 @@ void main()
 
 #endif
 
-    float shadowing = unshadowedLightRatio(linearDepth);
-    vec3 lighting;
-#if !PER_PIXEL_LIGHTING
-    lighting = passLighting + shadowDiffuseLighting * shadowing;
-#else
-    vec3 diffuseLight, ambientLight;
-    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, roughness, !gl_FrontFacing);
-    vec3 emission = getEmissionColor().xyz * emissiveMult;
-    lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + emission;
-    clampLightingResult(lighting);
-#endif
-
-    gl_FragData[0].xyz *= lighting;
-
-#if @envMap && !@preLightEnv
-    gl_FragData[0].xyz += envEffect;
-#endif
-
-#if @emissiveMap
-    gl_FragData[0].xyz += texture2D(emissiveMap, emissiveMapUV).xyz;
-#endif
-
 #if @specularMap
     vec4 specTex = texture2D(specularMap, specularMapUV);
     float shininess = specTex.a * 255.0;
@@ -223,6 +203,50 @@ void main()
 #else
     float shininess = gl_FrontMaterial.shininess;
     vec3 matSpec = getSpecularColor().xyz;
+#endif
+
+    float shadowing = unshadowedLightRatio(linearDepth);
+    vec3 lighting;
+#if !PER_PIXEL_LIGHTING
+    lighting = passLighting + shadowDiffuseLighting * shadowing;
+    gl_FragData[0].xyz *= lighting;
+#else
+    /*
+    vec3 diffuseLight, ambientLight;
+    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, roughness, !gl_FrontFacing);
+    lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + emission;
+    clampLightingResult(lighting);
+    */
+
+    vec3 emission = getEmissionColor().xyz * emissiveMult;
+
+#if @emissiveMap
+    emission *= texture2D(emissiveMap, emissiveMapUV).xyz;
+#endif
+
+    vec3 color = gl_FragData[0].rgb;
+
+    // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
+    // As a result, this entire thing is an enormous hack that lets us do that!
+    vec3 albedo = clamp(pow(normalize(color), vec3(1.5)) * 1.5 - 0.25, vec3(0), vec3(1));
+    float ao = min(length(color), 1);
+
+    gl_FragData[0].xyz = getPbr(
+        passViewPos,
+        normalize(viewNormal),
+        albedo,
+        mix(0.8, 0.6, shininess / 255), // roughness
+        1.0, // base reflectance
+        0.0, // metalness
+        shadowing,
+        ao,
+        emission * color,
+        waterDepth
+    );
+#endif
+
+#if @envMap && !@preLightEnv
+    gl_FragData[0].xyz += envEffect;
 #endif
 
     matSpec *= specStrength;

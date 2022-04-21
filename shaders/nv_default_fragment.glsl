@@ -68,17 +68,40 @@ void main()
 #endif
 
     float shadowing = unshadowedLightRatio(linearDepth);
+    /*
     vec3 diffuseLight, ambientLight;
     doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, 0, false);
     vec3 emission = getEmissionColor().xyz * emissiveMult;
+    vec3 lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + emission;
+    clampLightingResult(lighting);
+    gl_FragData[0].xyz *= lighting;
+    */
+
+    vec3 emission = getEmissionColor().xyz * emissiveMult;
+
 #if @emissiveMap
     emission *= texture2D(emissiveMap, emissiveMapUV).xyz;
 #endif
-    vec3 lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + emission;
 
-    clampLightingResult(lighting);
+    vec3 color = gl_FragData[0].rgb;
 
-    gl_FragData[0].xyz *= lighting;
+    // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
+    // As a result, this entire thing is an enormous hack that lets us do that!
+    vec3 albedo = clamp(pow(normalize(color), vec3(1.5)) * 1.5 - 0.25, vec3(0), vec3(1));
+    float ao = min(length(color), 1);
+
+    gl_FragData[0].xyz = getPbr(
+        passViewPos,
+        normalize(viewNormal),
+        albedo,
+        0.65, // roughness
+        1.0, // base reflectance
+        0.0, // metalness
+        shadowing,
+        ao,
+        emission * color,
+        0
+    );
 
     float shininess = gl_FrontMaterial.shininess;
     vec3 matSpec = getSpecularColor().xyz * specStrength;

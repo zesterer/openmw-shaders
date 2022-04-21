@@ -1,4 +1,4 @@
-#include "lighting_util.glsl"
+#include "pbr.glsl"
 
 float getFresnelSpecular(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
     const float lift = 0.0;

@@ -69,10 +69,10 @@ void main()
 #endif
 
     vec4 diffuseTex = texture2D(diffuseMap, adjustedUV);
-    vec3 wPos = (gl_ModelViewMatrixInverse * vec4(passViewPos, 1)).xyz;
-    float underwater = max(-wPos.z / 120, 0);
-    diffuseTex.rgb *= pow(vec3(0.5, 0.8, 0.9), vec3(underwater));
     gl_FragData[0] = vec4(diffuseTex.xyz, 1.0);
+
+    vec3 wPos = (gl_ModelViewMatrixInverse * vec4(passViewPos, 1)).xyz;
+    float waterDepth = max(-wPos.z, 0);
 
 #if @blendMap
     vec2 blendMapUV = (gl_TextureMatrix[1] * vec4(uv, 0.0, 1.0)).xy;
@@ -86,18 +86,41 @@ void main()
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
     lighting = passLighting + shadowDiffuseLighting * shadowing;
+    gl_FragData[0].xyz *= lighting;
 #else
+    /*
     vec3 diffuseLight, ambientLight;
     doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, 0, false);
     lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + getEmissionColor().xyz;
     clampLightingResult(lighting);
-#endif
+    */
 
-    gl_FragData[0].xyz *= lighting;
+    vec3 color = gl_FragData[0].rgb;
+
+    // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
+    // As a result, this entire thing is an enormous hack that lets us do that!
+    vec3 albedo = clamp(pow(normalize(color), vec3(1.5)) * 1.5 - 0.25, vec3(0), vec3(1));
+    float ao = min(length(color), 1);
+
+    gl_FragData[0].xyz = getPbr(
+        passViewPos,
+        normalize(viewNormal),
+        albedo,
+        0.75, // roughness
+        1.0, // base reflectance
+        0.0, // metalness
+        shadowing,
+        ao,
+        vec3(0),
+        waterDepth
+    );
+#endif
 
 #if @specularMap
     float shininess = 128.0; // TODO: make configurable
     vec3 matSpec = vec3(diffuseTex.a);
+
+    gl_FragData[0].r = diffuseTex.a;
 #else
     float shininess = gl_FrontMaterial.shininess;
     vec3 matSpec = getSpecularColor().xyz;
