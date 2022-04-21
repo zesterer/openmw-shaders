@@ -43,7 +43,6 @@ centroid varying vec3 shadowDiffuseLighting;
 
 uniform float osg_SimulationTime;
 uniform mat4 osg_ViewMatrixInverse;
-uniform mat4 osg_ViewMatrix;
 uniform float windSpeed;
 uniform vec3 playerPos;
 uniform mat4 projectionMatrix;

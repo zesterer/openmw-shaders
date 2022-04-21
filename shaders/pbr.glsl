@@ -1,5 +1,7 @@
 #include "lighting_util.glsl"
 
+uniform mat4 osg_ViewMatrix;
+
 const float PI = 3.1415;
 
 float normGgx(float nDotH, float roughness) {
@@ -77,23 +79,31 @@ vec3 getLightPbr(
     return radiance * (brdf * occlusion + subsurfaceScatter);
 }
 
-vec3 getSunColor(float dayLight) {
+vec3 getSunColor(float dayLight, float isInterior) {
     return mix(
         mix(
-            vec3(2.0, 3.0, 4.0),
-            vec3(8, 3.0, 0.3),
-            clamp((dayLight - 0.3) * 10, 0, 1)
+            mix(
+                vec3(1.0, 1.5, 2.0),
+                vec3(8, 3.0, 0.3),
+                clamp((dayLight - 0.3) * 10, 0, 1)
+            ),
+            vec3(6, 5.4, 4.8),
+            pow(dayLight, 4)
         ),
-        vec3(6, 5.4, 4.8),
-        pow(dayLight, 4)
+        vec3(1, 0.85, 0.6) * 3,
+        isInterior
     );
 }
 
-vec3 getAmbientColor(float dayLight) {
+vec3 getAmbientColor(float dayLight, float isInterior) {
     return mix(
-        vec3(0.8, 1.0, 1.8),
-        vec3(0.45, 0.6, 1.0),
-        pow(dayLight, 4)
+        mix(
+            vec3(0.2, 0.25, 0.5),
+            vec3(0.45, 0.6, 1.0),
+            pow(dayLight, 4)
+        ),
+        vec3(1, 0.8, 0.5) * 0.25,
+        isInterior
     );
 }
 
@@ -129,16 +139,19 @@ vec3 getPbr(
 
     float sunLightLevel = lcalcDiffuse(0).r;
 
+    // Extremely silly hack to determine whether we're indoors or not
+    float isInterior = step(0.999, dot((osg_ViewMatrix * vec4(0, 0, 1, 0)).xyz, lcalcPosition(0)));
+
     // Linear RGB, attenuation coefficients for water at roughly R, G, B wavelengths.
     // See https://en.wikipedia.org/wiki/Electromagnetic_absorption_by_water
     const vec3 MU_WATER = vec3(0.6, 0.04, 0.01);
     const float unitsToMetres = 0.014;
     // Light attenuation in water
-    vec3 attenuation = sunLightLevel * exp(-MU_WATER * waterDepth * unitsToMetres);
+    vec3 attenuation = mix(exp(-MU_WATER * waterDepth * unitsToMetres), vec3(1), isInterior);
 
     // Sun
     vec3 sunDir = normalize(lcalcPosition(0));
-    vec3 sunColor = getSunColor(sunLightLevel) * attenuation;
+    vec3 sunColor = getSunColor(sunLightLevel, isInterior) * attenuation;
     light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, subsurface, ao, mat);
 
     // Sky (ambient)
@@ -147,7 +160,7 @@ vec3 getPbr(
     if (mat != MAT_LEAF) {
         ambientFresnel = max(dot(surfNorm, -camDir), 0.5);
     }
-    vec3 skyColor = getAmbientColor(sunLightLevel) * attenuation;
+    vec3 skyColor = getAmbientColor(sunLightLevel, isInterior) * attenuation;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel;
 
     for (int i = @startLight; i < @endLight; ++i) {
@@ -164,7 +177,7 @@ vec3 getPbr(
         vec3 lightDir = lightDelta / lightDist;
 
         //vec3 lightColor = lcalcDiffuse(lightIdx) * 100000 / pow(lightDist, 2);
-        vec3 lightColor = lcalcDiffuse(lightIdx) * lcalcIllumination(lightIdx, lightDist) * 5;
+        vec3 lightColor = lcalcDiffuse(lightIdx) * lcalcIllumination(lightIdx, lightDist) * 8;
 
         light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1, subsurface, ao, mat);
     }

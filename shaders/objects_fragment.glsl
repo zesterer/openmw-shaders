@@ -84,7 +84,6 @@ varying vec3 passNormal;
 
 uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ModelViewMatrix;
-uniform mat4 osg_ViewMatrix;
 
 #include "vertexcolors.glsl"
 #include "shadows_fragment.glsl"
