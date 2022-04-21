@@ -84,6 +84,18 @@ vec3 getAmbientPbr(
     return directLight;
 }
 
+vec3 getSunColor(float dayLight) {
+    return mix(
+        mix(
+            vec3(0.3, 0.5, 1.3),
+            vec3(8, 3.0, 0.3),
+            clamp((dayLight - 0.3) * 10, 0, 1)
+        ),
+        vec3(6, 5.4, 4.8),
+        pow(dayLight, 4)
+    );
+}
+
 vec3 getPbr(
     vec3 surfPos,
     vec3 surfNorm,
@@ -100,6 +112,7 @@ vec3 getPbr(
     float ao,
     // Diffuse emission
     vec3 emission,
+    float subsurface_scatter,
     // Distance from water surface
     float waterDepth
 ) {
@@ -110,20 +123,22 @@ vec3 getPbr(
     // Emissive light, eminating from the object itself
     light += emission * 3 * max(dot(surfNorm, -camDir), 0.5);
 
+    float sunLightLevel = lcalcDiffuse(0).r;
+
     // Linear RGB, attenuation coefficients for water at roughly R, G, B wavelengths.
     // See https://en.wikipedia.org/wiki/Electromagnetic_absorption_by_water
     const vec3 MU_WATER = vec3(0.6, 0.04, 0.01);
     const float unitsToMetres = 0.014;
     // Light attenuation in water
-    vec3 dayLight = vec3(lcalcDiffuse(0).r) * exp(-MU_WATER * waterDepth * unitsToMetres);
+    vec3 attenuatedSunLight = sunLightLevel * exp(-MU_WATER * waterDepth * unitsToMetres);
 
     // Sun
-    vec3 sunColor = vec3(1, 0.9, 0.8) * 6 * dayLight;
     vec3 sunDir = normalize(lcalcPosition(0));
+    vec3 sunColor = getSunColor(sunLightLevel) * attenuatedSunLight;
     light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, ao);
 
     // Sky (ambient)
-    vec3 skyColor = vec3(0.6, 0.8, 1.0) * 1.0 * dayLight;
+    vec3 skyColor = vec3(0.45, 0.6, 1.0) * 1.0 * attenuatedSunLight;
     //light += getAmbientPbr(surfNorm, camDir, skyColor, albedo, roughness, refl, metalness, ao);
     light += albedo * ao * baseRefl * skyColor * max(dot(surfNorm, -camDir), 0.5);
 

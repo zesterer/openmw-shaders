@@ -241,6 +241,7 @@ void main()
         shadowing,
         ao,
         emission * color,
+        0,
         waterDepth
     );
 #endif

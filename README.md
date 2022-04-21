@@ -21,7 +21,7 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 - Tweaking lighting
 - Underwater light attenuation
 - Leaves and other thin objects move in the wind
-- Improved leaf shading
+- Improved leaf and groundcover shading (sub-surface scattering, normal map support, etc.)
 
 ## Installing
 
