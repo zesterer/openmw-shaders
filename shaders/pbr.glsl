@@ -87,7 +87,7 @@ vec3 getAmbientPbr(
 vec3 getSunColor(float dayLight) {
     return mix(
         mix(
-            vec3(0.3, 0.5, 1.3),
+            vec3(1.5, 2.5, 6.0),
             vec3(8, 3.0, 0.3),
             clamp((dayLight - 0.3) * 10, 0, 1)
         ),
@@ -130,15 +130,15 @@ vec3 getPbr(
     const vec3 MU_WATER = vec3(0.6, 0.04, 0.01);
     const float unitsToMetres = 0.014;
     // Light attenuation in water
-    vec3 attenuatedSunLight = sunLightLevel * exp(-MU_WATER * waterDepth * unitsToMetres);
+    vec3 attenuation = sunLightLevel * exp(-MU_WATER * waterDepth * unitsToMetres);
 
     // Sun
     vec3 sunDir = normalize(lcalcPosition(0));
-    vec3 sunColor = getSunColor(sunLightLevel) * attenuatedSunLight;
+    vec3 sunColor = getSunColor(sunLightLevel) * attenuation;
     light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, ao);
 
     // Sky (ambient)
-    vec3 skyColor = vec3(0.45, 0.6, 1.0) * 1.0 * attenuatedSunLight;
+    vec3 skyColor = vec3(0.45, 0.6, 1.0) * sunLightLevel * attenuation;
     //light += getAmbientPbr(surfNorm, camDir, skyColor, albedo, roughness, refl, metalness, ao);
     light += albedo * ao * baseRefl * skyColor * max(dot(surfNorm, -camDir), 0.5);
 
