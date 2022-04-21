@@ -113,7 +113,8 @@ void main()
         ao,
         vec3(0),
         0,
-        waterDepth
+        waterDepth,
+        MAT_DEFAULT
     );
 #endif
 

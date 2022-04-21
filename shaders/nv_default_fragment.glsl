@@ -101,7 +101,8 @@ void main()
         ao,
         emission * color,
         0,
-        0
+        0,
+        MAT_DEFAULT
     );
 
     float shininess = gl_FrontMaterial.shininess;
