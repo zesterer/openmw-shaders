@@ -103,7 +103,7 @@ void main()
         shadowing,
         ao,
         vec3(0),
-        0,
+        1,
         waterDepth
     );
 #endif

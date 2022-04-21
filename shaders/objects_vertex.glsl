@@ -70,7 +70,7 @@ uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ModelViewMatrix;
 uniform sampler2D diffuseMap;
 
-varying float roughness;
+varying float leafiness;
 
 #include "vertexcolors.glsl"
 #include "shadows_vertex.glsl"
@@ -87,7 +87,7 @@ void main(void)
 
     // Waving in the wind
     modelPos = gl_Vertex;
-    roughness = 0.0;
+    leafiness = 0.0;
     #if @diffuseMap
         if (texture2D(diffuseMap, diffuseMapUV).a < 0.2 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
             //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
@@ -95,7 +95,7 @@ void main(void)
                 * 0.01
                 * gl_Vertex.z
             ;
-            roughness = 1.0;
+            leafiness = 1.0;
         }
     #endif
     gl_Position = projectionMatrix * (gl_ModelViewMatrix * modelPos);

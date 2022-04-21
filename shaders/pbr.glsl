@@ -29,6 +29,7 @@ vec3 getLightPbr(
     float metalness,
     // 1 if in light, 0 if not in light
     float isShadow,
+    float subsurface,
     float ao
 ) {
     vec3 viewDir = -camDir;
@@ -49,7 +50,7 @@ vec3 getLightPbr(
     // Geometry Function (proportion of microfacets not self-shadowed by the surface)
     float gf = geomSchlick(nDotV, roughness) * geomSchlick(nDotL, roughness);
     // Fresnel term
-    float f = fresnelSchlick(nDotV, baseRefl); // TODO: Should be hDotV?
+    float f = fresnelSchlick(hDotV, baseRefl); // TODO: Should be hDotV?
 
     // Cook-Torrance BRDF
     float specular = ndf * gf / (4 * nDotL * nDotV + 0.0001);
@@ -58,9 +59,13 @@ vec3 getLightPbr(
     float kSpec = 1 - kDiff;
     kDiff *= 1 - metalness;
 
-    vec3 brdf = kDiff * albedo * ao / PI + kSpec * specular;
+    vec3 brdf = kDiff * albedo / PI + kSpec * specular;
 
-    return radiance * lambert * brdf;
+    float occlusion = min(lambert, ao);
+
+    float subsurfaceScatter = subsurface * pow(max(dot(-lightDir, viewDir), 0), 9) * isShadow * 0.03;
+
+    return radiance * (brdf * occlusion + subsurfaceScatter);
 }
 
 vec3 getAmbientPbr(
@@ -87,11 +92,19 @@ vec3 getAmbientPbr(
 vec3 getSunColor(float dayLight) {
     return mix(
         mix(
-            vec3(1.5, 2.5, 6.0),
+            vec3(2.0, 3.0, 4.0),
             vec3(8, 3.0, 0.3),
             clamp((dayLight - 0.3) * 10, 0, 1)
         ),
         vec3(6, 5.4, 4.8),
+        pow(dayLight, 4)
+    );
+}
+
+vec3 getAmbientColor(float dayLight) {
+    return mix(
+        vec3(0.8, 1.0, 1.8),
+        vec3(0.45, 0.6, 1.0),
         pow(dayLight, 4)
     );
 }
@@ -112,7 +125,8 @@ vec3 getPbr(
     float ao,
     // Diffuse emission
     vec3 emission,
-    float subsurface_scatter,
+    // Sub-surface scattering factor
+    float subsurface,
     // Distance from water surface
     float waterDepth
 ) {
@@ -135,10 +149,10 @@ vec3 getPbr(
     // Sun
     vec3 sunDir = normalize(lcalcPosition(0));
     vec3 sunColor = getSunColor(sunLightLevel) * attenuation;
-    light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, ao);
+    light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, subsurface, ao);
 
     // Sky (ambient)
-    vec3 skyColor = vec3(0.45, 0.6, 1.0) * sunLightLevel * attenuation;
+    vec3 skyColor = getAmbientColor(sunLightLevel) * attenuation;
     //light += getAmbientPbr(surfNorm, camDir, skyColor, albedo, roughness, refl, metalness, ao);
     light += albedo * ao * baseRefl * skyColor * max(dot(surfNorm, -camDir), 0.5);
 
@@ -158,7 +172,7 @@ vec3 getPbr(
         //vec3 lightColor = lcalcDiffuse(lightIdx) * 100000 / pow(lightDist, 2);
         vec3 lightColor = lcalcDiffuse(lightIdx) * lcalcIllumination(lightIdx, lightDist) * 5;
 
-        light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1, ao);
+        light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1, subsurface, ao);
     }
 
     return light;
