@@ -12,7 +12,7 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 - **Underwater light attenuation**: objects under the water will shift towards greens and blues with depth, adding realism
 - **Leaves and other thin objects move in the wind**: unfortunately, Morrowind has no realiable way to mark leaves so detection is not always perfect
 - **Sub-surface scattering**: thin objects (like grass and leaves) will allow particularly bright direct light to scatter through them
-- **Easy to configure saturation**: if you prefer realism over bright colours, you can [tweak the shaders](#Configuration) accordingly!
+- **Easy to configure saturation**: if you prefer realism over bright colours, you can [tweak the shaders](#configuration) accordingly!
 
 ## Screenshots
 
@@ -34,7 +34,22 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 
 ## Installing
 
-See [here](https://modding-openmw.com/tips/custom-shaders/#installing) for instructions.
+*Ensure that you have the [latest development build](https://openmw.org/downloads/) of OpenMW. If you find that the mod
+does not work with the latest development build, please open an issue!*
+
+## Download
+
+1. [Download the shader pack](https://github.com/zesterer/openmw-shaders/archive/refs/heads/main.zip).
+
+2. Locate your [`resources/`](https://modding-openmw.com/tips/custom-shaders/#installing) directory.
+
+3. Copy the extracted contents of the shader pack into `resources/` (make sure to back up anything that was in there
+before doing this, should something go wrong).
+
+4. Start OpenMW and have fun!
+
+See the [OpenMW Modding Guide](https://modding-openmw.com/tips/custom-shaders/#installing) for more detailed information
+about installing custom shader packs.
 
 ## Configuration
 
