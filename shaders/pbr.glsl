@@ -182,7 +182,7 @@ vec3 getPbr(
             // The strength of a light reduces with distance
             * lcalcIllumination(lightIdx, lightDist) * 10.0
             // Make lights less powerful during the day (otherwise, they're a bit overpowering)
-            * (1.0 - sunLightLevel)
+            * max(1.0 - sunLightLevel, 0.5)
             // Final cap to make sure that lights don't abruptly cut off beyond the maximum light distance
             * min((1 - lightDist / lightMaxRadius) * 3, 1);
 
