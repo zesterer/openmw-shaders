@@ -101,7 +101,7 @@ void main()
         shadowing,
         ao,
         vec3(0),
-        1,
+        0.5,
         waterDepth,
         MAT_LEAF
     );

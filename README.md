@@ -17,11 +17,13 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 ## Features
 
 - Relatively cheap: should run well on all but the most underpowered hardware
-- PBR lighting
-- Tweaking lighting
+- PBR direct lighting
+- Improved sun light tone
+- Better ambient light computation
+- Brighter point lights
 - Underwater light attenuation
 - Leaves and other thin objects move in the wind
-- Improved leaf and groundcover shading (sub-surface scattering, normal map support, etc.)
+- Sub-surface scattering
 
 ## Installing
 

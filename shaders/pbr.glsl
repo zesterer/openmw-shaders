@@ -68,15 +68,14 @@ vec3 getLightPbr(
 
     vec3 brdf = kDiff * albedo / PI + kSpec * specular;
 
-    float subsurfaceScatter = subsurface * pow(max(glare, 0), 4) * isShadow * 0.05;
+    float subsurfaceScatter = subsurface * pow(max(glare, 0), 6) * isShadow * 0.05;
 
     float occlusion = min(ao, isShadow) * lambert;
 
-    return mix(
-        radiance * (brdf * occlusion + subsurfaceScatter),
-        radiance * (glare * 0.25 + 0.75) * albedo * ao * isShadow * 0.2,
-        mat
-    );
+    vec3 solidLight = brdf * occlusion;
+    vec3 leafLight = (glare * 0.25 + 0.75) * albedo * ao * 0.2;
+
+    return radiance * (mix(solidLight, leafLight, mat) + subsurfaceScatter);
 }
 
 vec3 getSunColor(float dayLight, float isInterior) {
