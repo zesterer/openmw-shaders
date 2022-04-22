@@ -73,7 +73,7 @@ vec3 getLightPbr(
     float occlusion = min(ao, isShadow) * lambert;
 
     vec3 solidLight = brdf * occlusion;
-    vec3 leafLight = (glare * 0.25 + 0.75) * albedo * ao * 0.2;
+    vec3 leafLight = (glare * 0.25 + 0.75) * albedo * ao * isShadow * 0.2;
 
     return radiance * (mix(solidLight, leafLight, mat) + subsurfaceScatter);
 }
