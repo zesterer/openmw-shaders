@@ -142,7 +142,7 @@ void doLighting(vec3 viewPos, vec3 viewNormal, out vec3 diffuseLight, out vec3 a
     #endif
 
 #if PER_PIXEL_LIGHTING
-    diffuseLight = diffuseOut * mix(shadowing, 1, roughness);
+    diffuseLight = diffuseOut * mix(shadowing, 1.0, roughness);
     ambientLight = ambientOut;
 #else
     shadowDiffuse = diffuseOut * shadowing;

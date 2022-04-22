@@ -63,8 +63,8 @@ vec3 getLightPbr(
     float specular = ndf * gf / (4.0 * nDotL * nDotV + 0.0001);
 
     float kDiff = roughness;
-    float kSpec = 1 - kDiff;
-    kDiff *= 1 - metalness;
+    float kSpec = 1.0 - kDiff;
+    kDiff *= 1.0 - metalness;
 
     vec3 brdf = kDiff * albedo / PI + kSpec * specular;
 
@@ -175,7 +175,7 @@ vec3 getPbr(
         //vec3 lightColor = lcalcDiffuse(lightIdx) * 100000 / pow(lightDist, 2);
         vec3 lightColor = lcalcDiffuse(lightIdx) * lcalcIllumination(lightIdx, lightDist) * 10.0 * (1.0 - sunLightLevel);
 
-        light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1, subsurface, ao, mat);
+        light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1.0, subsurface, ao, mat);
     }
 
     return light;
