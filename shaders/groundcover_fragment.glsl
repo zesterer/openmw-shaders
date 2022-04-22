@@ -103,7 +103,7 @@ void main()
         vec3(0.0),
         0.5,
         waterDepth,
-        MAT_LEAF
+        MAT_DEFAULT
     );
 #endif
 

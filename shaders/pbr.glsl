@@ -6,16 +6,19 @@ const float PI = 3.1416;
 const float INV_PI = 0.31830;
 
 float normGgx(float nDotH, float k) {
-    float denom = nDotH * nDotH * (k - 1.0) + 1.0;
+    float denom = mix(1, k, nDotH * nDotH);
     return k / (PI * denom * denom);
 }
 
 float geomSchlick(float nDotV, float k) {
-    return nDotV / (nDotV * (1.0 - k) + k);
+    return nDotV / mix(k, 1.0, nDotV);
 }
 
 float fresnelSchlick(float hDotV, float baseRefl) {
-    return baseRefl + (1.0 - baseRefl) * pow(1.0 - hDotV, 5.0);
+    // Faster form of pow(1.0 - hDotV, 4)
+    float revHDotV = 1.0 - hDotV;
+    revHDotV *= revHDotV;
+    return mix(baseRefl, 1, revHDotV * revHDotV);
 }
 
 const float MAT_DEFAULT = 0.0;
@@ -51,59 +54,61 @@ vec3 getLightPbr(
 
     float k = roughness * roughness;
     vec3 radiance = lightColor;
+    // How well-aligned the surface is with the incoming light
     float lambert = nDotL;
 
     // Normal Distribution Function (proportion of microfacets aligned with the half vector)
     float ndf = normGgx(nDotH, k);
     // Geometry Function (proportion of microfacets not self-shadowed by the surface)
     float gf = geomSchlick(nDotV, k) * geomSchlick(nDotL, k);
-    // Fresnel term
+    // Fresnel term (how close we are to a 'grazing' light ray, which approaches perfect reflection)
     float f = fresnelSchlick(hDotV, baseRefl);
-
-    // Cook-Torrance BRDF
+    // Cook-Torrance BRDF, combination of above factors
     float specular = ndf * gf / (4.0 * nDotL * nDotV + 0.0001);
 
+    // Rough surfaces are more diffuse
     float kDiff = roughness;
+    // Any light not reflected not diffused by the surface gets reflected specularly
     float kSpec = 1.0 - kDiff;
+    // Metals don't emit light diffusely
     kDiff *= 1.0 - metalness;
 
+    // The final diffuse and specular reflectance of the surface
     vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular;
 
-    float subsurfaceScatter = subsurface * pow(max(glare, 0.0), 6.0) * isShadow * 0.05;
+    // Some surfaces scatter light internally. This models that effect, but non-physically
+    float subsurfaceScatter = (subsurface == 0.0) ? 0 : (subsurface * pow(max(glare, 0.0), 6.0) * isShadow * 0.05);
 
+    // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
     float occlusion = min(ao, isShadow) * lambert;
 
     vec3 solidLight = brdf * occlusion;
-    vec3 leafLight = (glare * 0.25 + 0.75) * albedo * ao * isShadow * 0.2;
+    vec3 leafLight = (glare * 0.25 + 0.75) * albedo * ao * isShadow * 0.2; // Non-physical
 
+    // Combine reflected light and sub-surface scattering together with the incoming radiance to find the final light
+    // reflected/emitted
     return radiance * (mix(solidLight, leafLight, mat) + subsurfaceScatter);
 }
 
-vec3 getSunColor(float dayLight, float isInterior) {
-    return mix(
+vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
+    const vec3 interiorSunColor = vec3(1.0, 0.85, 0.6) * 3.0;
+    return (isInterior == 1) ? interiorSunColor : mix(
         mix(
-            mix(
-                vec3(1.0, 1.5, 2.0),
-                vec3(8.0, 3.0, 0.3),
-                clamp((dayLight - 0.3) * 10.0, 0.0, 1.0)
-            ),
-            vec3(6.0, 5.4, 4.8),
-            pow(dayLight, 4.0)
+            vec3(1.0, 1.5, 2.0),
+            vec3(8.0, 3.0, 0.3),
+            clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
         ),
-        vec3(1.0, 0.85, 0.6) * 3.0,
-        isInterior
+        vec3(6.0, 5.4, 4.8),
+        isntDusk
     );
 }
 
-vec3 getAmbientColor(float dayLight, float isInterior) {
-    return mix(
-        mix(
-            vec3(0.2, 0.25, 0.5),
-            vec3(0.45, 0.6, 1.0),
-            pow(dayLight, 4.0)
-        ),
-        vec3(1.0, 0.8, 0.5) * 0.25,
-        isInterior
+vec3 getAmbientColor(float isntDusk, float isInterior) {
+    const vec3 interiorAmbientColor = vec3(1.0, 0.8, 0.5) * 0.25;
+    return (isInterior == 1) ? interiorAmbientColor : mix(
+        vec3(0.2, 0.25, 0.5),
+        vec3(0.45, 0.6, 1.0),
+        isntDusk
     );
 }
 
@@ -138,6 +143,10 @@ vec3 getPbr(
     light += emission * 3.0 * max(dot(surfNorm, -camDir), 0.5);
 
     float sunLightLevel = lcalcDiffuse(0).r;
+    // If this seems silly, that's because it is. We use this to approximate how close we are to dusk
+    // pow(sunLightLevel, 4)
+    float isntDusk = sunLightLevel * sunLightLevel;
+    isntDusk *= isntDusk;
 
     // Extremely silly hack to determine whether we're indoors or not
     float isInterior = step(0.999, dot((osg_ViewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz, lcalcPosition(0)));
@@ -151,13 +160,13 @@ vec3 getPbr(
 
     // Sun
     vec3 sunDir = normalize(lcalcPosition(0));
-    vec3 sunColor = getSunColor(sunLightLevel, isInterior) * attenuation;
+    vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * attenuation;
     light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, subsurface, ao, mat);
 
     // Sky (ambient)
     // TODO: Better ambiance
     float ambientFresnel = mix(1.0, max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1.0 - mat);
-    vec3 skyColor = getAmbientColor(sunLightLevel, isInterior) * attenuation;
+    vec3 skyColor = getAmbientColor(isntDusk, isInterior) * attenuation;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel;
 
     for (int i = @startLight; i < @endLight; ++i) {
