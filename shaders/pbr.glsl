@@ -155,7 +155,7 @@ vec3 getPbr(
 
     // Sky (ambient)
     // TODO: Better ambiance
-    float ambientFresnel = mix(1, max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, mat);
+    float ambientFresnel = mix(1, max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1 - mat);
     vec3 skyColor = getAmbientColor(sunLightLevel, isInterior) * attenuation;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel;
 
