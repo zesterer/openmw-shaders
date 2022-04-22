@@ -95,7 +95,7 @@ void main()
     clampLightingResult(lighting);
     */
 
-    vec3 color = gl_FragData[0].rgb;
+    vec3 color = gl_FragData[0].rgb * diffuseColor.rgb;
 
     // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
     // As a result, this entire thing is an enormous hack that lets us do that!
@@ -111,7 +111,7 @@ void main()
         0.0, // metalness
         shadowing,
         ao,
-        vec3(0),
+        getEmissionColor().rgb,
         0,
         waterDepth,
         MAT_DEFAULT

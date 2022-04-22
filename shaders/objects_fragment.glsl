@@ -218,13 +218,13 @@ void main()
     clampLightingResult(lighting);
     */
 
-    vec3 emission = getEmissionColor().xyz * emissiveMult;
+    vec3 emission = getEmissionColor().rgb * emissiveMult;
 
 #if @emissiveMap
-    emission *= texture2D(emissiveMap, emissiveMapUV).xyz;
+    emission *= texture2D(emissiveMap, emissiveMapUV).rgb;
 #endif
 
-    vec3 color = gl_FragData[0].rgb;
+    vec3 color = gl_FragData[0].rgb * diffuseColor.rgb;
 
     // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
     // As a result, this entire thing is an enormous hack that lets us do that!
