@@ -36,12 +36,10 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 - Enable [per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting)
 - Disable [light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting)
 
-## Installing
+## Installation
 
 *Ensure that you have the [latest development build](https://openmw.org/downloads/) of OpenMW. If you find that the mod
 does not work with the latest development build, please open an issue!*
-
-## Download
 
 1. [Download the shader pack](https://github.com/zesterer/openmw-shaders/archive/refs/heads/main.zip).
 
