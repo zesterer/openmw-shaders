@@ -106,7 +106,7 @@ void main()
         passViewPos,
         normalize(viewNormal),
         albedo,
-        0.75, // roughness
+        0.5, // roughness
         1.0, // base reflectance
         0.0, // metalness
         shadowing,

@@ -18,8 +18,7 @@ float fresnelSchlick(float hDotV, float baseRefl) {
     return baseRefl + (1 - baseRefl) * pow(1 - hDotV, 5);
 }
 
-const int MAT_DEFAULT = 0;
-const int MAT_LEAF = 1;
+const float MAT_DEFAULT = 0;
 
 vec3 getLightPbr(
     vec3 surfNorm,
@@ -36,7 +35,7 @@ vec3 getLightPbr(
     float isShadow,
     float subsurface,
     float ao,
-    int mat
+    float mat
 ) {
     vec3 viewDir = -camDir;
 
@@ -51,10 +50,6 @@ vec3 getLightPbr(
 
     vec3 radiance = lightColor;
     float lambert = nDotL;
-
-    if (mat == MAT_LEAF) {
-        return radiance * (glare * 0.25 + 0.75) * albedo * ao * isShadow * 0.2;
-    }
 
     // Normal Distribution Function (proportion of microfacets aligned with the half vector)
     float ndf = normGgx(nDotH, roughness);
@@ -76,7 +71,11 @@ vec3 getLightPbr(
 
     float occlusion = min(ao, isShadow) * lambert;
 
-    return radiance * (brdf * occlusion + subsurfaceScatter);
+    return mix(
+        radiance * (brdf * occlusion + subsurfaceScatter),
+        radiance * (glare * 0.25 + 0.75) * albedo * ao * isShadow * 0.2,
+        mat
+    );
 }
 
 vec3 getSunColor(float dayLight, float isInterior) {
@@ -127,8 +126,8 @@ vec3 getPbr(
     float subsurface,
     // Distance from water surface
     float waterDepth,
-    // Material ID
-    int mat
+    // Leafiness?!
+    float mat
 ) {
     vec3 camDir = normalize(surfPos);
 
@@ -156,10 +155,7 @@ vec3 getPbr(
 
     // Sky (ambient)
     // TODO: Better ambiance
-    float ambientFresnel = 1;
-    if (mat != MAT_LEAF) {
-        ambientFresnel = max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5;
-    }
+    float ambientFresnel = mix(1, max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, mat);
     vec3 skyColor = getAmbientColor(sunLightLevel, isInterior) * attenuation;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel;
 

@@ -243,7 +243,7 @@ void main()
         emission * color,
         0,
         waterDepth,
-        (leafiness > 0) ? MAT_LEAF : MAT_DEFAULT
+        leafiness
     );
 #endif
 
