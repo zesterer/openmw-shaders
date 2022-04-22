@@ -2,20 +2,20 @@
 
 uniform mat4 osg_ViewMatrix;
 
-const float PI = 3.1415;
+const float PI = 3.1416;
+const float INV_PI = 0.31830;
 
-float normGgx(float nDotH, float roughness) {
-    float r2 = pow(roughness, 2.0);
-    return r2 / (PI * pow(pow(nDotH, 2.0) * (r2 - 1.0) + 1.0, 2.0));
+float normGgx(float nDotH, float k) {
+    float denom = nDotH * nDotH * (k - 1.0) + 1.0;
+    return k / (PI * denom * denom);
 }
 
-float geomSchlick(float nDotV, float roughness) {
-    float k = pow(roughness, 2.0);
+float geomSchlick(float nDotV, float k) {
     return nDotV / (nDotV * (1.0 - k) + k);
 }
 
 float fresnelSchlick(float hDotV, float baseRefl) {
-    return baseRefl + (1.0 - baseRefl) * pow(1.0 - hDotV, .0);
+    return baseRefl + (1.0 - baseRefl) * pow(1.0 - hDotV, 5.0);
 }
 
 const float MAT_DEFAULT = 0.0;
@@ -49,15 +49,16 @@ vec3 getLightPbr(
     float hDotV = max(dot(halfVec, viewDir), 0.0);
     float glare = dot(-lightDir, viewDir);
 
+    float k = roughness * roughness;
     vec3 radiance = lightColor;
     float lambert = nDotL;
 
     // Normal Distribution Function (proportion of microfacets aligned with the half vector)
-    float ndf = normGgx(nDotH, roughness);
+    float ndf = normGgx(nDotH, k);
     // Geometry Function (proportion of microfacets not self-shadowed by the surface)
-    float gf = geomSchlick(nDotV, roughness) * geomSchlick(nDotL, roughness);
+    float gf = geomSchlick(nDotV, k) * geomSchlick(nDotL, k);
     // Fresnel term
-    float f = fresnelSchlick(hDotV, baseRefl); // TODO: Should be hDotV?
+    float f = fresnelSchlick(hDotV, baseRefl);
 
     // Cook-Torrance BRDF
     float specular = ndf * gf / (4.0 * nDotL * nDotV + 0.0001);
@@ -66,7 +67,7 @@ vec3 getLightPbr(
     float kSpec = 1.0 - kDiff;
     kDiff *= 1.0 - metalness;
 
-    vec3 brdf = kDiff * albedo / PI + kSpec * specular;
+    vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular;
 
     float subsurfaceScatter = subsurface * pow(max(glare, 0.0), 6.0) * isShadow * 0.05;
 
@@ -170,10 +171,20 @@ vec3 getPbr(
 
         vec3 lightDelta = lcalcPosition(lightIdx) - surfPos;
         float lightDist = length(lightDelta);
+        float lightMaxRadius = lcalcRadius(lightIdx) * 3.0;
+
+        // Skip this light if it's too far away
+        if (lightDist > lightMaxRadius) { continue; }
+
         vec3 lightDir = lightDelta / lightDist;
 
-        //vec3 lightColor = lcalcDiffuse(lightIdx) * 100000 / pow(lightDist, 2);
-        vec3 lightColor = lcalcDiffuse(lightIdx) * lcalcIllumination(lightIdx, lightDist) * 10.0 * (1.0 - sunLightLevel);
+        vec3 lightColor = lcalcDiffuse(lightIdx)
+            // The strength of a light reduces with distance
+            * lcalcIllumination(lightIdx, lightDist) * 10.0
+            // Make lights less powerful during the day (otherwise, they're a bit overpowering)
+            * (1.0 - sunLightLevel)
+            // Final cap to make sure that lights don't abruptly cut off beyond the maximum light distance
+            * min((1 - lightDist / lightMaxRadius) * 3, 1);
 
         light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1.0, subsurface, ao, mat);
     }
