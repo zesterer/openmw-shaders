@@ -72,7 +72,7 @@ vec3 getLightPbr(
 
     vec3 brdf = kDiff * albedo / PI + kSpec * specular;
 
-    float subsurfaceScatter = subsurface * pow(max(glare, 0), 9) * isShadow * 0.03;
+    float subsurfaceScatter = subsurface * pow(max(glare, 0), 4) * isShadow * 0.05;
 
     float occlusion = min(ao, isShadow) * lambert;
 
