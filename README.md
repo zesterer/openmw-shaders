@@ -16,14 +16,18 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 
 ## Screenshots
 
-![Early morning in the grasslands north-east of Vivec](https://i.imgur.com/Vi7RIiM.png)
-![Dusk from the cantons of Vivec](https://i.imgur.com/CGpw7mC.png)
-![A night with the guars outside Vivec](https://i.imgur.com/eZNMSha.png)
-![A mid-afternoon view of Vivec, looking south](https://i.imgur.com/01WujVO.png)
-![Vivec's waistworks](https://i.imgur.com/6v5QQf9.png)
-![Midnight in Balmora](https://i.imgur.com/cJ94PHK.png)
-![Dawn breaks in Balmora](https://i.imgur.com/Ypxz3oj.png)
-![Light attenuation in water](https://i.imgur.com/WeZGIGe.png)
+![Early morning in the grasslands east of Vivec](https://i.imgur.com/09AvjA6.png)
+
+<details>
+    <summary>More screenshots</summary>
+    <img src="https://i.imgur.com/CGpw7mC.png" alt="Dusk from the cantons of Vivec">
+    <img src="https://i.imgur.com/eZNMSha.png" alt="A night with the guars outside Vivec">
+    <img src="https://i.imgur.com/01WujVO.png" alt="A mid-afternoon view of Vivec, looking south">
+    <img src="https://i.imgur.com/6v5QQf9.png" alt="Vivec's waistworks">
+    <img src="https://i.imgur.com/cJ94PHK.png" alt="Midnight in Balmora">
+    <img src="https://i.imgur.com/Ypxz3oj.png" alt="Dawn breaks in Balmora">
+    <img src="https://i.imgur.com/WeZGIGe.png" alt="Light attenuation in water">
+</details>
 
 ## Recommendations
 
