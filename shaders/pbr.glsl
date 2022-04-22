@@ -6,7 +6,7 @@ const float PI = 3.1416;
 const float INV_PI = 0.31830;
 
 float normGgx(float nDotH, float k) {
-    float denom = mix(1, k, nDotH * nDotH);
+    float denom = mix(1.0, k, nDotH * nDotH);
     return k / (PI * denom * denom);
 }
 
@@ -18,7 +18,7 @@ float fresnelSchlick(float hDotV, float baseRefl) {
     // Faster form of pow(1.0 - hDotV, 4)
     float revHDotV = 1.0 - hDotV;
     revHDotV *= revHDotV;
-    return mix(baseRefl, 1, revHDotV * revHDotV);
+    return mix(baseRefl, 1.0, revHDotV * revHDotV);
 }
 
 const float MAT_DEFAULT = 0.0;
@@ -77,7 +77,7 @@ vec3 getLightPbr(
     vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular;
 
     // Some surfaces scatter light internally. This models that effect, but non-physically
-    float subsurfaceScatter = (subsurface == 0.0) ? 0 : (subsurface * pow(max(glare, 0.0), 6.0) * isShadow * 0.05);
+    vec3 subsurfaceScatter = (subsurface == 0.0) ? vec3(0.0) : (albedo * subsurface * pow(max(glare, 0.0), 6.0) * isShadow * 0.1);
 
     // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
     float occlusion = min(ao, isShadow) * lambert;
@@ -92,7 +92,7 @@ vec3 getLightPbr(
 
 vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
     const vec3 interiorSunColor = vec3(1.0, 0.85, 0.6) * 3.0;
-    return (isInterior == 1) ? interiorSunColor : mix(
+    return (isInterior == 1.0) ? interiorSunColor : mix(
         mix(
             vec3(1.0, 1.5, 2.0),
             vec3(8.0, 3.0, 0.3),
@@ -105,7 +105,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
 
 vec3 getAmbientColor(float isntDusk, float isInterior) {
     const vec3 interiorAmbientColor = vec3(1.0, 0.8, 0.5) * 0.25;
-    return (isInterior == 1) ? interiorAmbientColor : mix(
+    return (isInterior == 1.0) ? interiorAmbientColor : mix(
         vec3(0.2, 0.25, 0.5),
         vec3(0.45, 0.6, 1.0),
         isntDusk
@@ -193,7 +193,7 @@ vec3 getPbr(
             // Make lights less powerful during the day (otherwise, they're a bit overpowering)
             * max(1.0 - sunLightLevel, 0.5)
             // Final cap to make sure that lights don't abruptly cut off beyond the maximum light distance
-            * min((1 - lightDist / lightMaxRadius) * 3, 1);
+            * min((1.0 - lightDist / lightMaxRadius) * 3.0, 1.0);
 
         light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1.0, subsurface, ao, mat);
     }
