@@ -177,7 +177,7 @@ vec3 getPbr(
         vec3 lightDir = lightDelta / lightDist;
 
         //vec3 lightColor = lcalcDiffuse(lightIdx) * 100000 / pow(lightDist, 2);
-        vec3 lightColor = lcalcDiffuse(lightIdx) * lcalcIllumination(lightIdx, lightDist) * 8;
+        vec3 lightColor = lcalcDiffuse(lightIdx) * lcalcIllumination(lightIdx, lightDist) * 10 * (1 - sunLightLevel);
 
         light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1, subsurface, ao, mat);
     }
