@@ -19,6 +19,7 @@ float fresnelSchlick(float hDotV, float baseRefl) {
 }
 
 const float MAT_DEFAULT = 0;
+const float MAT_LEAF = 1;
 
 vec3 getLightPbr(
     vec3 surfNorm,
