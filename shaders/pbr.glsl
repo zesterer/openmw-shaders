@@ -181,3 +181,16 @@ vec3 getPbr(
 
     return light;
 }
+
+// We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
+// As a result, this entire thing is an enormous hack that lets us do that!
+void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
+    // Change this to alter the saturation of albedo. Recommended values
+    // 0.8 => Very desaturated (looks like Morrowind is in the UK)
+    // 1.0 => Mildly desaturated (most realistic)
+    // 1.5 => Bright, fun colours (I prefer this one)
+    // 2.0 => Oh my god, my eyes
+    const float saturation = 1.5;
+    albedo = clamp(pow(normalize(color), vec3(saturation)) * mix(saturation, 1.5, 0.5) - 0.25, vec3(0), vec3(1));
+    ao = min(length(color), 1);
+}

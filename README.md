@@ -27,4 +27,8 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 
 See [here](https://modding-openmw.com/tips/custom-shaders/#installing) for instructions.
 
+## Configuration
+
+- You can change the `const float saturation = ...` line in `pbr.glsl` to change the appearance of in-game colours
+
 *TODO: More detail*

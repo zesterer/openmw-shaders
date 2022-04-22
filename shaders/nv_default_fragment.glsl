@@ -85,10 +85,8 @@ void main()
 
     vec3 color = gl_FragData[0].rgb;
 
-    // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
-    // As a result, this entire thing is an enormous hack that lets us do that!
-    vec3 albedo = clamp(pow(normalize(color), vec3(1.5)) * 1.5 - 0.25, vec3(0), vec3(1));
-    float ao = min(length(color), 1);
+    vec3 albedo; float ao;
+    colorToPbr(color, albedo, ao);
 
     gl_FragData[0].xyz = getPbr(
         passViewPos,
