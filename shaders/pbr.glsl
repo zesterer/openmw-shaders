@@ -5,21 +5,21 @@ uniform mat4 osg_ViewMatrix;
 const float PI = 3.1415;
 
 float normGgx(float nDotH, float roughness) {
-    float r2 = pow(roughness, 2);
-    return r2 / (PI * pow(pow(nDotH, 2) * (r2 - 1) + 1, 2));
+    float r2 = pow(roughness, 2.0);
+    return r2 / (PI * pow(pow(nDotH, 2.0) * (r2 - 1.0) + 1.0, 2.0));
 }
 
 float geomSchlick(float nDotV, float roughness) {
-    float k = pow(roughness, 2);
-    return nDotV / (nDotV * (1 - k) + k);
+    float k = pow(roughness, 2.0);
+    return nDotV / (nDotV * (1.0 - k) + k);
 }
 
 float fresnelSchlick(float hDotV, float baseRefl) {
-    return baseRefl + (1 - baseRefl) * pow(1 - hDotV, 5);
+    return baseRefl + (1.0 - baseRefl) * pow(1.0 - hDotV, .0);
 }
 
-const float MAT_DEFAULT = 0;
-const float MAT_LEAF = 1;
+const float MAT_DEFAULT = 0.0;
+const float MAT_LEAF = 1.0;
 
 vec3 getLightPbr(
     vec3 surfNorm,
@@ -42,11 +42,11 @@ vec3 getLightPbr(
 
     vec3 halfVec = normalize(lightDir + viewDir);
 
-    float nDotV = max(dot(surfNorm, viewDir), 0);
-    float nDotL = max(dot(surfNorm, lightDir), 0);
+    float nDotV = max(dot(surfNorm, viewDir), 0.0);
+    float nDotL = max(dot(surfNorm, lightDir), 0.0);
 
-    float nDotH = max(dot(surfNorm, halfVec), 0);
-    float hDotV = max(dot(halfVec, viewDir), 0);
+    float nDotH = max(dot(surfNorm, halfVec), 0.0);
+    float hDotV = max(dot(halfVec, viewDir), 0.0);
     float glare = dot(-lightDir, viewDir);
 
     vec3 radiance = lightColor;
@@ -60,7 +60,7 @@ vec3 getLightPbr(
     float f = fresnelSchlick(hDotV, baseRefl); // TODO: Should be hDotV?
 
     // Cook-Torrance BRDF
-    float specular = ndf * gf / (4 * nDotL * nDotV + 0.0001);
+    float specular = ndf * gf / (4.0 * nDotL * nDotV + 0.0001);
 
     float kDiff = roughness;
     float kSpec = 1 - kDiff;
@@ -68,7 +68,7 @@ vec3 getLightPbr(
 
     vec3 brdf = kDiff * albedo / PI + kSpec * specular;
 
-    float subsurfaceScatter = subsurface * pow(max(glare, 0), 6) * isShadow * 0.05;
+    float subsurfaceScatter = subsurface * pow(max(glare, 0.0), 6.0) * isShadow * 0.05;
 
     float occlusion = min(ao, isShadow) * lambert;
 
@@ -83,13 +83,13 @@ vec3 getSunColor(float dayLight, float isInterior) {
         mix(
             mix(
                 vec3(1.0, 1.5, 2.0),
-                vec3(8, 3.0, 0.3),
-                clamp((dayLight - 0.3) * 10, 0, 1)
+                vec3(8.0, 3.0, 0.3),
+                clamp((dayLight - 0.3) * 10.0, 0.0, 1.0)
             ),
-            vec3(6, 5.4, 4.8),
-            pow(dayLight, 4)
+            vec3(6.0, 5.4, 4.8),
+            pow(dayLight, 4.0)
         ),
-        vec3(1, 0.85, 0.6) * 3,
+        vec3(1.0, 0.85, 0.6) * 3.0,
         isInterior
     );
 }
@@ -99,9 +99,9 @@ vec3 getAmbientColor(float dayLight, float isInterior) {
         mix(
             vec3(0.2, 0.25, 0.5),
             vec3(0.45, 0.6, 1.0),
-            pow(dayLight, 4)
+            pow(dayLight, 4.0)
         ),
-        vec3(1, 0.8, 0.5) * 0.25,
+        vec3(1.0, 0.8, 0.5) * 0.25,
         isInterior
     );
 }
@@ -131,15 +131,15 @@ vec3 getPbr(
 ) {
     vec3 camDir = normalize(surfPos);
 
-    vec3 light = vec3(0);
+    vec3 light = vec3(0.0);
 
     // Emissive light, eminating from the object itself
-    light += emission * 3 * max(dot(surfNorm, -camDir), 0.5);
+    light += emission * 3.0 * max(dot(surfNorm, -camDir), 0.5);
 
     float sunLightLevel = lcalcDiffuse(0).r;
 
     // Extremely silly hack to determine whether we're indoors or not
-    float isInterior = step(0.999, dot((osg_ViewMatrix * vec4(0, 0, 1, 0)).xyz, lcalcPosition(0)));
+    float isInterior = step(0.999, dot((osg_ViewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz, lcalcPosition(0)));
 
     // Linear RGB, attenuation coefficients for water at roughly R, G, B wavelengths.
     // See https://en.wikipedia.org/wiki/Electromagnetic_absorption_by_water
@@ -155,7 +155,7 @@ vec3 getPbr(
 
     // Sky (ambient)
     // TODO: Better ambiance
-    float ambientFresnel = mix(1, max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1 - mat);
+    float ambientFresnel = mix(1.0, max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1.0 - mat);
     vec3 skyColor = getAmbientColor(sunLightLevel, isInterior) * attenuation;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel;
 
@@ -173,7 +173,7 @@ vec3 getPbr(
         vec3 lightDir = lightDelta / lightDist;
 
         //vec3 lightColor = lcalcDiffuse(lightIdx) * 100000 / pow(lightDist, 2);
-        vec3 lightColor = lcalcDiffuse(lightIdx) * lcalcIllumination(lightIdx, lightDist) * 10 * (1 - sunLightLevel);
+        vec3 lightColor = lcalcDiffuse(lightIdx) * lcalcIllumination(lightIdx, lightDist) * 10.0 * (1.0 - sunLightLevel);
 
         light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1, subsurface, ao, mat);
     }
@@ -190,6 +190,6 @@ void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
     // 1.5 => Bright, fun colours (I prefer this one)
     // 2.0 => Oh my god, my eyes
     const float saturation = 1.5;
-    albedo = clamp(pow(normalize(color), vec3(saturation)) * mix(saturation, 1.5, 0.5) - 0.25, vec3(0), vec3(1));
-    ao = min(length(color), 1);
+    albedo = clamp(pow(normalize(color), vec3(saturation)) * mix(saturation, 1.5, 0.5) - 0.25, vec3(0.0), vec3(1.0));
+    ao = min(length(color), 1.0);
 }

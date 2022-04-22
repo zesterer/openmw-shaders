@@ -89,7 +89,7 @@ void main(void)
     modelPos = gl_Vertex;
     leafiness = 0.0;
     #if @diffuseMap
-        if (texture2D(diffuseMap, diffuseMapUV).a < 0.2 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
+        if (texture2D(diffuseMap, diffuseMapUV).a < 0.2 && dot(gl_FrontMaterial.emission.rgb, vec3(1.0)) == 0.0) {
             //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
             modelPos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
                 * 0.01

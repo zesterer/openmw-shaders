@@ -100,7 +100,7 @@ void main()
         0.0, // metalness
         shadowing,
         ao,
-        vec3(0),
+        vec3(0.0),
         0.5,
         waterDepth,
         MAT_LEAF

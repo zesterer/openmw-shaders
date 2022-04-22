@@ -146,7 +146,7 @@ void main()
     vec3 wPos = ((osg_ViewMatrixInverse * gl_ModelViewMatrix) * vec4(modelPos.xyz, 1)).xyz;
     // Hack to avoid reflections appearing as if they are underwater
     // TODO: Enable this?
-    float wFlip = 1;//sign(((gl_ModelViewMatrixInverse * osg_ViewMatrix) * vec4(vec3(0, 0, 1), 0)).z);
+    float wFlip = 1.0;//sign(((gl_ModelViewMatrixInverse * osg_ViewMatrix) * vec4(vec3(0, 0, 1), 0)).z);
     float waterDepth = max(-wPos.z * wFlip, 0);
 
 #if @darkMap
@@ -233,7 +233,7 @@ void main()
         passViewPos,
         normalize(viewNormal),
         albedo,
-        mix(0.8, 0.6, shininess / 255), // roughness
+        mix(0.8, 0.6, shininess / 255.0), // roughness
         1.0, // base reflectance
         0.0, // metalness
         shadowing,

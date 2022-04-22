@@ -3,14 +3,14 @@
 float getFresnelSpecular(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
     const float lift = 0.0;
     return (0.0
-        + max((dot(viewDir, reflect(lightDir, viewNormal)) + lift) / (1 + lift), 0)
+        + max((dot(viewDir, reflect(lightDir, viewNormal)) + lift) / (1.0 + lift), .0)
     ) * 1.75;
 }
 
 float getFresnelDiffuse(vec3 viewDir, vec3 viewNormal, vec3 lightDir) {
     const float lift = 0.0;
     return (0.0
-        + max((dot(-viewDir, viewNormal) + lift) / (1 + lift), 0)
+        + max((dot(-viewDir, viewNormal) + lift) / (1.0 + lift), 0.0)
     ) * 1.75;
 }
 
@@ -27,10 +27,10 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     // Leaves
     if (roughness > 0.5) {
         //viewNormal = viewDir;
-        lambert = max(0, dot(viewDir, -lightDir) * 0.5 + 0.5) * shadowing;
+        lambert = max(0.0, dot(viewDir, -lightDir) * 0.5 + 0.5) * shadowing;
         #ifdef GROUNDCOVER
             // Hacky
-            lambert = (lambert + pow(max(0, (dot(viewDir, lightDir) * 0.5 + 0.5)), 3) * shadowing * 0.75) * 0.5;
+            lambert = (lambert + pow(max(0.0, (dot(viewDir, lightDir) * 0.5 + 0.5)), 3.0) * shadowing * 0.75) * 0.5;
         #endif
         // Sub-surface scattering
         //if (dot(viewNormal, lightDir) < 0 /*isBack*/) { // TODO: Make this work for front faces too!
@@ -41,8 +41,8 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     }
     #endif
 
-    float fresnelSpecular = 1;
-    float fresnelDiffuse = 1;
+    float fresnelSpecular = 1.0;
+    float fresnelDiffuse = 1.0;
 
 #ifndef GROUNDCOVER
     lambert = max(lambert, 0.0);
@@ -63,11 +63,11 @@ void perLightSun(out vec3 diffuseOut, out vec3 ambientOut, vec3 viewPos, vec3 vi
     vec3 indirect_light = gl_LightModel.ambient.xyz * vec3(0.7, 0.85, 1.1) / intensity;
 
     diffuseOut = mix(
-        mix(fresnelSpecular, 1, max(0.35, roughness)) * pow(lambert, 0.5),
+        mix(fresnelSpecular, 1.0, max(0.35, roughness)) * pow(lambert, 0.5),
         lambert,
     0.5) * direct_light;
 //#ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
-    ambientOut = indirect_light * mix(fresnelDiffuse, 1, max(0.0, roughness));
+    ambientOut = indirect_light * mix(fresnelDiffuse, 1.0, max(0.0, roughness));
 //#endif
 }
 
@@ -94,8 +94,8 @@ void perLightPoint(out vec3 diffuseOut, out vec3 ambientOut, int lightIndex, vec
     float illumination = lcalcIllumination(lightIndex, lightDistance);
     ambientOut = lcalcAmbient(lightIndex) * illumination;
     float lambert = dot(viewNormal.xyz, lightPos);
-    float fresnelSpecular = 1;
-    float fresnelDiffuse = 1;
+    float fresnelSpecular = 1.0;
+    float fresnelDiffuse = 1.0;
 
 #ifndef GROUNDCOVER
     lambert = max(lambert, 0.0);
@@ -111,15 +111,15 @@ void perLightPoint(out vec3 diffuseOut, out vec3 ambientOut, int lightIndex, vec
     lambert *= clamp(-8.0 * (1.0 - 0.3) * eyeCosine + 1.0, 0.3, 1.0);
 #endif
 
-    vec3 directLight = illumination * lcalcDiffuse(lightIndex) * 4.5 / (vec3(1) + lcalcDiffuse(0).r * 2.5);
+    vec3 directLight = illumination * lcalcDiffuse(lightIndex) * 4.5 / (vec3(1.0) + lcalcDiffuse(0).r * 2.5);
     vec3 indirectLight = directLight * 0.5;
 
     diffuseOut = mix(
-        mix(fresnelSpecular, 1, max(0.5, roughness)) * pow(lambert, 0.5),
+        mix(fresnelSpecular, 1.0, max(0.5, roughness)) * pow(lambert, 0.5),
         lambert,
     0.5) * directLight;
 //#ifndef GROUNDCOVER // TODO: Make groundcover behave correctly with ambiance
-    ambientOut = indirectLight * gl_LightModel.ambient.xyz * mix(fresnelDiffuse, 1, max(0.0, roughness));
+    ambientOut = indirectLight * gl_LightModel.ambient.xyz * mix(fresnelDiffuse, 1.0, max(0.0, roughness));
 //#endif
 }
 
@@ -132,8 +132,8 @@ void doLighting(vec3 viewPos, vec3 viewNormal, out vec3 diffuseLight, out vec3 a
     vec3 ambientOut, diffuseOut;
 
 #if !PER_PIXEL_LIGHTING
-    float roughness = 0;
-    float shadowing = 1;
+    float roughness = 0.0;
+    float shadowing = 1.0;
     bool isBack = false;
 #endif
 
@@ -164,7 +164,7 @@ void doLighting(vec3 viewPos, vec3 viewNormal, out vec3 diffuseLight, out vec3 a
 
 vec3 getSpecular(vec3 viewNormal, vec3 viewDirection, float shininess, vec3 matSpec)
 {
-    return vec3(0); // TODO: Use specularity
+    return vec3(0.0); // TODO: Use specularity
     vec3 lightDir = normalize(lcalcPosition(0));
     float NdotL = dot(viewNormal, lightDir);
     if (NdotL <= 0.0)

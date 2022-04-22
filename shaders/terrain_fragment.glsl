@@ -110,7 +110,7 @@ void main()
         shadowing,
         ao,
         getEmissionColor().rgb,
-        0,
+        0.0,
         waterDepth,
         MAT_DEFAULT
     );
