@@ -9,6 +9,7 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 ![Vivec's waistworks](https://i.imgur.com/6v5QQf9.png)
 ![Midnight in Balmora](https://i.imgur.com/cJ94PHK.png)
 ![Dawn breaks in Balmora](https://i.imgur.com/Ypxz3oj.png)
+![Light attenuation in water](https://i.imgur.com/WeZGIGe.png)
 
 ## Recommendations
 
@@ -19,15 +20,15 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 
 ## Features
 
-- Relatively cheap: should run well on all but the most underpowered hardware
-- PBR direct lighting
-- Improved sun light tone
-- Better ambient light computation
-- Brighter point lights
-- Underwater light attenuation
-- Leaves and other thin objects move in the wind
-- Sub-surface scattering
-- Easy to configure saturation (for those that prefer realism)
+- **Relatively cheap**: in most of my (very unscientific) tests, only a ~12% framerate hit compared to the vanilla OpenMW shaders
+- **PBR (Physically-Based Rendering) lighting**: surfaces reflect light consistently and realistically
+- **Improved sun light colours**: dawn/dust is red, midday is yellow, night is blue
+- **Better ambient illumination**: ambient light is based on omnidirectional scattered light from the sky, not the sun directly
+- **Brighter point lights**: lights in the scene emit more light, illuminating the world in a more immersive manner
+- **Underwater light attenuation**: objects under the water will shift towards greens and blues with depth, adding realism
+- **Leaves and other thin objects move in the wind**: unfortunately, Morrowind has no realiable way to mark leaves so detection is not always perfect
+- **Sub-surface scattering**: thin objects (like grass and leaves) will allow particularly bright direct light to scatter through them
+- **Easy to configure saturation**: if you prefer realism over bright colours, you can [tweak the shaders](#Configuration) accordingly!
 
 ## Installing
 
