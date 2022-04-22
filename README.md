@@ -2,10 +2,13 @@
 
 Play Morrowind with PBR shaders like it's 2022, not 2002.
 
-[![A warrior and a guar](https://i.imgur.com/YoKDhJc.png)](https://i.imgur.com/YoKDhJc.png)
-[![Light attenuation in water](https://i.imgur.com/2CvUPkp.png)](https://i.imgur.com/2CvUPkp.png)
-[![Night in Balmora](https://i.imgur.com/1XX2RVG.png)](https://i.imgur.com/1XX2RVG.png)
-[![The early morning sun reflects off the flagstones of Balmora's canal](https://i.imgur.com/UYHzEDP.png)](https://i.imgur.com/UYHzEDP.png)
+![Early morning in the grasslands north-east of Vivec](https://i.imgur.com/Vi7RIiM.png)
+![Dusk from the cantons of Vivec](https://i.imgur.com/CGpw7mC.png)
+![A night with the guars outside Vivec](https://i.imgur.com/eZNMSha.png)
+![A mid-afternoon view of Vivec, looking south](https://i.imgur.com/01WujVO.png)
+![Vivec's waistworks](https://i.imgur.com/6v5QQf9.png)
+![Midnight in Balmora](https://i.imgur.com/cJ94PHK.png)
+![Dawn breaks in Balmora](https://i.imgur.com/Ypxz3oj.png)
 
 ## Recommendations
 
@@ -24,6 +27,7 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 - Underwater light attenuation
 - Leaves and other thin objects move in the wind
 - Sub-surface scattering
+- Easy to configure saturation (for those that prefer realism)
 
 ## Installing
 
