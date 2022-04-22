@@ -102,7 +102,7 @@ void main()
 
     gl_FragData[0].xyz = getPbr(
         passViewPos,
-        normalize(viewNormal),
+        viewNormal,
         albedo,
         0.55, // roughness
         1.0, // base reflectance

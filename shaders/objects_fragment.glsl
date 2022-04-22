@@ -233,7 +233,7 @@ void main()
         passViewPos,
         normalize(viewNormal),
         albedo,
-        mix(0.8, 0.6, shininess / 255.0), // roughness
+        mix(0.8, 0.6, shininess * 0.0039), // roughness
         1.0, // base reflectance
         0.0, // metalness
         shadowing,
@@ -255,7 +255,7 @@ void main()
 #if (!@normalMap && !@parallax && !@forcePPL)
         vec3 viewNormal = gl_NormalMatrix * normalize(passNormal);
 #endif
-        gl_FragData[0].xyz += getSpecular(normalize(viewNormal), normalize(passViewPos.xyz), shininess, matSpec) * shadowing;
+        gl_FragData[0].xyz += getSpecular(viewNormal, normalize(passViewPos.xyz), shininess, matSpec) * shadowing;
     }
 #if @radialFog
     float depth;

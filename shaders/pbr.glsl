@@ -139,9 +139,10 @@ vec3 getPbr(
 
     vec3 light = vec3(0.0);
 
-    // Emissive light, eminating from the object itself
+    // Emissive light, eminating from the object itself (non-physical)
     light += emission * 3.0 * max(dot(surfNorm, -camDir), 0.5);
 
+    vec3 sunPos = lcalcPosition(0);
     float sunLightLevel = lcalcDiffuse(0).r;
     // If this seems silly, that's because it is. We use this to approximate how close we are to dusk
     // pow(sunLightLevel, 4)
@@ -149,19 +150,18 @@ vec3 getPbr(
     isntDusk *= isntDusk;
 
     // Extremely silly hack to determine whether we're indoors or not
-    float isInterior = step(0.999, dot((osg_ViewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz, lcalcPosition(0)));
+    float isInterior = step(0.999, dot((osg_ViewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz, sunPos));
 
     // Linear RGB, attenuation coefficients for water at roughly R, G, B wavelengths.
     // See https://en.wikipedia.org/wiki/Electromagnetic_absorption_by_water
     const vec3 MU_WATER = vec3(0.6, 0.04, 0.01);
     const float unitsToMetres = 0.014;
     // Light attenuation in water
-    vec3 attenuation = mix(exp(-MU_WATER * waterDepth * unitsToMetres), vec3(1), isInterior);
+    vec3 attenuation = (waterDepth == 0.0 || isInterior == 1.0) ? vec3(1.0) : exp(-MU_WATER * waterDepth * unitsToMetres);
 
-    // Sun
-    vec3 sunDir = normalize(lcalcPosition(0));
+    // Direct sunlight
     vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * attenuation;
-    light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, subsurface, ao, mat);
+    light += getLightPbr(surfNorm, camDir, normalize(sunPos), sunColor, albedo, roughness, baseRefl, metalness, sunShadow, subsurface, ao, mat);
 
     // Sky (ambient)
     // TODO: Better ambiance
