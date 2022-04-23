@@ -2,10 +2,11 @@
 
 // Change this to alter the saturation of albedo (i.e: base color).
 // Recommended values:
-// 1.0 => Very desaturated (looks like Morrowind is in the UK)
-// 1.5 => Mildly desaturated (most realistic, close to the original game)
+// 0.8 => Very desaturated (looks like Vvardenfell is in the UK)
+// 1.0 => Desaturated (close to the original vanilla colors of Morrowind)
+// 1.5 => Mildly desaturated (most realistic)
 // 2.5 => Bright, fun colours (I prefer this)
-// 3.5 => Oversaturated (color where there shouldn't be color)
+// 3.5 => Oversaturated (more Alice in Wonderland than Morrowind)
 const float saturation_factor = 2.5;
 
 // Normal map mods for Morrowind can often be very extreme and may need toning down.

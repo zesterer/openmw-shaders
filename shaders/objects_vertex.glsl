@@ -164,6 +164,11 @@ void main(void)
 #endif
 
 #if (@shadows_enabled)
-    setupShadowCoords(viewPos, viewNormal);
+    // This is an extremely silly hack. A lot of tree models 'lie' about their normal, and this result in very bizarre
+    // shadows because shadow-mapping relies on the normal actually pertaining to the real position of the polygon. To
+    // resolve this, and because we really don't care about the exact normal of leaves, we force the shadows to believe
+    // that the normal is pointing towards the sun, thereby ensuring correct shadow casting. We *only* do this if the
+    // vertex is part of a leaf.
+    setupShadowCoords(viewPos, (leafiness > 0.0) ? -lcalcPosition(0) : viewNormal);
 #endif
 }
