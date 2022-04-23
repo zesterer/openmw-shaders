@@ -23,6 +23,8 @@ uniform sampler2D blendMap;
 varying float euclideanDepth;
 varying float linearDepth;
 
+uniform mat4 osg_ViewMatrixInverse;
+
 #define PER_PIXEL_LIGHTING (@normalMap || @forcePPL)
 
 #if !PER_PIXEL_LIGHTING
@@ -113,6 +115,7 @@ void main()
     colorToPbr(color, albedo, ao);
 
     gl_FragData[0].xyz = getPbr(
+        osg_ViewMatrixInverse,
         passViewPos,
         viewNormal,
         albedo,

@@ -98,7 +98,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
     return (isInterior == 1.0) ? interiorSunColor : mix(
         mix(
             vec3(1.5, 2.7, 3.5),
-            vec3(12.0, 4.5, 0.5),
+            vec3(8.0, 6.0, 2.0),
             clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
         ),
         vec3(9.0, 8.0, 7.2),
@@ -116,6 +116,7 @@ vec3 getAmbientColor(float isntDusk, float isInterior) {
 }
 
 vec3 getPbr(
+    mat4 osg_ViewMatrixInverse,
     vec3 surfPos,
     vec3 surfNorm,
     // Base reflectance of the material
@@ -150,8 +151,8 @@ vec3 getPbr(
     float sunLightLevel = lcalcDiffuse(0).r;
     // If this seems silly, that's because it is. We use this to approximate how close we are to dusk
     // pow(sunLightLevel, 4)
-    float isntDusk = sunLightLevel * sunLightLevel;
-    isntDusk *= isntDusk;
+    vec3 sunWDir = (osg_ViewMatrixInverse * vec4(sunDir, 0.0)).xyz;
+    float isntDusk = min(max(sunWDir.z, 0.0), pow(lcalcDiffuse(0).r, 2.0));
 
     // Extremely silly hack to determine whether we're indoors or not
     float isInterior = step(0.999, dot((osg_ViewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz, sunPos));

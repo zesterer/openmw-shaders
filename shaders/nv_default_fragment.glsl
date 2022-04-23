@@ -33,6 +33,8 @@ varying float linearDepth;
 varying vec3 passViewPos;
 varying vec3 passNormal;
 
+uniform mat4 osg_ViewMatrixInverse;
+
 #include "vertexcolors.glsl"
 #include "shadows_fragment.glsl"
 #include "lighting.glsl"
@@ -89,6 +91,7 @@ void main()
     colorToPbr(color, albedo, ao);
 
     gl_FragData[0].xyz = getPbr(
+        osg_ViewMatrixInverse,
         passViewPos,
         normalize(viewNormal),
         albedo,

@@ -92,6 +92,7 @@ void main()
     colorToPbr(color, albedo, ao);
 
     gl_FragData[0].xyz = getPbr(
+        osg_ViewMatrixInverse,
         passViewPos,
         viewNormal,
         albedo,
