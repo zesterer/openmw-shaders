@@ -209,7 +209,7 @@ void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
     // 1.0 => Mildly desaturated (most realistic)
     // 1.5 => Bright, fun colours (I prefer this one)
     // 2.0 => Oh my god, my eyes
-    const float saturation = 1.5;
+    const float saturation = 1.25;
     albedo = clamp(pow(normalize(color), vec3(saturation)) * mix(saturation, 1.5, 0.5) - 0.25, vec3(0.0), vec3(1.0));
     ao = min(length(color), 1.0);
 }

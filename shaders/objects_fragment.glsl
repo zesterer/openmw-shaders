@@ -193,7 +193,8 @@ void main()
 #if @preLightEnv
     gl_FragData[0].xyz += envEffect;
 #endif
-
+#else
+    vec3 envEffect = vec3(0);
 #endif
 
 #if @specularMap
@@ -233,9 +234,9 @@ void main()
         passViewPos,
         normalize(viewNormal),
         albedo,
-        mix(0.8, 0.6, shininess * 0.0039), // roughness
+        mix(0.9, 0.4, matSpec.x), // roughness
         1.0, // base reflectance
-        0.0, // metalness
+        1.0 - shininess * 0.0039, // metalness
         shadowing,
         ao,
         emission * color,
@@ -243,12 +244,13 @@ void main()
         waterDepth,
         leafiness
     );
+    //gl_FragData[0].xyz = matSpec;
 #endif
 
 #if @envMap && !@preLightEnv
     gl_FragData[0].xyz += envEffect;
 #endif
-
+/*
     matSpec *= specStrength;
     if (matSpec != vec3(0.0))
     {
@@ -257,6 +259,7 @@ void main()
 #endif
         gl_FragData[0].xyz += getSpecular(viewNormal, normalize(passViewPos.xyz), shininess, matSpec) * shadowing;
     }
+*/
 #if @radialFog
     float depth;
     // For the less detailed mesh of simple water we need to recalculate depth on per-pixel basis

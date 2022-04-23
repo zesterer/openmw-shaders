@@ -82,6 +82,16 @@ void main()
     vec4 diffuseColor = getDiffuseColor();
     gl_FragData[0].a *= diffuseColor.a;
 
+#if @specularMap
+    float shininess = 128.0; // TODO: make configurable
+    vec3 matSpec = vec3(diffuseTex.a);
+
+    gl_FragData[0].r = diffuseTex.a;
+#else
+    float shininess = gl_FrontMaterial.shininess;
+    vec3 matSpec = getSpecularColor().xyz;
+#endif
+
     float shadowing = unshadowedLightRatio(linearDepth);
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
@@ -104,7 +114,7 @@ void main()
         passViewPos,
         viewNormal,
         albedo,
-        0.55, // roughness
+        mix(0.9, 0.4, matSpec.x), // roughness
         1.0, // base reflectance
         0.0, // metalness
         shadowing,
@@ -114,18 +124,10 @@ void main()
         waterDepth,
         MAT_DEFAULT
     );
+    //gl_FragData[0].xyz = matSpec;
 #endif
 
-#if @specularMap
-    float shininess = 128.0; // TODO: make configurable
-    vec3 matSpec = vec3(diffuseTex.a);
-
-    gl_FragData[0].r = diffuseTex.a;
-#else
-    float shininess = gl_FrontMaterial.shininess;
-    vec3 matSpec = getSpecularColor().xyz;
-#endif
-
+/*
     if (matSpec != vec3(0.0))
     {
 #if (!@normalMap && !@parallax && !@forcePPL)
@@ -133,7 +135,7 @@ void main()
 #endif
         gl_FragData[0].xyz += getSpecular(normalize(viewNormal), normalize(passViewPos), shininess, matSpec) * shadowing;
     }
-
+*/
 #if @radialFog
     float fogValue = clamp((euclideanDepth - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
 #else
