@@ -197,13 +197,18 @@ void main()
     vec3 envEffect = vec3(0);
 #endif
 
+// (1 - roughness, metalness, reflectance)
+const vec3 default_pbr = vec3(0.25, 0.0, 1.0);
+
 #if @specularMap
     vec4 specTex = texture2D(specularMap, specularMapUV);
     float shininess = specTex.a * 255.0;
     vec3 matSpec = specTex.xyz;
+    vec3 pbr = mix(vec3(min(length(specTex.xyz) * 0.6, 1), default_pbr.y, default_pbr.z), default_pbr, 1.0 - specTex.a);
 #else
     float shininess = gl_FrontMaterial.shininess;
     vec3 matSpec = getSpecularColor().xyz;
+    vec3 pbr = default_pbr;
 #endif
 
     float shadowing = unshadowedLightRatio(linearDepth);
@@ -234,9 +239,9 @@ void main()
         passViewPos,
         normalize(viewNormal),
         albedo,
-        mix(0.9, 0.4, matSpec.x), // roughness
-        1.0, // base reflectance
-        1.0 - shininess * 0.0039, // metalness
+        mix(0.9, 0.4, pbr.r), // roughness
+        pbr.b, // base reflectance
+        pbr.g, // metalness
         shadowing,
         ao,
         emission * color,

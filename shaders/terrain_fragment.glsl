@@ -82,14 +82,19 @@ void main()
     vec4 diffuseColor = getDiffuseColor();
     gl_FragData[0].a *= diffuseColor.a;
 
+// (1 - roughness, metalness, reflectance)
+const vec3 default_pbr = vec3(0.25, 0.0, 1.0);
+
 #if @specularMap
     float shininess = 128.0; // TODO: make configurable
     vec3 matSpec = vec3(diffuseTex.a);
 
     gl_FragData[0].r = diffuseTex.a;
+    vec3 pbr = vec3(diffuseTex.a, default_pbr.y, default_pbr.z);
 #else
     float shininess = gl_FrontMaterial.shininess;
     vec3 matSpec = getSpecularColor().xyz;
+    vec3 pbr = default_pbr;
 #endif
 
     float shadowing = unshadowedLightRatio(linearDepth);
@@ -114,9 +119,9 @@ void main()
         passViewPos,
         viewNormal,
         albedo,
-        mix(0.55, 0.35, matSpec.x), // roughness
-        1.0, // base reflectance
-        0.0, // metalness
+        mix(0.55, 0.35, pbr.r), // roughness
+        pbr.b, // base reflectance
+        pbr.g, // metalness
         shadowing,
         ao,
         getEmissionColor().rgb,
