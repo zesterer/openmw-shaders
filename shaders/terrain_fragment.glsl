@@ -82,19 +82,23 @@ void main()
     vec4 diffuseColor = getDiffuseColor();
     gl_FragData[0].a *= diffuseColor.a;
 
-// (1 - roughness, metalness, reflectance)
-const vec3 default_pbr = vec3(0.6, 0.0, 1.0);
+    float roughness = 0.5;
+    float reflectance = 1.0;
+    float metalness = 0.0;
+
+    float shininess = clamp(gl_FrontMaterial.shininess * 0.0039 * 30, 0.0, 1.0);
 
 #if @specularMap
-    float shininess = 128.0; // TODO: make configurable
     vec3 matSpec = vec3(diffuseTex.a);
-
-    gl_FragData[0].r = diffuseTex.a;
-    vec3 pbr = vec3(diffuseTex.a, default_pbr.y, default_pbr.z);
+    matSpecToPbr(matSpec, roughness, metalness, reflectance);
+    roughness *= mix(1.0, 0.3, shininess * specTex.a);
 #else
-    float shininess = gl_FrontMaterial.shininess;
     vec3 matSpec = getSpecularColor().xyz;
-    vec3 pbr = default_pbr;
+    matSpecToPbr(matSpec, roughness, metalness, reflectance);
+    roughness *= 0.75;
+    shininess = min(shininess * 20.0, 1.0); // Why the hell is this necessary?!
+    roughness *= mix(0.9, 0.1, shininess);
+    metalness *= mix(0.0, 0.75, shininess);
 #endif
 
     float shadowing = unshadowedLightRatio(linearDepth);
@@ -103,13 +107,6 @@ const vec3 default_pbr = vec3(0.6, 0.0, 1.0);
     lighting = passLighting + shadowDiffuseLighting * shadowing;
     gl_FragData[0].xyz *= lighting;
 #else
-    /*
-    vec3 diffuseLight, ambientLight;
-    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, 0, false);
-    lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + getEmissionColor().xyz;
-    clampLightingResult(lighting);
-    */
-
     vec3 color = gl_FragData[0].rgb * diffuseColor.rgb;
 
     vec3 albedo; float ao;
@@ -119,9 +116,9 @@ const vec3 default_pbr = vec3(0.6, 0.0, 1.0);
         passViewPos,
         viewNormal,
         albedo,
-        mix(0.9, 0.4, pbr.r), // roughness
-        pbr.b, // base reflectance
-        pbr.g, // metalness
+        roughness,
+        reflectance,
+        metalness,
         shadowing,
         ao,
         getEmissionColor().rgb,
@@ -132,15 +129,6 @@ const vec3 default_pbr = vec3(0.6, 0.0, 1.0);
     //gl_FragData[0].xyz = matSpec;
 #endif
 
-/*
-    if (matSpec != vec3(0.0))
-    {
-#if (!@normalMap && !@parallax && !@forcePPL)
-        vec3 viewNormal = gl_NormalMatrix * normalize(passNormal);
-#endif
-        gl_FragData[0].xyz += getSpecular(normalize(viewNormal), normalize(passViewPos), shininess, matSpec) * shadowing;
-    }
-*/
 #if @radialFog
     float fogValue = clamp((euclideanDepth - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
 #else

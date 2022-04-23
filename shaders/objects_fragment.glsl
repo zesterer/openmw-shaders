@@ -197,18 +197,23 @@ void main()
     vec3 envEffect = vec3(0);
 #endif
 
-// (1 - roughness, metalness, reflectance)
-const vec3 default_pbr = vec3(0.25, 0.0, 1.0);
+    float roughness = 0.7;
+    float reflectance = 1.0;
+    float metalness = 0.0;
+
+    float shininess = clamp(gl_FrontMaterial.shininess * 0.0039, 0.0, 1.0);
 
 #if @specularMap
     vec4 specTex = texture2D(specularMap, specularMapUV);
-    float shininess = specTex.a * 255.0;
     vec3 matSpec = specTex.xyz;
-    vec3 pbr = mix(vec3(min(length(specTex.xyz) * 0.5, 1), default_pbr.y, default_pbr.z), default_pbr, 1.0 - specTex.a);
+    matSpecToPbr(matSpec, roughness, metalness, reflectance);
+    roughness *= mix(1.0, 0.3, shininess * specTex.a);
 #else
-    float shininess = gl_FrontMaterial.shininess;
     vec3 matSpec = getSpecularColor().xyz;
-    vec3 pbr = default_pbr;
+    matSpecToPbr(matSpec, roughness, metalness, reflectance);
+    shininess = min(shininess * 20.0, 1.0); // Why the hell is this necessary?!
+    roughness *= mix(0.9, 0.1, shininess);
+    metalness *= mix(0.0, 0.75, shininess);
 #endif
 
     float shadowing = unshadowedLightRatio(linearDepth);
@@ -217,18 +222,10 @@ const vec3 default_pbr = vec3(0.25, 0.0, 1.0);
     lighting = passLighting + shadowDiffuseLighting * shadowing;
     gl_FragData[0].xyz *= lighting;
 #else
-    /*
-    vec3 diffuseLight, ambientLight;
-    doLighting(passViewPos, normalize(viewNormal), shadowing, diffuseLight, ambientLight, leafiness, !gl_FrontFacing);
-    lighting = diffuseColor.xyz * diffuseLight + getAmbientColor().xyz * ambientLight + emission;
-    clampLightingResult(lighting);
-    */
-
     vec3 emission = getEmissionColor().rgb * emissiveMult;
-
-#if @emissiveMap
-    emission *= texture2D(emissiveMap, emissiveMapUV).rgb;
-#endif
+    #if @emissiveMap
+        emission *= texture2D(emissiveMap, emissiveMapUV).rgb;
+    #endif
 
     vec3 color = gl_FragData[0].rgb * diffuseColor.rgb;
 
@@ -239,9 +236,9 @@ const vec3 default_pbr = vec3(0.25, 0.0, 1.0);
         passViewPos,
         normalize(viewNormal),
         albedo,
-        mix(0.9, 0.4, pbr.r), // roughness
-        pbr.b, // base reflectance
-        pbr.g, // metalness
+        roughness,
+        reflectance,
+        metalness,
         shadowing,
         ao,
         emission * color,
@@ -255,16 +252,7 @@ const vec3 default_pbr = vec3(0.25, 0.0, 1.0);
 #if @envMap && !@preLightEnv
     gl_FragData[0].xyz += envEffect;
 #endif
-/*
-    matSpec *= specStrength;
-    if (matSpec != vec3(0.0))
-    {
-#if (!@normalMap && !@parallax && !@forcePPL)
-        vec3 viewNormal = gl_NormalMatrix * normalize(passNormal);
-#endif
-        gl_FragData[0].xyz += getSpecular(viewNormal, normalize(passViewPos.xyz), shininess, matSpec) * shadowing;
-    }
-*/
+
 #if @radialFog
     float depth;
     // For the less detailed mesh of simple water we need to recalculate depth on per-pixel basis
