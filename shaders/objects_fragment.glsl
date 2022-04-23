@@ -197,7 +197,7 @@ void main()
     vec3 envEffect = vec3(0);
 #endif
 
-    float roughness = 0.7;
+    float roughness = 0.6;
     float reflectance = 1.0;
     float metalness = 0.0;
 
