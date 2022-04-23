@@ -18,6 +18,9 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 
 ![Early morning in the grasslands east of Vivec](https://i.imgur.com/09AvjA6.png)
 
+*Note that these screenshots have color saturation set relatively high, but this is not hard-coded into the shaders. See
+[the configuration section](#configuration) for more information.*
+
 <details>
     <summary>More screenshots</summary>
     <img src="https://i.imgur.com/CGpw7mC.png" alt="Dusk from the cantons of Vivec">
@@ -55,12 +58,15 @@ about installing custom shader packs.
 
 ## Configuration
 
-- You can change the `saturation_factor` in `pbr.glsl` to change the appearance of in-game colours
+There are various parameters that can be changed via
+[`shaders/config.glsl`](https://github.com/zesterer/openmw-shaders/blob/main/shaders/config.glsl):
 
-- You can change the `normal_map_intensity` in `pbr.glsl` to tone down normal map intensity
+- `saturation_factor`: Controls the saturation of in-game colors
 
-- You can change the `sunlight_strength` in `pbr.glsl` to adjust sun intensity
+- `normal_map_intensity`: Controls the strength of bumps in surfaces derived from the normal map
 
-- You can change the `ambiance_strength` in `pbr.glsl` to adjust ambient light intensity
+- `sunlight_strength`: Controls the intensity of sun light
+
+- `ambiance_strength`: Controls the intensity of background ambient light from the sky
 
 *TODO: More detail*
