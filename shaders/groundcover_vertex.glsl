@@ -37,6 +37,8 @@ centroid varying vec3 passLighting;
 centroid varying vec3 shadowDiffuseLighting;
 #endif
 
+uniform mat4 osg_ViewMatrix;
+
 #include "shadows_vertex.glsl"
 #include "lighting.glsl"
 #include "depth.glsl"

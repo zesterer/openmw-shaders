@@ -38,6 +38,7 @@ centroid varying vec3 shadowDiffuseLighting;
 
 uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ModelViewMatrix;
+uniform mat4 osg_ViewMatrix;
 
 #include "shadows_fragment.glsl"
 #include "lighting.glsl"

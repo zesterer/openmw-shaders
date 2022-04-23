@@ -3,8 +3,6 @@
 
 const vec3 normal_map_scale = vec3(1.0, 1.0, 1.0 / max(normal_map_intensity, 0.01));
 
-uniform mat4 osg_ViewMatrix;
-
 const float PI = 3.1416;
 const float INV_PI = 0.31830;
 
@@ -86,7 +84,7 @@ vec3 getLightPbr(
     float occlusion = min(ao, isShadow) * lambert;
 
     vec3 solidLight = brdf * occlusion;
-    vec3 leafLight = (glare * 0.25 + 0.75) * albedo * ao * isShadow * 0.2; // Non-physical
+    vec3 leafLight = (glare * 0.25 + 0.75) * min(ao, isShadow) * albedo * 0.2; // Non-physical
 
     // Combine reflected light and sub-surface scattering together with the incoming radiance to find the final light
     // reflected/emitted
@@ -97,7 +95,8 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
     const vec3 interiorSunColor = vec3(1.0, 0.85, 0.6) * 4.0;
     return (isInterior == 1.0) ? interiorSunColor : mix(
         mix(
-            vec3(1.5, 2.7, 3.5),
+            vec3(0.8, 1.5, 3.0),
+            // TODO: Actually detect time of day and make dawn/dusk more red
             vec3(8.0, 6.0, 2.0),
             clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
         ),
@@ -152,10 +151,10 @@ vec3 getPbr(
     // If this seems silly, that's because it is. We use this to approximate how close we are to dusk
     // pow(sunLightLevel, 4)
     vec3 sunWDir = (osg_ViewMatrixInverse * vec4(sunDir, 0.0)).xyz;
-    float isntDusk = min(max(sunWDir.z, 0.0), pow(lcalcDiffuse(0).r, 2.0));
+    float isntDusk = clamp(lcalcDiffuse(0).r * 2.0 - 0.25, 0.0, 1.0);
 
     // Extremely silly hack to determine whether we're indoors or not
-    float isInterior = step(0.999, dot((osg_ViewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz, sunPos));
+    float isInterior = step(0.999, dot(sunWDir, vec3(0.0, 0.0, 1.0)));
 
     // Linear RGB, attenuation coefficients for water at roughly R, G, B wavelengths.
     // See https://en.wikipedia.org/wiki/Electromagnetic_absorption_by_water
@@ -165,7 +164,7 @@ vec3 getPbr(
     vec3 attenuation = (waterDepth == 0.0 || isInterior == 1.0) ? vec3(1.0) : exp(-MU_WATER * waterDepth * unitsToMetres);
 
     // Direct sunlight
-    vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * attenuation;
+    vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * lcalcDiffuse(0) * attenuation;
     light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, subsurface, ao, mat);
 
     // Sky (ambient)
