@@ -1,5 +1,37 @@
 #include "lighting_util.glsl"
 
+// Change this to alter the saturation of albedo (i.e: base color).
+// Recommended values:
+// 1.0 => Very desaturated (looks like Morrowind is in the UK)
+// 1.5 => Mildly desaturated (most realistic, close to the original game)
+// 2.5 => Bright, fun colours (I prefer this)
+// 3.5 => Oversaturated (color where there shouldn't be color)
+const float saturation_factor = 2.5;
+
+// Normal map mods for Morrowind can often be very extreme and may need toning down.
+// Recommended values:
+// 0.0 => Normal maps have no effect
+// 0.5 => Less intense (smoother surfaces)
+// 1.0 => Default
+// 2.0 => Very intense (rougher surfaces)
+const float normal_map_intensity = 0.5;
+
+// The intensity of direct sunlight
+// Recommended values:
+// 1.0 => Weak, closer to the original game
+// 1.25 => Bright, but not overpowering
+// 1.5 => Solar flare, take cover!
+const float sunlight_strength = 1.25;
+
+// The intensity of ambient light
+// Recommended values:
+// 0.5 => Low, like being in space
+// 0.75 => Medium, more realistic
+// 1.0 => Strong, closer to the original game
+const float ambiance_strength = 0.75;
+
+const vec3 normal_map_scale = vec3(1.0, 1.0, 1.0 / max(normal_map_intensity, 0.01));
+
 uniform mat4 osg_ViewMatrix;
 
 const float PI = 3.1416;
@@ -77,7 +109,7 @@ vec3 getLightPbr(
     vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular;
 
     // Some surfaces scatter light internally. This models that effect, but non-physically
-    vec3 subsurfaceScatter = (subsurface == 0.0) ? vec3(0.0) : (albedo * subsurface * pow(max(glare, 0.0), 6.0) * isShadow * 0.1);
+    vec3 subsurfaceScatter = (subsurface == 0.0) ? vec3(0.0) : (ao * albedo * subsurface * pow(max(glare, 0.0), 8.0) * isShadow * 0.1);
 
     // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
     float occlusion = min(ao, isShadow) * lambert;
@@ -91,25 +123,25 @@ vec3 getLightPbr(
 }
 
 vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
-    const vec3 interiorSunColor = vec3(1.0, 0.85, 0.6) * 3.0;
+    const vec3 interiorSunColor = vec3(1.0, 0.85, 0.6) * 4.5;
     return (isInterior == 1.0) ? interiorSunColor : mix(
         mix(
-            vec3(1.0, 1.5, 2.0),
-            vec3(8.0, 3.0, 0.3),
+            vec3(1.5, 2.7, 3.5),
+            vec3(12.0, 4.5, 0.5),
             clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
         ),
-        vec3(6.0, 5.4, 4.8),
+        vec3(9.0, 8.0, 7.2),
         isntDusk
-    );
+    ) * sunlight_strength;
 }
 
 vec3 getAmbientColor(float isntDusk, float isInterior) {
-    const vec3 interiorAmbientColor = vec3(1.0, 0.8, 0.5) * 0.25;
+    const vec3 interiorAmbientColor = vec3(1.0, 0.8, 0.5) * 0.4;
     return (isInterior == 1.0) ? interiorAmbientColor : mix(
-        vec3(0.2, 0.25, 0.5),
-        vec3(0.45, 0.6, 1.0),
+        vec3(0.4, 0.5, 1.0),
+        vec3(1.4, 1.8, 3.0),
         isntDusk
-    );
+    ) * ambiance_strength;
 }
 
 vec3 getPbr(
@@ -204,14 +236,9 @@ vec3 getPbr(
 // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
 // As a result, this entire thing is an enormous hack that lets us do that!
 void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
-    // Change this to alter the saturation of albedo. Recommended values
-    // 0.8 => Very desaturated (looks like Morrowind is in the UK)
-    // 0.95 => Mildly desaturated (most realistic)
-    // 1.3 => Bright, fun colours (I prefer this)
-    // 2.0 => Oh my god, my eyes
-    const float saturation = 1.25;
+    ao = min(length(color) * 0.58, 1.0);
+    float saturation = mix(1.0, saturation_factor, ao);
     albedo = clamp(pow(normalize(color), vec3(saturation)) * mix(saturation, 1.5, 0.5) - 0.25, vec3(0.0), vec3(1.0));
-    ao = min(length(color), 1.0);
 }
 
 // Derive PBR parameters from coloured specular, if possible. If not, old values will be used.

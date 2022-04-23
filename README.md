@@ -55,6 +55,12 @@ about installing custom shader packs.
 
 ## Configuration
 
-- You can change the `const float saturation = ...` line in `pbr.glsl` to change the appearance of in-game colours
+- You can change the `saturation_factor` in `pbr.glsl` to change the appearance of in-game colours
+
+- You can change the `normal_map_intensity` in `pbr.glsl` to tone down normal map intensity
+
+- You can change the `sunlight_strength` in `pbr.glsl` to adjust sun intensity
+
+- You can change the `ambiance_strength` in `pbr.glsl` to adjust ambient light intensity
 
 *TODO: More detail*

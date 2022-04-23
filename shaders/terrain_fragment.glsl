@@ -44,7 +44,7 @@ void main()
 #if @normalMap
     vec4 normalTex = texture2D(normalMap, adjustedUV);
 
-    vec3 normalizedNormal = normalize(passNormal);
+    vec3 normalizedNormal = normalize(passNormal * normal_map_scale);
     vec3 tangent = vec3(1.0, 0.0, 0.0);
     vec3 binormal = normalize(cross(tangent, normalizedNormal));
     tangent = normalize(cross(normalizedNormal, binormal)); // note, now we need to re-cross to derive tangent again because it wasn't orthonormal

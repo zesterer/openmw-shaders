@@ -105,7 +105,7 @@ void main()
     vec4 normalTex = texture2D(normalMap, normalMapUV);
 
     vec3 normalizedNormal = normalize(passNormal);
-    vec3 normalizedTangent = normalize(passTangent.xyz);
+    vec3 normalizedTangent = normalize(passTangent.xyz * normal_map_scale);
     vec3 binormal = cross(normalizedTangent, normalizedNormal) * passTangent.w;
     mat3 tbnTranspose = mat3(normalizedTangent, binormal, normalizedNormal);
 
