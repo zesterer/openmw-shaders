@@ -23,7 +23,7 @@
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.5
     #define NORMAL_MAP_INTENSITY 0.25
-    #define SUNLIGHT_STRENGTH 0.75
+    #define SUNLIGHT_STRENGTH 0.35
     #define AMBIANCE_STRENGTH 1.5
 #elif (PRESET == CUSTOM)
     // Change these values to edit your custom preset
