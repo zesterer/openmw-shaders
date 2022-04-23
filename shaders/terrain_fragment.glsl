@@ -114,7 +114,7 @@ void main()
         passViewPos,
         viewNormal,
         albedo,
-        mix(0.9, 0.4, matSpec.x), // roughness
+        mix(0.55, 0.35, matSpec.x), // roughness
         1.0, // base reflectance
         0.0, // metalness
         shadowing,
