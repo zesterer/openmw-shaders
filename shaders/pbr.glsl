@@ -28,6 +28,7 @@ const float sunlight_strength = 1.25;
 // 0.5 => Low, like being in space
 // 0.75 => Medium, more realistic
 // 1.0 => Strong, closer to the original game
+// 1.5 => Very strong, very low-contrast shadows
 const float ambiance_strength = 0.75;
 
 const vec3 normal_map_scale = vec3(1.0, 1.0, 1.0 / max(normal_map_intensity, 0.01));
@@ -202,7 +203,7 @@ vec3 getPbr(
     vec3 skyColor = getAmbientColor(isntDusk, isInterior) * attenuation;
     // Even ambient light has some directionality, favouring surfaces facing toward the sky. Account for that.
     float ambientDirectionalBias = (max(dot(surfNorm, sunDir), 0.0) * 0.5 + 0.5) * 1.5;
-    light += albedo * ao * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
+    light += albedo * mix(ao * 0.75, 0.75, 0.05) * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
 
     for (int i = @startLight; i < @endLight; ++i) {
         int lightIdx =
