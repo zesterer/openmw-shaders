@@ -119,7 +119,7 @@ const vec3 default_pbr = vec3(0.25, 0.0, 1.0);
         passViewPos,
         viewNormal,
         albedo,
-        mix(0.55, 0.35, pbr.r), // roughness
+        mix(0.9, 0.4, pbr.r), // roughness
         pbr.b, // base reflectance
         pbr.g, // metalness
         shadowing,
