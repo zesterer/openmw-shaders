@@ -2,18 +2,33 @@
 // Ensure that you restart OpenMW after making a change to this file: it will not reload automatically!
 
 // Here is a list of 'presets' you can try to avoid spending ages tweaking values:
+#define CUSTOM 0
+#define VANILLA 1
+#define ZESTERER 2
 
-// Zesterer's bright & colourful present:
-// saturation_factor = 2.5
-// normal_map_intensity = 0.5
-// sunlight_strength = 1.25
-// ambiance_strength = 0.8
+// Change this value to quickly switch presets
+#define PRESET ZESTERER
 
-// Vanilla but better present:
-// saturation_factor = 1.25
-// normal_map_intensity = 0.3
-// sunlight_strength = 0.8
-// ambiance_strength = 1.25
+#if (PRESET == VANILLA)
+    #define SATURATION_FACTOR 1.0
+    #define NORMAL_MAP_INTENSITY 0.3
+    #define SUNLIGHT_STRENGTH 0.8
+    #define AMBIANCE_STRENGTH 1.25
+#elif (PRESET == ZESTERER)
+    #define SATURATION_FACTOR 2.0
+    #define NORMAL_MAP_INTENSITY 0.5
+    #define SUNLIGHT_STRENGTH 1.25
+    #define AMBIANCE_STRENGTH 0.8
+#elif (PRESET == CUSTOM)
+    // Change these values to edit your custom preset
+    // See below for an explanation of each parameter
+    #define SATURATION_FACTOR 1.0
+    #define NORMAL_MAP_INTENSITY 0.3
+    #define SUNLIGHT_STRENGTH 0.8
+    #define AMBIANCE_STRENGTH 1.25
+#else
+    #error "Invalid shader preset selected!"
+#endif
 
 // Change this to alter the saturation of albedo (i.e: base color).
 // Recommended values:
@@ -22,7 +37,7 @@
 // 1.5 => Mildly desaturated (most realistic)
 // 2.5 => Bright, fun colours (I prefer this)
 // 3.5 => Oversaturated (more Alice in Wonderland than Morrowind)
-const float saturation_factor = 2.5;
+const float saturation_factor = SATURATION_FACTOR;
 
 // Normal map mods for Morrowind can often be very extreme and may need toning down.
 // Recommended values:
@@ -30,14 +45,14 @@ const float saturation_factor = 2.5;
 // 0.5 => Less intense (smoother surfaces)
 // 1.0 => Default
 // 2.0 => Very intense (rougher surfaces)
-const float normal_map_intensity = 0.5;
+const float normal_map_intensity = NORMAL_MAP_INTENSITY;
 
 // The intensity of direct sunlight
 // Recommended values:
 // 1.0 => Weak, closer to the original game
 // 1.25 => Bright, but not overpowering
 // 1.5 => Solar flare, take cover!
-const float sunlight_strength = 1.25;
+const float sunlight_strength = SUNLIGHT_STRENGTH;
 
 // The intensity of ambient light
 // Recommended values:
@@ -45,4 +60,4 @@ const float sunlight_strength = 1.25;
 // 0.75 => Medium, more realistic
 // 1.0 => Strong, closer to the original game
 // 1.5 => Very strong, very low-contrast shadows
-const float ambiance_strength = 0.8;
+const float ambiance_strength = AMBIANCE_STRENGTH;
