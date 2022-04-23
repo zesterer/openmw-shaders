@@ -83,7 +83,7 @@ void main()
     gl_FragData[0].a *= diffuseColor.a;
 
 // (1 - roughness, metalness, reflectance)
-const vec3 default_pbr = vec3(0.25, 0.0, 1.0);
+const vec3 default_pbr = vec3(0.6, 0.0, 1.0);
 
 #if @specularMap
     float shininess = 128.0; // TODO: make configurable

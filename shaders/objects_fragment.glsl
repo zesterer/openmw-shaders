@@ -204,7 +204,7 @@ const vec3 default_pbr = vec3(0.25, 0.0, 1.0);
     vec4 specTex = texture2D(specularMap, specularMapUV);
     float shininess = specTex.a * 255.0;
     vec3 matSpec = specTex.xyz;
-    vec3 pbr = mix(vec3(min(length(specTex.xyz) * 0.6, 1), default_pbr.y, default_pbr.z), default_pbr, 1.0 - specTex.a);
+    vec3 pbr = mix(vec3(min(length(specTex.xyz) * 0.5, 1), default_pbr.y, default_pbr.z), default_pbr, 1.0 - specTex.a);
 #else
     float shininess = gl_FrontMaterial.shininess;
     vec3 matSpec = getSpecularColor().xyz;

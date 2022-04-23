@@ -206,10 +206,10 @@ vec3 getPbr(
 void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
     // Change this to alter the saturation of albedo. Recommended values
     // 0.8 => Very desaturated (looks like Morrowind is in the UK)
-    // 1.0 => Mildly desaturated (most realistic)
-    // 1.5 => Bright, fun colours (I prefer this one)
+    // 0.95 => Mildly desaturated (most realistic)
+    // 1.3 => Bright, fun colours (I prefer this)
     // 2.0 => Oh my god, my eyes
-    const float saturation = 0.85;
+    const float saturation = 1.25;
     albedo = clamp(pow(normalize(color), vec3(saturation)) * mix(saturation, 1.5, 0.5) - 0.25, vec3(0.0), vec3(1.0));
     ao = min(length(color), 1.0);
 }
