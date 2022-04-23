@@ -123,7 +123,7 @@ vec3 getLightPbr(
 }
 
 vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
-    const vec3 interiorSunColor = vec3(1.0, 0.85, 0.6) * 4.5;
+    const vec3 interiorSunColor = vec3(1.0, 0.85, 0.6) * 4.0;
     return (isInterior == 1.0) ? interiorSunColor : mix(
         mix(
             vec3(1.5, 2.7, 3.5),
@@ -136,7 +136,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
 }
 
 vec3 getAmbientColor(float isntDusk, float isInterior) {
-    const vec3 interiorAmbientColor = vec3(1.0, 0.8, 0.5) * 0.4;
+    const vec3 interiorAmbientColor = vec3(1.0, 0.8, 0.5) * 0.9;
     return (isInterior == 1.0) ? interiorAmbientColor : mix(
         vec3(0.4, 0.5, 1.0),
         vec3(1.4, 1.8, 3.0),
@@ -175,6 +175,7 @@ vec3 getPbr(
     light += emission * 3.0 * max(dot(surfNorm, -camDir), 0.5);
 
     vec3 sunPos = lcalcPosition(0);
+    vec3 sunDir = normalize(sunPos);
     float sunLightLevel = lcalcDiffuse(0).r;
     // If this seems silly, that's because it is. We use this to approximate how close we are to dusk
     // pow(sunLightLevel, 4)
@@ -193,13 +194,15 @@ vec3 getPbr(
 
     // Direct sunlight
     vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * attenuation;
-    light += getLightPbr(surfNorm, camDir, normalize(sunPos), sunColor, albedo, roughness, baseRefl, metalness, sunShadow, subsurface, ao, mat);
+    light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, subsurface, ao, mat);
 
     // Sky (ambient)
     // TODO: Better ambiance
-    float ambientFresnel = mix(1.0, max(dot(surfNorm, -camDir), 0.0) * 0.75 + 0.25, 1.0 - mat);
+    float ambientFresnel = mix(1.0, max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1.0 - mat);
     vec3 skyColor = getAmbientColor(isntDusk, isInterior) * attenuation;
-    light += albedo * ao * baseRefl * skyColor * ambientFresnel;
+    // Even ambient light has some directionality, favouring surfaces facing toward the sky. Account for that.
+    float ambientDirectionalBias = (max(dot(surfNorm, sunDir), 0.0) * 0.5 + 0.5) * 1.5;
+    light += albedo * ao * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
 
     for (int i = @startLight; i < @endLight; ++i) {
         int lightIdx =
