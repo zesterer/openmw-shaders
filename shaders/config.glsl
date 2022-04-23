@@ -1,6 +1,20 @@
 // This file contains various configuration parameters for the mod's shaders.
 // Ensure that you restart OpenMW after making a change to this file: it will not reload automatically!
 
+// Here is a list of 'presets' you can try to avoid spending ages tweaking values:
+
+// Zesterer's bright & colourful present:
+// saturation_factor = 2.5
+// normal_map_intensity = 0.5
+// sunlight_strength = 1.25
+// ambiance_strength = 0.8
+
+// Vanilla but better present:
+// saturation_factor = 1.25
+// normal_map_intensity = 0.3
+// sunlight_strength = 0.8
+// ambiance_strength = 1.25
+
 // Change this to alter the saturation of albedo (i.e: base color).
 // Recommended values:
 // 0.8 => Very desaturated (looks like Vvardenfell is in the UK)
@@ -31,4 +45,4 @@ const float sunlight_strength = 1.25;
 // 0.75 => Medium, more realistic
 // 1.0 => Strong, closer to the original game
 // 1.5 => Very strong, very low-contrast shadows
-const float ambiance_strength = 0.75;
+const float ambiance_strength = 0.8;
