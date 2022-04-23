@@ -105,11 +105,11 @@ void main()
     vec4 normalTex = texture2D(normalMap, normalMapUV);
 
     vec3 normalizedNormal = normalize(passNormal);
-    vec3 normalizedTangent = normalize(passTangent.xyz * normal_map_scale);
+    vec3 normalizedTangent = normalize(passTangent.xyz);
     vec3 binormal = cross(normalizedTangent, normalizedNormal) * passTangent.w;
     mat3 tbnTranspose = mat3(normalizedTangent, binormal, normalizedNormal);
 
-    vec3 viewNormal = gl_NormalMatrix * normalize(tbnTranspose * (normalTex.xyz * 2.0 - 1.0));
+    vec3 viewNormal = gl_NormalMatrix * normalize(tbnTranspose * normalize((normalTex.xyz * 2.0 - 1.0) * normal_map_scale));
 #endif
 
 #if (!@normalMap && (@parallax || @forcePPL))

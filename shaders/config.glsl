@@ -2,9 +2,10 @@
 // Ensure that you restart OpenMW after making a change to this file: it will not reload automatically!
 
 // Here is a list of 'presets' you can try to avoid spending ages tweaking values:
-#define CUSTOM 0
-#define VANILLA 1
-#define ZESTERER 2
+#define CUSTOM 0 // You can use this present to customise things as you like
+#define VANILLA 1 // Designed to emulate the feel of vanilla Morrowind
+#define ZESTERER 2 // Colorful and intense fantasy lighting
+#define MGE_XE 3 // An attempt at emulating the soft lighting of MGE XE
 
 // Change this value to quickly switch presets
 #define PRESET ZESTERER
@@ -19,6 +20,11 @@
     #define NORMAL_MAP_INTENSITY 0.5
     #define SUNLIGHT_STRENGTH 1.25
     #define AMBIANCE_STRENGTH 0.8
+#elif (PRESET == MGE_XE)
+    #define SATURATION_FACTOR 1.5
+    #define NORMAL_MAP_INTENSITY 0.25
+    #define SUNLIGHT_STRENGTH 0.75
+    #define AMBIANCE_STRENGTH 1.5
 #elif (PRESET == CUSTOM)
     // Change these values to edit your custom preset
     // See below for an explanation of each parameter

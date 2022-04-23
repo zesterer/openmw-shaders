@@ -46,13 +46,13 @@ void main()
 #if @normalMap
     vec4 normalTex = texture2D(normalMap, adjustedUV);
 
-    vec3 normalizedNormal = normalize(passNormal * normal_map_scale);
+    vec3 normalizedNormal = normalize(passNormal);
     vec3 tangent = vec3(1.0, 0.0, 0.0);
     vec3 binormal = normalize(cross(tangent, normalizedNormal));
     tangent = normalize(cross(normalizedNormal, binormal)); // note, now we need to re-cross to derive tangent again because it wasn't orthonormal
     mat3 tbnTranspose = mat3(tangent, binormal, normalizedNormal);
 
-    vec3 viewNormal = normalize(gl_NormalMatrix * (tbnTranspose * (normalTex.xyz * 2.0 - 1.0)));
+    vec3 viewNormal = normalize(gl_NormalMatrix * (tbnTranspose * normalize((normalTex.xyz * 2.0 - 1.0) * normal_map_scale)));
 #endif
 
 #if (!@normalMap && (@parallax || @forcePPL))
@@ -67,7 +67,7 @@ void main()
 
     // update normal using new coordinates
     normalTex = texture2D(normalMap, adjustedUV);
-    viewNormal = normalize(gl_NormalMatrix * (tbnTranspose * (normalTex.xyz * 2.0 - 1.0)));
+    viewNormal = normalize(gl_NormalMatrix * (tbnTranspose * normalize((normalTex.xyz * 2.0 - 1.0) * normal_map_scale)));
 #endif
 
     vec4 diffuseTex = texture2D(diffuseMap, adjustedUV);
