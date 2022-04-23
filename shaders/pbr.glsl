@@ -109,7 +109,7 @@ vec3 getLightPbr(
     vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular;
 
     // Some surfaces scatter light internally. This models that effect, but non-physically
-    vec3 subsurfaceScatter = (subsurface == 0.0) ? vec3(0.0) : (ao * albedo * subsurface * pow(max(glare, 0.0), 8.0) * isShadow * 0.1);
+    vec3 subsurfaceScatter = (subsurface == 0.0) ? vec3(0.0) : (ao * albedo * subsurface * pow(max(glare, 0.0), 6.0) * isShadow * 0.25);
 
     // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
     float occlusion = min(ao, isShadow) * lambert;
