@@ -38,6 +38,7 @@ varying vec3 passNormal;
 #include "shadows_fragment.glsl"
 #include "lighting.glsl"
 #include "parallax.glsl"
+#include "rand.glsl"
 
 void main()
 {
@@ -73,8 +74,9 @@ void main()
     vec4 diffuseTex = texture2D(diffuseMap, adjustedUV);
     gl_FragData[0] = vec4(diffuseTex.xyz, 1.0);
 
-    vec3 wPos = (gl_ModelViewMatrixInverse * vec4(passViewPos, 1)).xyz;
-    float waterDepth = max(-wPos.z, 0);
+    vec3 wPos = (osg_ViewMatrixInverse * vec4(passViewPos, 1)).xyz;
+    vec3 wPosModel = (gl_ModelViewMatrixInverse * vec4(passViewPos, 1)).xyz;
+    float waterDepth = max(-wPosModel.z, 0);
 
 #if @blendMap
     vec2 blendMapUV = (gl_TextureMatrix[1] * vec4(uv, 0.0, 1.0)).xy;
@@ -113,6 +115,11 @@ void main()
 
     vec3 albedo; float ao;
     colorToPbr(color, albedo, ao);
+
+    #if PROCEDURAL_DETAIL
+        // Apply procedural detail to distant terrain
+        proceduralDetail(wPos, length(passViewPos), viewNormal, albedo);
+    #endif
 
     gl_FragData[0].xyz = getPbr(
         osg_ViewMatrixInverse,

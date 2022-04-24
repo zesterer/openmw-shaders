@@ -83,6 +83,7 @@ varying vec3 passViewPos;
 varying vec3 passNormal;
 
 uniform mat4 osg_ViewMatrixInverse;
+uniform mat4 osg_ViewMatrix;
 uniform mat4 osg_ModelViewMatrix;
 
 #include "vertexcolors.glsl"
@@ -143,11 +144,8 @@ void main()
     vec4 diffuseColor = getDiffuseColor();
     gl_FragData[0].a *= diffuseColor.a;
 
-    vec3 wPos = ((osg_ViewMatrixInverse * gl_ModelViewMatrix) * vec4(modelPos.xyz, 1)).xyz;
-    // Hack to avoid reflections appearing as if they are underwater
-    // TODO: Enable this?
-    float wFlip = 1.0;//sign(((gl_ModelViewMatrixInverse * osg_ViewMatrix) * vec4(vec3(0, 0, 1), 0)).z);
-    float waterDepth = max(-wPos.z * wFlip, 0);
+    vec3 wPos = (osg_ViewMatrixInverse * vec4(passViewPos, 1)).xyz;
+    float waterDepth = max(-wPos.z, 0);
 
 #if @darkMap
     gl_FragData[0] *= texture2D(darkMap, darkMapUV);

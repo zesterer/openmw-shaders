@@ -81,7 +81,7 @@ vec3 getLightPbr(
     kDiff *= 1.0 - metalness;
 
     // Color of specular reflections is determined by metalness and surface alignment and angle of incidence
-    vec3 specular_albedo = mix(vec3(1.0), albedo, 1.0 - (1.0 - metalness) * (1.0 - nDotL));
+    vec3 specular_albedo = mix(vec3(1.0), albedo, metalness);
 
     // The final diffuse and specular reflectance of the surface
     vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular * specular_albedo;

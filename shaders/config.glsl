@@ -1,7 +1,10 @@
+#ifndef CONFIG_GLSL
+#define CONFIG_GLSL
+
 // This file contains various configuration parameters for the mod's shaders.
 // Ensure that you restart OpenMW after making a change to this file: it will not reload automatically!
 
-// Here is a list of 'presets' you can try to avoid spending ages tweaking values:
+// Here is a list of lighting 'presets' you can try to avoid spending ages tweaking values:
 #define CUSTOM 0 // You can use this present to customise things as you like
 #define VANILLA 1 // Designed to emulate the feel of vanilla Morrowind
 #define ZESTERER 2 // Colorful and intense fantasy lighting
@@ -67,3 +70,11 @@ const float sunlight_strength = SUNLIGHT_STRENGTH;
 // 1.0 => Strong, closer to the original game
 // 1.5 => Very strong, very low-contrast shadows
 const float ambiance_strength = AMBIANCE_STRENGTH;
+
+// Extra settings
+
+// Enable procedural detailing on distant terrain, adding detail and depth
+// Possible values: 1 (enabled), 0 (disabled)
+#define PROCEDURAL_DETAIL 1
+
+#endif

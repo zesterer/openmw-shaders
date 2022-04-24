@@ -12,6 +12,7 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 - **Underwater light attenuation**: objects under the water shift towards blue with depth, adding realism
 - **Leaves sway in the wind**: unfortunately, Morrowind has no realiable way to mark leaves so detection is imperfect
 - **Sub-surface scattering**: thin objects like grass and leaves allow bright direct light to scatter through them
+- **Procedural detail for distant land**: terrain in the distance maintains sharp details
 - **Easy to configure**: if you prefer realism over bright colours, you can [tweak the shaders](#configuration) accordingly!
 
 ## Screenshots
