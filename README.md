@@ -58,15 +58,5 @@ about installing custom shader packs.
 
 ## Configuration
 
-There are various parameters that can be changed via
-[`shaders/config.glsl`](https://github.com/zesterer/openmw-shaders/blob/main/shaders/config.glsl):
-
-- `saturation_factor`: Controls the saturation of in-game colors
-
-- `normal_map_intensity`: Controls the strength of bumps in surfaces derived from the normal map
-
-- `sunlight_strength`: Controls the intensity of sun light
-
-- `ambiance_strength`: Controls the intensity of background ambient light from the sky
-
-*TODO: More detail*
+There are various presets and parameters that can be changed via
+[`shaders/config.glsl`](https://github.com/zesterer/openmw-shaders/blob/main/shaders/config.glsl).

@@ -99,6 +99,11 @@ void main()
         1.0, // base reflectance
         0.0, // metalness
         shadowing,
+        #if SHADOWS
+            shadowFadeStart,
+        #else
+            3500.0,
+        #endif
         ao,
         emission * color,
         0.0,

@@ -26,6 +26,7 @@ const float MAT_DEFAULT = 0.0;
 const float MAT_LEAF = 1.0;
 
 vec3 getLightPbr(
+    vec3 surfPos,
     vec3 surfNorm,
     vec3 camDir,
     // Normalized
@@ -38,6 +39,7 @@ vec3 getLightPbr(
     float metalness,
     // 1 if in light, 0 if not in light
     float isShadow,
+    float shadowFadeStart,
     float subsurface,
     float ao,
     float mat
@@ -78,13 +80,15 @@ vec3 getLightPbr(
     vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular;
 
     // Some surfaces scatter light internally. This models that effect, but non-physically
-    vec3 subsurfaceScatter = (subsurface == 0.0) ? vec3(0.0) : (ao * albedo * subsurface * pow(max(glare, 0.0), 6.0) * isShadow * 0.25);
+    float max_scatter_dist_inv = 1.0 / shadowFadeStart;
+    float scatter_factor = max(1.0 - length(surfPos) * max_scatter_dist_inv, 0.0);
+    vec3 subsurfaceScatter = ((subsurface == 0.0) ? 0.0 : (ao * isShadow * subsurface * pow(max(glare, 0.0), 10.0) * 0.75 * scatter_factor)) * albedo;
 
     // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
     float occlusion = min(ao, isShadow) * lambert;
 
     vec3 solidLight = brdf * occlusion;
-    vec3 leafLight = (glare * 0.25 + 0.75) * min(ao, isShadow) * albedo * 0.2; // Non-physical
+    vec3 leafLight = mix(0.0, glare * 0.25 + 0.75, scatter_factor) * ao * isShadow * albedo * 0.2; // Non-physical
 
     // Combine reflected light and sub-surface scattering together with the incoming radiance to find the final light
     // reflected/emitted
@@ -127,6 +131,7 @@ vec3 getPbr(
     float metalness,
     // From shadow map, for sun
     float sunShadow,
+    float shadowFadeStart,
     // Reduction in reflected light due to occlusion
     float ao,
     // Diffuse emission
@@ -165,7 +170,7 @@ vec3 getPbr(
 
     // Direct sunlight
     vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * lcalcDiffuse(0) * attenuation;
-    light += getLightPbr(surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, subsurface, ao, mat);
+    light += getLightPbr(surfPos, surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, shadowFadeStart, subsurface, ao, mat);
 
     // Sky (ambient)
     // TODO: Better ambiance
@@ -201,7 +206,7 @@ vec3 getPbr(
             // Final cap to make sure that lights don't abruptly cut off beyond the maximum light distance
             * min((1.0 - lightDist / lightMaxRadius) * 3.0, 1.0);
 
-        light += getLightPbr(surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1.0, subsurface, ao, mat);
+        light += getLightPbr(surfPos, surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1.0, 1.0, subsurface, ao, mat);
     }
 
     return light;

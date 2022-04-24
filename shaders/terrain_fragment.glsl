@@ -123,6 +123,11 @@ void main()
         reflectance,
         metalness,
         shadowing,
+        #if SHADOWS
+            shadowFadeStart,
+        #else
+            3500.0,
+        #endif
         ao,
         getEmissionColor().rgb,
         0.0,

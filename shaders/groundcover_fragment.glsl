@@ -101,6 +101,11 @@ void main()
         0.5, // base reflectance
         0.0, // metalness
         shadowing,
+        #if SHADOWS
+            shadowFadeStart,
+        #else
+            3500.0,
+        #endif
         ao,
         vec3(0.0),
         0.5,

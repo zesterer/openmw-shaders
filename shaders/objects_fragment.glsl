@@ -241,6 +241,11 @@ void main()
         reflectance,
         metalness,
         shadowing,
+        #if SHADOWS
+            shadowFadeStart,
+        #else
+            3500.0,
+        #endif
         ao,
         emission * color,
         leafiness,
