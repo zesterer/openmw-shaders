@@ -85,14 +85,14 @@ vec3 getLightPbr(
     vec3 subsurfaceScatter = ((subsurface == 0.0) ? 0.0 : (ao * isShadow * subsurface * pow(max(glare, 0.0), 10.0) * 0.75 * scatter_factor)) * albedo;
 
     // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
-    float occlusion = min(ao, isShadow) * lambert;
+    float occlusion = min(ao, isShadow);
 
     vec3 solidLight = brdf * occlusion;
-    vec3 leafLight = mix(0.0, glare * 0.25 + 0.75, scatter_factor) * ao * isShadow * albedo * 0.2; // Non-physical
+    vec3 leafLight = mix(solidLight * 0.3, (glare * 0.25 + 0.75) * 0.2 * ao * isShadow * albedo, scatter_factor); // Non-physical
 
     // Combine reflected light and sub-surface scattering together with the incoming radiance to find the final light
     // reflected/emitted
-    return radiance * (mix(solidLight, leafLight, mat) + subsurfaceScatter);
+    return radiance * (mix(solidLight * lambert, leafLight, mat) + subsurfaceScatter);
 }
 
 vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
