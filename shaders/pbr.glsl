@@ -48,6 +48,10 @@ vec3 getLightPbr(
 
     vec3 halfVec = normalize(lightDir + viewDir);
 
+    if (mat > 0.0) {
+        surfNorm = viewDir;
+    }
+
     float nDotV = max(dot(surfNorm, viewDir), 0.0);
     float nDotL = max(dot(surfNorm, lightDir), 0.0);
 
