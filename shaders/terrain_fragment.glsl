@@ -116,7 +116,7 @@ void main()
     vec3 albedo; float ao;
     colorToPbr(color, albedo, ao);
 
-    #if PROCEDURAL_DETAIL
+    #if PROCEDURAL_DETAIL_ENABLED
         // Apply procedural detail to distant terrain
         proceduralDetail(wPos, length(passViewPos), viewNormal, albedo);
     #endif

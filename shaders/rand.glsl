@@ -88,5 +88,5 @@ void proceduralDetail(vec3 wPos, float dist, inout vec3 normal, inout vec3 albed
         vec3(merge)
     ) * clamp((dist - min_dist) * fade, 0.0, 1.0);
 
-    normal = normalize(normal + nz * 0.85);
+    normal = normalize(normal + nz * procedural_detail_level);
 }
