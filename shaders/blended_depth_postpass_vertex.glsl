@@ -17,7 +17,7 @@ void main()
     diffuseMapUV = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 
     vec4 pos = gl_Vertex;
-    if (texture2D(diffuseMap, diffuseMapUV).a < 1 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
+    if (texture2D(diffuseMap, diffuseMapUV).a < 0.2 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
         //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
         pos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
             * 0.01

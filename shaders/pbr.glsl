@@ -80,13 +80,16 @@ vec3 getLightPbr(
     // Metals don't emit light diffusely
     kDiff *= 1.0 - metalness;
 
+    // Color of specular reflections is determined by metalness and surface alignment and angle of incidence
+    vec3 specular_albedo = mix(vec3(1.0), albedo, 1.0 - (1.0 - metalness) * (1.0 - nDotL));
+
     // The final diffuse and specular reflectance of the surface
-    vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular;
+    vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular * specular_albedo;
 
     // Some surfaces scatter light internally. This models that effect, but non-physically
     float max_scatter_dist_inv = 1.0 / shadowFadeStart;
     float scatter_factor = max(1.0 - length(surfPos) * max_scatter_dist_inv, 0.0);
-    vec3 subsurfaceScatter = ((subsurface == 0.0) ? 0.0 : (ao * isShadow * subsurface * pow(max(glare, 0.0), 4.0) * 0.75 * scatter_factor)) * albedo;
+    vec3 subsurfaceScatter = ((subsurface == 0.0) ? 0.0 : (ao * isShadow * subsurface * pow(max(glare, 0.0), 4.0) * 0.5 * scatter_factor)) * albedo;
 
     // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
     float occlusion = min(ao, isShadow);
@@ -182,7 +185,7 @@ vec3 getPbr(
     vec3 skyColor = getAmbientColor(isntDusk, isInterior) * attenuation;
     // Even ambient light has some directionality, favouring surfaces facing toward the sky. Account for that.
     float ambientDirectionalBias = (max(dot(surfNorm, sunDir), 0.0) * 0.5 + 0.5) * 1.5;
-    light += albedo * ao * 0.75 * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
+    light += albedo * ao * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
 
     for (int i = @startLight; i < @endLight; ++i) {
         int lightIdx =
