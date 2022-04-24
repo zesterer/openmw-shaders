@@ -86,7 +86,7 @@ vec3 getLightPbr(
     // Some surfaces scatter light internally. This models that effect, but non-physically
     float max_scatter_dist_inv = 1.0 / shadowFadeStart;
     float scatter_factor = max(1.0 - length(surfPos) * max_scatter_dist_inv, 0.0);
-    vec3 subsurfaceScatter = ((subsurface == 0.0) ? 0.0 : (ao * isShadow * subsurface * pow(max(glare, 0.0), 10.0) * 0.75 * scatter_factor)) * albedo;
+    vec3 subsurfaceScatter = ((subsurface == 0.0) ? 0.0 : (ao * isShadow * subsurface * pow(max(glare, 0.0), 4.0) * 0.75 * scatter_factor)) * albedo;
 
     // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
     float occlusion = min(ao, isShadow);
@@ -178,7 +178,7 @@ vec3 getPbr(
 
     // Sky (ambient)
     // TODO: Better ambiance
-    float ambientFresnel = mix(1.0, max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1.0 - mat);
+    float ambientFresnel = mix(max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1.0, subsurface);
     vec3 skyColor = getAmbientColor(isntDusk, isInterior) * attenuation;
     // Even ambient light has some directionality, favouring surfaces facing toward the sky. Account for that.
     float ambientDirectionalBias = (max(dot(surfNorm, sunDir), 0.0) * 0.5 + 0.5) * 1.5;
