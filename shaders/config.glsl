@@ -84,7 +84,7 @@
     #define PROCEDURAL_DETAIL_ENABLED 1
     #define PROCEDURAL_DETAIL_LEVEL 0.4
 #else
-    #error "Invalid shader preset selected!"
+    #error Selected shader preset does not exist!
 #endif
 
 const float saturation_factor = SATURATION_FACTOR;
