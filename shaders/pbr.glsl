@@ -103,7 +103,7 @@ vec3 getLightPbr(
 }
 
 vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
-    const vec3 interiorSunColor = vec3(2.8, 2.2, 1.6);
+    const vec3 interiorSunColor = vec3(6.0, 5.2, 3.0);
     return (isInterior == 1.0) ? interiorSunColor : mix(
         mix(
             vec3(0.5, 1.0, 2.0),
@@ -117,7 +117,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
 }
 
 vec3 getAmbientColor(float isntDusk, float isInterior) {
-    const vec3 interiorAmbientColor = vec3(0.5, 0.4, 0.25);
+    const vec3 interiorAmbientColor = vec3(0.25, 0.2, 0.13);
     return (isInterior == 1.0) ? interiorAmbientColor : mix(
         vec3(0.3, 0.4, 0.8),
         vec3(1.2, 1.5, 2.5),
@@ -220,7 +220,7 @@ vec3 getPbr(
 }
 
 void untonemap(inout vec3 color) {
-    const float k = 2.0;
+    const float k = 1.5;
     color = -log2(1.0 - color);
     color = vec3(1.0) - exp2(color * -k);
 }
