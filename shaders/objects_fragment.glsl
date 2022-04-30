@@ -209,7 +209,7 @@ void main()
 #else
     vec3 matSpec = getSpecularColor().xyz;
     matSpecToPbr(matSpec, roughness, metalness, reflectance);
-    shininess = min(shininess * 20.0, 1.0); // Why the hell is this necessary?!
+    //shininess = min(shininess * 20.0, 1.0); // Why the hell is this necessary?!
     roughness *= mix(0.9, 0.1, shininess);
     metalness *= mix(0.0, 0.75, shininess);
 #endif
@@ -250,7 +250,6 @@ void main()
         waterDepth,
         leafiness
     );
-    //gl_FragData[0].xyz = matSpec;
 #endif
 
 #if @envMap && !@preLightEnv

@@ -64,6 +64,8 @@ uniform float emissiveMult;
 #endif
 varying vec3 passViewPos;
 varying vec3 passNormal;
+varying float normZ;
+varying float normZ2;
 
 uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ModelViewMatrix;

@@ -49,6 +49,14 @@
     // 1.5 => Very strong, very low-contrast shadows
     #define AMBIANCE_STRENGTH 1.25
 
+    // The intensity of interior light
+    // Recommended values:
+    // 0.5 => Low, like being in space
+    // 0.75 => Medium, more realistic
+    // 1.0 => Strong, closer to the original game
+    // 1.5 => Very strong, very low-contrast shadows
+    #define INTERIOR_STRENGTH 1.0
+
     // The extent of procedural detailing on distant terrain (increasing this doesn't impact performance)
     // Recommended values:
     // 0.0 => Disabled entirely (slightly better for performance)
@@ -71,13 +79,15 @@
     #define NORMAL_MAP_INTENSITY 0.3
     #define SUNLIGHT_STRENGTH 0.8
     #define AMBIANCE_STRENGTH 1.25
+    #define INTERIOR_STRENGTH 2.0
     #define PROCEDURAL_DETAIL_LEVEL 0.5
     #define WIND_AMPLITUDE 0.2
 #elif (PRESET == ZESTERER)
-    #define SATURATION_FACTOR 2.0
+    #define SATURATION_FACTOR 1.65
     #define NORMAL_MAP_INTENSITY 0.75
     #define SUNLIGHT_STRENGTH 1.0
     #define AMBIANCE_STRENGTH 0.8
+    #define INTERIOR_STRENGTH 2.0
     #define PROCEDURAL_DETAIL_LEVEL 1.0
     #define WIND_AMPLITUDE 0.65
 #elif (PRESET == MGE_XE)
@@ -85,6 +95,7 @@
     #define NORMAL_MAP_INTENSITY 0.25
     #define SUNLIGHT_STRENGTH 0.35
     #define AMBIANCE_STRENGTH 1.5
+    #define INTERIOR_STRENGTH 2.0
     #define PROCEDURAL_DETAIL_LEVEL 0.4
     #define WIND_AMPLITUDE 0.5
 #else
@@ -95,6 +106,7 @@ const float saturation_factor = SATURATION_FACTOR;
 const float normal_map_intensity = NORMAL_MAP_INTENSITY;
 const float sunlight_strength = SUNLIGHT_STRENGTH;
 const float ambiance_strength = AMBIANCE_STRENGTH;
+const float interior_strength = INTERIOR_STRENGTH;
 const float procedural_detail_level = PROCEDURAL_DETAIL_LEVEL;
 
 #endif

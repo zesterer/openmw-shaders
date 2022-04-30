@@ -104,25 +104,25 @@ vec3 getLightPbr(
 
 vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
     const vec3 interiorSunColor = vec3(6.0, 5.2, 3.0);
-    return (isInterior == 1.0) ? interiorSunColor : mix(
+    return (isInterior == 1.0) ? (interiorSunColor * interior_strength) : (mix(
         mix(
             vec3(0.5, 1.0, 2.0),
             // TODO: Actually detect time of day and make dawn/dusk more red
             vec3(6.0, 5.0, 0.5),
             clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
         ),
-        vec3(6.0, 5.3, 4.8),
+        vec3(8.0, 7.0, 6.0),
         isntDusk
-    ) * sunlight_strength;
+    ) * sunlight_strength);
 }
 
 vec3 getAmbientColor(float isntDusk, float isInterior) {
     const vec3 interiorAmbientColor = vec3(0.25, 0.2, 0.13);
-    return (isInterior == 1.0) ? interiorAmbientColor : mix(
+    return (isInterior == 1.0) ? (interiorAmbientColor * interior_strength) : (mix(
         vec3(0.3, 0.4, 0.8),
         vec3(1.2, 1.5, 2.5),
         isntDusk
-    ) * ambiance_strength;
+    ) * ambiance_strength);
 }
 
 vec3 getPbr(
