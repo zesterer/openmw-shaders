@@ -103,24 +103,24 @@ vec3 getLightPbr(
 }
 
 vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
-    const vec3 interiorSunColor = vec3(1.0, 0.85, 0.6) * 4.0;
+    const vec3 interiorSunColor = vec3(2.8, 2.2, 1.6);
     return (isInterior == 1.0) ? interiorSunColor : mix(
         mix(
-            vec3(0.8, 1.5, 3.0),
+            vec3(0.5, 1.0, 2.0),
             // TODO: Actually detect time of day and make dawn/dusk more red
-            vec3(8.0, 6.0, 2.0),
+            vec3(6.0, 5.0, 0.5),
             clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
         ),
-        vec3(9.0, 8.0, 7.2),
+        vec3(6.0, 5.3, 4.8),
         isntDusk
     ) * sunlight_strength;
 }
 
 vec3 getAmbientColor(float isntDusk, float isInterior) {
-    const vec3 interiorAmbientColor = vec3(1.0, 0.8, 0.5) * 0.9;
+    const vec3 interiorAmbientColor = vec3(0.5, 0.4, 0.25);
     return (isInterior == 1.0) ? interiorAmbientColor : mix(
-        vec3(0.4, 0.5, 1.0),
-        vec3(1.4, 1.8, 3.0),
+        vec3(0.3, 0.4, 0.8),
+        vec3(1.2, 1.5, 2.5),
         isntDusk
     ) * ambiance_strength;
 }
@@ -219,9 +219,16 @@ vec3 getPbr(
     return light;
 }
 
+void untonemap(inout vec3 color) {
+    const float k = 2.0;
+    color = -log2(1.0 - color);
+    color = vec3(1.0) - exp2(color * -k);
+}
+
 // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
 // As a result, this entire thing is an enormous hack that lets us do that!
 void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
+    untonemap(color);
     ao = min(length(color) * 0.58, 1.0);
     float saturation = mix(1.0, saturation_factor, ao);
     albedo = clamp(pow(normalize(color), vec3(saturation)) * mix(saturation, 1.5, 0.5) - 0.25, vec3(0.0), vec3(1.0));
