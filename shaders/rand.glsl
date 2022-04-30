@@ -75,16 +75,15 @@ vec3 noised(vec2 x) {
 }
 
 void proceduralDetail(vec3 wPos, float dist, inout vec3 normal, inout vec3 albedo) {
-    const float level_scale = 0.001;
+    const float avg_scale = 0.001;
     const float min_dist = 5000.0;
     const float fade = 1.0 / 5000.0;
 
-    float level0_scale = max(floor(dist * level_scale) / level_scale, 0.0000001);
-    float level1_scale = max(ceil(dist * level_scale) / level_scale, 0.0000001);
-    float merge = fract(dist * level_scale);
+    vec2 level_scales = max(vec2(floor(dist * avg_scale), ceil(dist * avg_scale)) / vec2(avg_scale), vec2(0.00001));
+    float merge = fract(dist * avg_scale);
     vec3 nz = mix(
-        noised(wPos.xy * 600.0 / level0_scale),
-        noised(wPos.xy * 600.0 / level1_scale),
+        noised(wPos.xy * 600.0 / level_scales.x),
+        noised(wPos.xy * 600.0 / level_scales.y),
         vec3(merge)
     ) * clamp((dist - min_dist) * fade, 0.0, 1.0);
 

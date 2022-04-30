@@ -65,7 +65,6 @@ uniform float emissiveMult;
 varying vec3 passViewPos;
 varying vec3 passNormal;
 
-uniform float osg_SimulationTime;
 uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ModelViewMatrix;
 uniform sampler2D diffuseMap;
@@ -77,7 +76,7 @@ varying float leafiness;
 
 #include "lighting.glsl"
 #include "depth.glsl"
-
+#include "sway.glsl"
 
 void main(void)
 {
@@ -89,14 +88,7 @@ void main(void)
     modelPos = gl_Vertex;
     leafiness = 0.0;
     #if @diffuseMap
-        if (texture2D(diffuseMap, diffuseMapUV).a < 0.2 && dot(gl_FrontMaterial.emission.rgb, vec3(1.0)) == 0.0) {
-            //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
-            modelPos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
-                * 0.01
-                * gl_Vertex.z
-            ;
-            leafiness = 1.0;
-        }
+        doSway(diffuseMap, diffuseMapUV, modelPos.xyz, leafiness);
     #endif
     gl_Position = projectionMatrix * (gl_ModelViewMatrix * modelPos);
 

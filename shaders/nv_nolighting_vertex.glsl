@@ -18,13 +18,13 @@ uniform vec4 falloffParams;
 varying vec3 passViewPos;
 varying float passFalloff;
 
-uniform float osg_SimulationTime;
 uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ModelViewMatrix;
 uniform sampler2D diffuseMap;
 
 #include "vertexcolors.glsl"
 #include "depth.glsl"
+#include "sway.glsl"
 
 void main(void)
 {
@@ -32,18 +32,11 @@ void main(void)
         diffuseMapUV = (gl_TextureMatrix[@diffuseMapUV] * gl_MultiTexCoord@diffuseMapUV).xy;
     #endif
 
-    vec4 pos = gl_Vertex;
+    vec4 modelPos = gl_Vertex;
     #if @diffuseMap
-        if (texture2D(diffuseMap, diffuseMapUV).a < 0.2 && dot(gl_FrontMaterial.emission.rgb, vec3(1)) == 0) {
-            //vec3 wpos = (osg_ViewMatrixInverse * osg_ModelViewMatrix * gl_Vertex).xyz;
-            modelPos.xyz += sin(osg_SimulationTime + gl_Vertex.yzx * 0.01)
-                * 0.01
-                * gl_Vertex.z
-            ;
-            roughness = 1.0;
-        }
+    doSway(diffuseMap, diffuseMapUV, modelPos.xyz, leafiness);
     #endif
-    gl_Position = projectionMatrix * (gl_ModelViewMatrix * pos);
+    gl_Position = projectionMatrix * (gl_ModelViewMatrix * modelPos);
 
     vec4 viewPos = (gl_ModelViewMatrix * gl_Vertex);
     gl_ClipVertex = viewPos;

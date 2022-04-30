@@ -116,10 +116,10 @@ void main()
     vec3 albedo; float ao;
     colorToPbr(color, albedo, ao);
 
-    #if PROCEDURAL_DETAIL_ENABLED
+    if (PROCEDURAL_DETAIL_LEVEL > 0.0) {
         // Apply procedural detail to distant terrain
         proceduralDetail(wPos, length(passViewPos), viewNormal, albedo);
-    #endif
+    }
 
     gl_FragData[0].xyz = getPbr(
         osg_ViewMatrixInverse,

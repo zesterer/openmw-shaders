@@ -49,40 +49,44 @@
     // 1.5 => Very strong, very low-contrast shadows
     #define AMBIANCE_STRENGTH 1.25
 
-    // Enable procedural detailing on distant terrain, adding detail and depth
-    // Recommended values:
-    // 0 => Disabled
-    // 1 => Enabled
-    #define PROCEDURAL_DETAIL_ENABLED 1
-
     // The extent of procedural detailing on distant terrain (increasing this doesn't impact performance)
     // Recommended values:
+    // 0.0 => Disabled entirely (slightly better for performance)
     // 0.25 => Very low, almost too subtle to notice
     // 0.5 => Medium, nice with vanilla textures
     // 0.75 => Moderate, looks better if you have a normal map mod for near terrain too
     // 1.0 => Strong, harsh craggs and details
     #define PROCEDURAL_DETAIL_LEVEL 0.75
+
+    // The amplitude of wind swaying applied to leaves
+    // Recommended values:
+    // 0.0 => Disabled entirely (slightly better for performance)
+    // 0.2 => Very subtle
+    // 0.6 => Regular
+    // 1.0 => Strong
+    // 2.0 => Hurricane
+    #define WIND_AMPLITUDE 0.5
 #elif (PRESET == VANILLA)
     #define SATURATION_FACTOR 1.0
     #define NORMAL_MAP_INTENSITY 0.3
     #define SUNLIGHT_STRENGTH 0.8
     #define AMBIANCE_STRENGTH 1.25
-    #define PROCEDURAL_DETAIL_ENABLED 1
     #define PROCEDURAL_DETAIL_LEVEL 0.5
+    #define WIND_AMPLITUDE 0.2
 #elif (PRESET == ZESTERER)
     #define SATURATION_FACTOR 2.0
     #define NORMAL_MAP_INTENSITY 0.5
     #define SUNLIGHT_STRENGTH 1.25
     #define AMBIANCE_STRENGTH 0.8
-    #define PROCEDURAL_DETAIL_ENABLED 1
-    #define PROCEDURAL_DETAIL_LEVEL 0.85
+    #define PROCEDURAL_DETAIL_LEVEL 1.0
+    #define WIND_AMPLITUDE 0.75
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.5
     #define NORMAL_MAP_INTENSITY 0.25
     #define SUNLIGHT_STRENGTH 0.35
     #define AMBIANCE_STRENGTH 1.5
-    #define PROCEDURAL_DETAIL_ENABLED 1
     #define PROCEDURAL_DETAIL_LEVEL 0.4
+    #define WIND_AMPLITUDE 0.5
 #else
     #error Selected shader preset does not exist!
 #endif
