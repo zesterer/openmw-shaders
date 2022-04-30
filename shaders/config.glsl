@@ -79,7 +79,7 @@
     #define SUNLIGHT_STRENGTH 1.25
     #define AMBIANCE_STRENGTH 0.8
     #define PROCEDURAL_DETAIL_LEVEL 1.0
-    #define WIND_AMPLITUDE 0.75
+    #define WIND_AMPLITUDE 0.65
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.5
     #define NORMAL_MAP_INTENSITY 0.25
