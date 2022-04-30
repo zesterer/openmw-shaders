@@ -92,7 +92,7 @@ vec3 getLightPbr(
     vec3 subsurfaceScatter = ((subsurface == 0.0) ? 0.0 : (ao * isShadow * subsurface * pow(max(glare, 0.0), 4.0) * 0.5 * scatter_factor)) * albedo;
 
     // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
-    float occlusion = min(ao, isShadow);
+    float occlusion = isShadow * ao;
 
     vec3 solidLight = brdf * occlusion;
     vec3 leafLight = mix(solidLight * 0.3, (glare * 0.25 + 0.75) * 0.2 * ao * isShadow * albedo, scatter_factor); // Non-physical
@@ -103,10 +103,10 @@ vec3 getLightPbr(
 }
 
 vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
-    const vec3 interiorSunColor = vec3(6.0, 5.2, 3.0);
+    const vec3 interiorSunColor = vec3(1.8, 1.6, 1.3);
     return (isInterior == 1.0) ? (interiorSunColor * interior_strength) : (mix(
         mix(
-            vec3(0.5, 1.0, 2.0),
+            vec3(0.25, 1.0, 2.0),
             // TODO: Actually detect time of day and make dawn/dusk more red
             vec3(6.0, 5.0, 0.5),
             clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
@@ -117,7 +117,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
 }
 
 vec3 getAmbientColor(float isntDusk, float isInterior) {
-    const vec3 interiorAmbientColor = vec3(0.25, 0.2, 0.13);
+    const vec3 interiorAmbientColor = vec3(0.3, 0.25, 0.2);
     return (isInterior == 1.0) ? (interiorAmbientColor * interior_strength) : (mix(
         vec3(0.3, 0.4, 0.8),
         vec3(1.2, 1.5, 2.5),
@@ -176,13 +176,13 @@ vec3 getPbr(
     vec3 attenuation = (waterDepth == 0.0 || isInterior == 1.0) ? vec3(1.0) : exp(-MU_WATER * waterDepth * unitsToMetres);
 
     // Direct sunlight
-    vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * lcalcDiffuse(0) * attenuation;
+    vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) /* * lcalcDiffuse(0)*/ * attenuation;
     light += getLightPbr(surfPos, surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, shadowFadeStart, subsurface, ao, mat);
 
     // Sky (ambient)
     // TODO: Better ambiance
     float ambientFresnel = mix(max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1.0, subsurface);
-    vec3 skyColor = getAmbientColor(isntDusk, isInterior) * attenuation;
+    vec3 skyColor = getAmbientColor(isntDusk, isInterior) /* * lcalcDiffuse(0)*/ * attenuation;
     // Even ambient light has some directionality, favouring surfaces facing toward the sky. Account for that.
     float ambientDirectionalBias = (max(dot(surfNorm, sunDir), 0.0) * 0.5 + 0.5) * 1.5;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
@@ -207,7 +207,7 @@ vec3 getPbr(
 
         vec3 lightColor = lcalcDiffuse(lightIdx)
             // The strength of a light reduces with distance
-            * lcalcIllumination(lightIdx, lightDist) * 10.0
+            * lcalcIllumination(lightIdx, lightDist) * 20.0
             // Make lights less powerful during the day (otherwise, they're a bit overpowering)
             * max(1.0 - sunLightLevel, 0.5)
             // Final cap to make sure that lights don't abruptly cut off beyond the maximum light distance

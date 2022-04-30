@@ -79,7 +79,7 @@
     #define NORMAL_MAP_INTENSITY 0.3
     #define SUNLIGHT_STRENGTH 0.8
     #define AMBIANCE_STRENGTH 1.25
-    #define INTERIOR_STRENGTH 2.0
+    #define INTERIOR_STRENGTH 1.0
     #define PROCEDURAL_DETAIL_LEVEL 0.5
     #define WIND_AMPLITUDE 0.2
 #elif (PRESET == ZESTERER)
@@ -87,17 +87,17 @@
     #define NORMAL_MAP_INTENSITY 0.75
     #define SUNLIGHT_STRENGTH 1.0
     #define AMBIANCE_STRENGTH 0.8
-    #define INTERIOR_STRENGTH 2.0
+    #define INTERIOR_STRENGTH 1.0
     #define PROCEDURAL_DETAIL_LEVEL 1.0
-    #define WIND_AMPLITUDE 0.65
+    #define WIND_AMPLITUDE 0.4
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.5
     #define NORMAL_MAP_INTENSITY 0.25
     #define SUNLIGHT_STRENGTH 0.35
     #define AMBIANCE_STRENGTH 1.5
-    #define INTERIOR_STRENGTH 2.0
+    #define INTERIOR_STRENGTH 1.0
     #define PROCEDURAL_DETAIL_LEVEL 0.4
-    #define WIND_AMPLITUDE 0.5
+    #define WIND_AMPLITUDE 0.4
 #else
     #error Selected shader preset does not exist!
 #endif
