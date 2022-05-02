@@ -1,4 +1,4 @@
-#version 120
+#version 130
 
 #if @useUBO
     #extension GL_ARB_uniform_buffer_object : require
@@ -71,12 +71,16 @@ void main()
     viewNormal = normalize(gl_NormalMatrix * (tbnTranspose * normalize((normalTex.xyz * 2.0 - 1.0) * normal_map_scale)));
 #endif
 
-    vec4 diffuseTex = texture2D(diffuseMap, adjustedUV);
-    gl_FragData[0] = vec4(diffuseTex.xyz, 1.0);
-
     vec3 wPos = (osg_ViewMatrixInverse * vec4(passViewPos, 1)).xyz;
     vec3 wPosModel = (gl_ModelViewMatrixInverse * vec4(passViewPos, 1)).xyz;
     float waterDepth = max(-wPosModel.z, 0);
+
+    if (PROCEDURAL_DETAIL_LEVEL > 0.0) {
+        proceduralUV(wPos, length(passViewPos), adjustedUV);
+    }
+
+    vec4 diffuseTex = texture2D(diffuseMap, adjustedUV);//textureBicubic(diffuseMap, adjustedUV);
+    gl_FragData[0] = vec4(diffuseTex.xyz, 1.0);
 
 #if @blendMap
     vec2 blendMapUV = (gl_TextureMatrix[1] * vec4(uv, 0.0, 1.0)).xy;
@@ -111,14 +115,14 @@ void main()
     lighting = passLighting + shadowDiffuseLighting * shadowing;
     gl_FragData[0].xyz *= lighting;
 #else
-    vec3 color = gl_FragData[0].rgb * diffuseColor.rgb;
+    vec3 color = gl_FragData[0].rgb;// * mix(vec3(1.0), diffuseColor.rgb, clamp(passViewPos.x * 10.0, 0.0, 1.0));
 
     vec3 albedo; float ao;
     colorToPbr(color, albedo, ao);
 
     if (PROCEDURAL_DETAIL_LEVEL > 0.0) {
         // Apply procedural detail to distant terrain
-        proceduralDetail(wPos, length(passViewPos), viewNormal, albedo);
+        proceduralNormal(wPos, length(passViewPos), viewNormal);
     }
 
     gl_FragData[0].xyz = getPbr(
