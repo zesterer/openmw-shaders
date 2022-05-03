@@ -76,7 +76,7 @@ void main()
     float waterDepth = max(-wPosModel.z, 0);
 
     if (PROCEDURAL_DETAIL_LEVEL > 0.0) {
-        proceduralUV(wPos, length(passViewPos), adjustedUV);
+        //proceduralUV(wPos, length(passViewPos), adjustedUV);
     }
 
     vec4 diffuseTex = texture2D(diffuseMap, adjustedUV);//textureBicubic(diffuseMap, adjustedUV);

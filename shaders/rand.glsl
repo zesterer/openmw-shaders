@@ -111,7 +111,7 @@ void proceduralUV(vec3 wPos, float dist, inout vec2 uv) {
         noise(wPos.xy * 0.004),
         noise(wPos.xy * 0.004 + 0.5)
     )
-        * 0.05
+        * 0.03
         * min((1.0 - abs(uv - 0.5) * 2.0) * 25.0, vec2(1.0))
         * clamp((dist - min_dist) * fade, 0.0, 1.0);
 }
