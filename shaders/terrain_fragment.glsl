@@ -115,7 +115,7 @@ void main()
     lighting = passLighting + shadowDiffuseLighting * shadowing;
     gl_FragData[0].xyz *= lighting;
 #else
-    vec3 color = gl_FragData[0].rgb;// * mix(vec3(1.0), diffuseColor.rgb, clamp(passViewPos.x * 10.0, 0.0, 1.0));
+    vec3 color = gl_FragData[0].rgb * mix(vec3(1.0), diffuseColor.rgb, noise(wPos.xy * 0.005));
 
     vec3 albedo; float ao;
     colorToPbr(color, albedo, ao);
