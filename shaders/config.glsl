@@ -89,7 +89,7 @@
     #define AMBIANCE_STRENGTH 0.8
     #define INTERIOR_STRENGTH 1.0
     #define PROCEDURAL_DETAIL_LEVEL 1.0
-    #define WIND_AMPLITUDE 0.4
+    #define WIND_AMPLITUDE 0.75
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.5
     #define NORMAL_MAP_INTENSITY 0.25

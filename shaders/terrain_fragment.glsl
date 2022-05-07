@@ -148,6 +148,8 @@ void main()
     //gl_FragData[0].xyz = matSpec;
 #endif
 
+    clampLightingResult(gl_FragData[0].xyz);
+
 #if @radialFog
     float fogValue = clamp((euclideanDepth - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
 #else

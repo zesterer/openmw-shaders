@@ -256,6 +256,8 @@ void main()
     gl_FragData[0].xyz += envEffect;
 #endif
 
+    clampLightingResult(gl_FragData[0].xyz);
+
 #if @radialFog
     float depth;
     // For the less detailed mesh of simple water we need to recalculate depth on per-pixel basis
