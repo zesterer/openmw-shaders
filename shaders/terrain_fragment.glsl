@@ -99,7 +99,7 @@ void main()
 #if @specularMap
     vec3 matSpec = vec3(diffuseTex.a);
     matSpecToPbr(matSpec, roughness, metalness, reflectance);
-    roughness *= mix(1.0, 0.3, shininess * specTex.a);
+    roughness *= mix(1.0, 0.3, shininess);
 #else
     vec3 matSpec = getSpecularColor().xyz;
     matSpecToPbr(matSpec, roughness, metalness, reflectance);
