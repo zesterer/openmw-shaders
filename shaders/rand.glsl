@@ -116,6 +116,7 @@ void proceduralUV(vec3 wPos, float dist, inout vec2 uv) {
         * clamp((dist - min_dist) * fade, 0.0, 1.0);
 }
 
+/*
 // from http://www.java-gaming.org/index.php?topic=35123.0
 vec4 cubic(float v){
     vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
@@ -160,3 +161,4 @@ vec4 textureBicubic(sampler2D sampler, vec2 texCoords){
        mix(sample3, sample2, sx), mix(sample1, sample0, sx)
     , sy);
 }
+*/
