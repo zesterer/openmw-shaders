@@ -118,7 +118,7 @@ void main()
 #else
     vec3 color = gl_FragData[0].rgb;
 
-    color = color * 1.15 - 0.075; // TODO: Why?! Bad vanilla textures?
+    color = color * 1.1 - 0.05; // TODO: Why?! Bad vanilla textures?
     vec3 albedo; float ao;
     colorToPbr(color, albedo, ao);
 
