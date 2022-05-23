@@ -120,7 +120,7 @@ vec3 getAmbientColor(float isntDusk, float isInterior) {
     const vec3 interiorAmbientColor = vec3(0.3, 0.25, 0.2);
     return (isInterior == 1.0) ? (interiorAmbientColor * interior_strength) : (mix(
         vec3(0.15, 0.2, 0.4),
-        vec3(1.2, 1.5, 2.5),
+        vec3(1.2, 1.5, 1.8),
         isntDusk
     ) * ambiance_strength);
 }
