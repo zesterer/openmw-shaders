@@ -2,20 +2,6 @@
 
 Play Morrowind with PBR shaders like it's 2022, not 2002.
 
-## Features
-
-- **Efficient**: in my (very unscientific) tests, only a ~12% framerate hit compared to vanilla OpenMW shaders
-- **PBR (Physically-Based Rendering) lighting**: surfaces reflect light consistently and realistically
-- **Improved sun light colours**: dawn and dusk are red, midday is yellow, night is blue
-- **Better ambient illumination**: ambient light is omnidirectional scattered light from the sky, not direct sunlight
-- **Brighter point lights**: lights in the scene emit more light, illuminating the world in a more immersive manner
-- **Underwater light attenuation**: objects under the water shift towards blue with depth, adding realism
-- **Leaves sway in the wind**: unfortunately, Morrowind has no realiable way to mark leaves so detection is imperfect
-- **Sub-surface scattering**: thin objects like grass and leaves allow bright direct light to scatter through them
-- **Procedural detail for distant land**: terrain in the distance maintains sharp details
-- **Wave shader**: Dynamic waves, froth, and backwash on beaches
-- **Easy to configure**: if you prefer realism over bright colours, you can [tweak the shaders](#configuration) accordingly!
-
 ## Screenshots
 
 ![Early morning in the grasslands east of Vivec](https://i.imgur.com/09AvjA6.png)
@@ -34,12 +20,19 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
     <img src="https://i.imgur.com/WeZGIGe.png" alt="Light attenuation in water">
 </details>
 
-## Recommendations
+## Features
 
-- This mod works well with my [Volumetric Clouds & Mist Mod](https://github.com/zesterer/openmw-volumetric-clouds).
-- Use high-resolution textures, normal maps, etc. where possible
-- Enable [per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting)
-- Disable [light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting)
+- **Efficient**: in my (very unscientific) tests, only a ~12% framerate hit compared to vanilla OpenMW shaders
+- **PBR (Physically-Based Rendering) lighting**: surfaces reflect light consistently and realistically
+- **Improved sun light colours**: dawn and dusk are red, midday is yellow, night is blue
+- **Better ambient illumination**: ambient light is omnidirectional scattered light from the sky, not direct sunlight
+- **Brighter point lights**: lights in the scene emit more light, illuminating the world in a more immersive manner
+- **Underwater light attenuation**: objects under the water shift towards blue with depth, adding realism
+- **Leaves sway in the wind**: unfortunately, Morrowind has no realiable way to mark leaves so detection is imperfect
+- **Sub-surface scattering**: thin objects like grass and leaves allow bright direct light to scatter through them
+- **Procedural detail for distant land**: terrain in the distance maintains sharp details
+- **Wave shader**: Dynamic waves, froth, and backwash on beaches
+- **Easy to configure**: if you prefer realism over bright colours, you can [tweak the shaders](#configuration) accordingly!
 
 ## Installation
 
@@ -62,3 +55,14 @@ about installing custom shader packs.
 
 There are various presets and parameters that can be changed via
 [`shaders/config.glsl`](https://github.com/zesterer/openmw-shaders/blob/main/shaders/config.glsl).
+
+## Recommendations
+
+- This mod works well with my [Volumetric Clouds & Mist Mod](https://github.com/zesterer/openmw-volumetric-clouds).
+- Use high-resolution textures, normal maps, etc. where possible
+- Enable [per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting)
+- Disable [light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting)
+
+## Getting Help & Feedback
+
+Got a question or a suggestion? Feel free to [open a discussion topic](https://github.com/zesterer/openmw-shaders/discussions/new).
