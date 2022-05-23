@@ -91,7 +91,7 @@ void main()
     vec4 diffuseColor = getDiffuseColor();
     gl_FragData[0].a *= diffuseColor.a;
 
-    float roughness = 0.5;
+    float roughness = 0.6;
     float reflectance = 1.0;
     float metalness = 0.0;
 
@@ -116,8 +116,9 @@ void main()
     lighting = passLighting + shadowDiffuseLighting * shadowing;
     gl_FragData[0].xyz *= lighting;
 #else
-    vec3 color = gl_FragData[0].rgb * mix(vec3(1.0), diffuseColor.rgb, noise(wPos.xy * 0.005));
+    vec3 color = gl_FragData[0].rgb;
 
+    color = color * 1.15 - 0.075; // TODO: Why?! Bad vanilla textures?
     vec3 albedo; float ao;
     colorToPbr(color, albedo, ao);
 
