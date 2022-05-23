@@ -127,12 +127,16 @@ void main()
     }
 
     #if (WAVES == 1)
-        float waterH = doWave(wPos.xy, 0.0, 0.2);
-        float prevWaterH = doWave(wPos.xy, -1.0, 1.5);
-        if (wPos.z < waterH && wPos.z > prevWaterH) {
-            albedo += 0.5;
-        } else if (wPos.z > waterH && wPos.z < prevWaterH) {
-            albedo *= 0.75;
+        float waterH = doWave(wPos.xy, 0.0, 0.2, 0.0);
+        float prevWaterH = doWave(wPos.xy, -1.5, 0.1, 0.5);
+        float wave_depth = 5.0;
+        if (wPos.z < waterH && wPos.z > waterH - wave_depth) {
+            albedo += clamp(1.0 - (waterH - wPos.z) / wave_depth, 0.0, 1.0) * 0.75;
+        }
+        if (wPos.z < waterH) {
+            albedo *= vec3(0.7, 0.9, 1.0);
+        }
+        if (wPos.z > waterH && wPos.z < prevWaterH) {
             roughness *= 0.5;
         }
     #endif
