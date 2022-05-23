@@ -7,14 +7,18 @@ varying float linearDepth;
 
 #include "shadows_vertex.glsl"
 #include "depth.glsl"
+#include "wave.glsl"
 
 void main(void)
 {
-    gl_Position = projectionMatrix * (gl_ModelViewMatrix * gl_Vertex);
+    vec4 mpos = gl_Vertex;
+    //mpos.z += doWave();
 
-    position = gl_Vertex;
+    gl_Position = projectionMatrix * (gl_ModelViewMatrix * mpos);
 
-    vec4 viewPos = gl_ModelViewMatrix * gl_Vertex;
+    position = mpos;
+
+    vec4 viewPos = gl_ModelViewMatrix * mpos;
     linearDepth = getLinearDepth(gl_Position.z, viewPos.z);
 
     setupShadowCoords(viewPos, normalize((gl_NormalMatrix * gl_Normal).xyz));

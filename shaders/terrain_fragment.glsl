@@ -39,6 +39,7 @@ varying vec3 passNormal;
 #include "lighting.glsl"
 #include "parallax.glsl"
 #include "rand.glsl"
+#include "wave.glsl"
 
 void main()
 {
@@ -73,7 +74,7 @@ void main()
 
     vec3 wPos = (osg_ViewMatrixInverse * vec4(passViewPos, 1)).xyz;
     vec3 wPosModel = (gl_ModelViewMatrixInverse * vec4(passViewPos, 1)).xyz;
-    float waterDepth = max(-wPosModel.z, 0);
+    float waterDepth = max(-wPosModel.z + doWave(wPos.xy), 0);
 
     if (PROCEDURAL_DETAIL_LEVEL > 0.0) {
         //proceduralUV(wPos, length(passViewPos), adjustedUV);
@@ -124,6 +125,18 @@ void main()
         // Apply procedural detail to distant terrain
         proceduralNormal(wPos, length(passViewPos), viewNormal);
     }
+
+    #if (WAVES == 1)
+        float waterH = doWave(wPos.xy);
+        float prevWaterH = doWave(wPos.xy, -1.0);
+        if (wPos.z < waterH && wPos.z > prevWaterH) {
+            albedo += 0.5;
+        } else if (wPos.z > waterH && wPos.z < prevWaterH) {
+            albedo *= vec3(0.75, 0.85, 0.9);
+        }
+    #endif
+
+    //albedo *= clamp(dot(sin(wPos.xy * 0.25), vec2(1.0)) * 0.5 + 0.5, 0.0, 1.0);
 
     gl_FragData[0].xyz = getPbr(
         osg_ViewMatrixInverse,

@@ -1,3 +1,6 @@
+#ifndef RAND_GLSL
+#define RAND_GLSL
+
 #include "config.glsl"
 
 float rand(float n){return fract(sin(n) * 43758.5453123);}
@@ -162,3 +165,5 @@ vec4 textureBicubic(sampler2D sampler, vec2 texCoords){
     , sy);
 }
 */
+
+#endif

@@ -49,12 +49,12 @@
     // 1.5 => Very strong, very low-contrast shadows
     #define AMBIANCE_STRENGTH 1.25
 
-    // The intensity of interior light
+    // The intensity of interior light (applies for buildings and underground spaces)
     // Recommended values:
-    // 0.5 => Low, like being in space
-    // 0.75 => Medium, more realistic
-    // 1.0 => Strong, closer to the original game
-    // 1.5 => Very strong, very low-contrast shadows
+    // 0.5 => Low, very dark interiors
+    // 0.75 => Medium, dingy interiors
+    // 1.0 => Normal, well-lit interiors
+    // 1.5 => Bright, very well-lit interiors
     #define INTERIOR_STRENGTH 1.0
 
     // The extent of procedural detailing on distant terrain (increasing this doesn't impact performance)
@@ -74,6 +74,12 @@
     // 1.0 => Strong
     // 2.0 => Hurricane
     #define WIND_AMPLITUDE 0.5
+
+    // Whether a wave effect is enabled for terrain near water
+    // Recommended values:
+    // 0 => Disabled
+    // 1 => Enabled
+    #define WAVES 1
 #elif (PRESET == VANILLA)
     #define SATURATION_FACTOR 1.0
     #define NORMAL_MAP_INTENSITY 0.3
@@ -82,6 +88,7 @@
     #define INTERIOR_STRENGTH 1.0
     #define PROCEDURAL_DETAIL_LEVEL 0.5
     #define WIND_AMPLITUDE 0.2
+    #define WAVES 0
 #elif (PRESET == ZESTERER)
     #define SATURATION_FACTOR 2.0
     #define NORMAL_MAP_INTENSITY 0.75
@@ -90,6 +97,7 @@
     #define INTERIOR_STRENGTH 1.0
     #define PROCEDURAL_DETAIL_LEVEL 1.0
     #define WIND_AMPLITUDE 0.75
+    #define WAVES 1
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.5
     #define NORMAL_MAP_INTENSITY 0.25
@@ -98,6 +106,7 @@
     #define INTERIOR_STRENGTH 1.0
     #define PROCEDURAL_DETAIL_LEVEL 0.4
     #define WIND_AMPLITUDE 0.4
+    #define WAVES 0
 #else
     #error Selected shader preset does not exist!
 #endif

@@ -38,7 +38,7 @@ void main(void)
     #endif
     gl_Position = projectionMatrix * (gl_ModelViewMatrix * modelPos);
 
-    vec4 viewPos = (gl_ModelViewMatrix * gl_Vertex);
+    vec4 viewPos = (gl_ModelViewMatrix * modelPos);
     gl_ClipVertex = viewPos;
 #if @radialFog
     euclideanDepth = length(viewPos.xyz);

@@ -151,7 +151,7 @@ vec4 rain(vec2 uv, float time)
   // z should always point up
   ret.z  = a.z  + b.z /2.0 + c.z /4.0 + d.z /8.0;
   //ret.xyz *= 1.5;
-  // fake specularity looks weird if we use every single ring, also if the inner rings are too bright 
+  // fake specularity looks weird if we use every single ring, also if the inner rings are too bright
   ret.w  = (a.w + c.w /8.0)*1.5;
   return ret;
 #else
