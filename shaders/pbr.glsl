@@ -120,7 +120,7 @@ vec3 getAmbientColor(float isntDusk, float isInterior) {
     const vec3 interiorAmbientColor = vec3(0.4, 0.35, 0.2);
     return (isInterior == 1.0) ? (interiorAmbientColor * interior_strength) : (mix(
         vec3(0.15, 0.2, 0.4),
-        vec3(1.2, 1.5, 1.8),
+        vec3(1.35, 1.5, 1.65),
         isntDusk
     ) * ambiance_strength);
 }
@@ -219,6 +219,24 @@ vec3 getPbr(
     return light;
 }
 
+vec3 rgb2hsv(vec3 c)
+{
+    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+}
+
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 void untonemap(inout vec3 color) {
     const float k = 1.5;
     color = -log2(1.0 - color);
@@ -229,9 +247,17 @@ void untonemap(inout vec3 color) {
 // As a result, this entire thing is an enormous hack that lets us do that!
 void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
     untonemap(color);
+
+    vec3 hsv = rgb2hsv(color);
+
+    ao = hsv.z;
+    albedo = hsv2rgb(vec3(hsv.x, hsv.y * saturation_factor, 1.0));
+
+    /*
     ao = min(length(color) * 0.58, 1.0);
     float saturation = mix(1.0, saturation_factor, ao);
     albedo = clamp(pow(normalize(color), vec3(saturation)) * mix(saturation, 1.5, 0.5) - 0.25, vec3(0.0), vec3(1.0));
+    */
 }
 
 // Derive PBR parameters from coloured specular, if possible. If not, old values will be used.

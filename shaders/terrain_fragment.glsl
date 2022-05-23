@@ -116,7 +116,9 @@ void main()
     lighting = passLighting + shadowDiffuseLighting * shadowing;
     gl_FragData[0].xyz *= lighting;
 #else
-    vec3 color = gl_FragData[0].rgb;
+    vec3 color = gl_FragData[0].rgb
+        // Apply terrain shadowing, but less closer to the camera
+        * mix(diffuseColor.rgb, vec3(1.0), 1.0 / (1.0 + length(passViewPos) / 10000));
 
     color = color * 1.1 - 0.05; // TODO: Why?! Bad vanilla textures?
     vec3 albedo; float ao;

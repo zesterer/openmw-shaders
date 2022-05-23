@@ -81,29 +81,29 @@
     // 1 => Enabled
     #define WAVES 1
 #elif (PRESET == VANILLA)
-    #define SATURATION_FACTOR 1.0
+    #define SATURATION_FACTOR 1.3
     #define NORMAL_MAP_INTENSITY 0.3
-    #define SUNLIGHT_STRENGTH 0.55
-    #define AMBIANCE_STRENGTH 1.0
-    #define INTERIOR_STRENGTH 1.0
+    #define SUNLIGHT_STRENGTH 0.3
+    #define AMBIANCE_STRENGTH 0.55
+    #define INTERIOR_STRENGTH 1.1
     #define PROCEDURAL_DETAIL_LEVEL 0.5
     #define WIND_AMPLITUDE 0.2
     #define WAVES 1
 #elif (PRESET == ZESTERER)
-    #define SATURATION_FACTOR 2.1
+    #define SATURATION_FACTOR 1.65
     #define NORMAL_MAP_INTENSITY 0.75
-    #define SUNLIGHT_STRENGTH 0.95
-    #define AMBIANCE_STRENGTH 0.9
-    #define INTERIOR_STRENGTH 1.4
+    #define SUNLIGHT_STRENGTH 0.6
+    #define AMBIANCE_STRENGTH 0.5
+    #define INTERIOR_STRENGTH 0.9
     #define PROCEDURAL_DETAIL_LEVEL 1.0
     #define WIND_AMPLITUDE 0.75
     #define WAVES 1
 #elif (PRESET == MGE_XE)
-    #define SATURATION_FACTOR 1.2
+    #define SATURATION_FACTOR 1.4
     #define NORMAL_MAP_INTENSITY 0.25
-    #define SUNLIGHT_STRENGTH 0.5
-    #define AMBIANCE_STRENGTH 1.1
-    #define INTERIOR_STRENGTH 1.0
+    #define SUNLIGHT_STRENGTH 0.25
+    #define AMBIANCE_STRENGTH 0.7
+    #define INTERIOR_STRENGTH 1.2
     #define PROCEDURAL_DETAIL_LEVEL 0.4
     #define WIND_AMPLITUDE 0.4
     #define WAVES 1
