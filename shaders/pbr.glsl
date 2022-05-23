@@ -111,7 +111,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
             vec3(6.0, 5.0, 0.5),
             clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
         ),
-        vec3(8.0, 7.0, 6.0),
+        vec3(7.0 + TINT, 7.0, 7.0 - TINT),
         isntDusk
     ) * sunlight_strength);
 }
@@ -120,7 +120,7 @@ vec3 getAmbientColor(float isntDusk, float isInterior) {
     const vec3 interiorAmbientColor = vec3(0.4, 0.35, 0.2);
     return (isInterior == 1.0) ? (interiorAmbientColor * interior_strength) : (mix(
         vec3(0.15, 0.2, 0.4),
-        vec3(1.35, 1.5, 1.65),
+        vec3(1.5 - TINT * 0.3, 1.5, 1.5 + TINT * 0.3),
         isntDusk
     ) * ambiance_strength);
 }
@@ -207,7 +207,7 @@ vec3 getPbr(
 
         vec3 lightColor = lcalcDiffuse(lightIdx)
             // The strength of a light reduces with distance
-            * lcalcIllumination(lightIdx, lightDist) * 20.0
+            * lcalcIllumination(lightIdx, lightDist) * 12.0
             // Make lights less powerful during the day (otherwise, they're a bit overpowering)
             * max(1.0 - sunLightLevel, 0.5)
             // Final cap to make sure that lights don't abruptly cut off beyond the maximum light distance
