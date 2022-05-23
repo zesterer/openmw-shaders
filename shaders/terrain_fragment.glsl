@@ -127,16 +127,15 @@ void main()
     }
 
     #if (WAVES == 1)
-        float waterH = doWave(wPos.xy);
-        float prevWaterH = doWave(wPos.xy, -1.0);
+        float waterH = doWave(wPos.xy, 0.0, 0.2);
+        float prevWaterH = doWave(wPos.xy, -1.0, 1.5);
         if (wPos.z < waterH && wPos.z > prevWaterH) {
             albedo += 0.5;
         } else if (wPos.z > waterH && wPos.z < prevWaterH) {
-            albedo *= vec3(0.75, 0.85, 0.9);
+            albedo *= 0.75;
+            roughness *= 0.5;
         }
     #endif
-
-    //albedo *= clamp(dot(sin(wPos.xy * 0.25), vec2(1.0)) * 0.5 + 0.5, 0.0, 1.0);
 
     gl_FragData[0].xyz = getPbr(
         osg_ViewMatrixInverse,

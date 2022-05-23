@@ -88,7 +88,7 @@
     #define INTERIOR_STRENGTH 1.0
     #define PROCEDURAL_DETAIL_LEVEL 0.5
     #define WIND_AMPLITUDE 0.2
-    #define WAVES 0
+    #define WAVES 1
 #elif (PRESET == ZESTERER)
     #define SATURATION_FACTOR 2.0
     #define NORMAL_MAP_INTENSITY 0.75
@@ -106,7 +106,7 @@
     #define INTERIOR_STRENGTH 1.0
     #define PROCEDURAL_DETAIL_LEVEL 0.4
     #define WIND_AMPLITUDE 0.4
-    #define WAVES 0
+    #define WAVES 1
 #else
     #error Selected shader preset does not exist!
 #endif
