@@ -86,6 +86,8 @@ uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ViewMatrix;
 uniform mat4 osg_ModelViewMatrix;
 
+uniform mat4 projectionMatrix;
+
 #include "vertexcolors.glsl"
 #include "shadows_fragment.glsl"
 #include "lighting.glsl"
@@ -145,10 +147,10 @@ void main()
     gl_FragData[0].a *= diffuseColor.a;
 
     vec3 wPos = (osg_ViewMatrixInverse * vec4(passViewPos, 1)).xyz;
-    float waterDepth = max(-wPos.z, 0);
+    bool inMinimap = projectionMatrix[0][3] == 0.0 && projectionMatrix[1][3] == 0.0 && projectionMatrix[2][3] == 0.0;
+    float waterDepth = inMinimap ? 0.0 : max(-wPos.z, 0);
 
 #if @darkMap
-    gl_FragData[0] *= texture2D(darkMap, darkMapUV);
     gl_FragData[0].a *= coveragePreservingAlphaScale(darkMap, darkMapUV);
 #endif
 
@@ -218,6 +220,9 @@ void main()
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
     lighting = passLighting + shadowDiffuseLighting * shadowing;
+    #if @darkMap
+        lighting *= texture2D(darkMap, darkMapUV);
+    #endif
     gl_FragData[0].xyz *= lighting;
 #else
     vec3 emission = getEmissionColor().rgb * emissiveMult;
@@ -229,6 +234,10 @@ void main()
 
     vec3 albedo; float ao;
     colorToPbr(color, albedo, ao);
+
+    #if @darkMap
+        ao *= texture2D(darkMap, darkMapUV);
+    #endif
 
     gl_FragData[0].xyz = getPbr(
         osg_ViewMatrixInverse,
