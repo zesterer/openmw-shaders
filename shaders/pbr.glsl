@@ -113,7 +113,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
         ),
         vec3(7.0 + TINT, 7.0, 7.0 - TINT),
         isntDusk
-    ) * sunlight_strength);
+    ) * lcalcDiffuse(0) * sunlight_strength);
 }
 
 vec3 getAmbientColor(float isntDusk, float isInterior) {
@@ -122,7 +122,7 @@ vec3 getAmbientColor(float isntDusk, float isInterior) {
         vec3(0.15, 0.2, 0.4),
         vec3(1.5 - TINT * 0.3, 1.5, 1.5 + TINT * 0.3),
         isntDusk
-    ) * ambiance_strength);
+    ) * lcalcDiffuse(0) * ambiance_strength);
 }
 
 vec3 getPbr(
@@ -176,13 +176,13 @@ vec3 getPbr(
     vec3 attenuation = (waterDepth == 0.0 || isInterior == 1.0) ? vec3(1.0) : exp(-MU_WATER * waterDepth * unitsToMetres);
 
     // Direct sunlight
-    vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * lcalcDiffuse(0) * attenuation;
+    vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * attenuation;
     light += getLightPbr(surfPos, surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, shadowFadeStart, subsurface, ao, mat);
 
     // Sky (ambient)
     // TODO: Better ambiance
     float ambientFresnel = mix(max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1.0, subsurface);
-    vec3 skyColor = getAmbientColor(isntDusk, isInterior) * lcalcDiffuse(0) /* * lcalcAmbient(0)*/ * attenuation;
+    vec3 skyColor = getAmbientColor(isntDusk, isInterior) /* * lcalcAmbient(0)*/ * attenuation;
     // Even ambient light has some directionality, favouring surfaces facing toward the sky. Account for that.
     float ambientDirectionalBias = (max(dot((osg_ViewMatrixInverse * vec4(surfNorm, 0.0)).xyz, vec3(0.0, 0.0, 1.0)), 0.0) * 0.5 + 0.5) * 1.5;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
@@ -207,13 +207,16 @@ vec3 getPbr(
 
         vec3 lightColor = lcalcDiffuse(lightIdx)
             // The strength of a light reduces with distance
-            * lcalcIllumination(lightIdx, lightDist) * 12.0
+            * lcalcIllumination(lightIdx, lightDist) * 15.0
             // Make lights less powerful during the day (otherwise, they're a bit overpowering)
             * max(1.0 - sunLightLevel, 0.5)
             // Final cap to make sure that lights don't abruptly cut off beyond the maximum light distance
             * min((1.0 - lightDist / lightMaxRadius) * 3.0, 1.0);
 
         light += getLightPbr(surfPos, surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1.0, 1.0, subsurface, ao, mat);
+
+        // Ambiance from the point light
+        light += albedo * ao * baseRefl * lightColor * 0.05;
     }
 
     return light;
