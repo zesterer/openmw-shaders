@@ -95,7 +95,7 @@ void main()
     float reflectance = 1.0;
     float metalness = 0.0;
 
-    float shininess = clamp(gl_FrontMaterial.shininess * 0.0039 * 30, 0.0, 1.0);
+    float shininess = clamp(gl_FrontMaterial.shininess * 0.0039 * 30.0, 0.0, 1.0);
 
 #if @specularMap
     vec3 matSpec = vec3(diffuseTex.a);
@@ -118,7 +118,7 @@ void main()
 #else
     vec3 color = gl_FragData[0].rgb
         // Apply terrain shadowing, but less closer to the camera
-        * mix(diffuseColor.rgb, vec3(1.0), 1.0 / (1.0 + length(passViewPos) / 10000));
+        * mix(diffuseColor.rgb, vec3(1.0), 1.0 / (1.0 + length(passViewPos) / 10000.0));
 
     color = color * 1.1 - 0.05; // TODO: Why?! Bad vanilla textures?
     vec3 albedo; float ao;
