@@ -106,7 +106,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
     const vec3 interiorSunColor = vec3(1.8, 1.6, 1.3);
     return (isInterior == 1.0) ? (interiorSunColor * interior_strength) : (mix(
         mix(
-            vec3(0.25, 1.0, 2.0),
+            vec3(0.25, 0.65, 1.0),
             // TODO: Actually detect time of day and make dawn/dusk more red
             vec3(6.0, 5.0, 0.5),
             clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
