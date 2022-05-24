@@ -147,7 +147,7 @@ void main()
 
     #if (CAUSTICS == 1)
         // TODO: Don't apply to ao, very hacky
-        ao *= mix(1.0, 0.5 + caustics(wPos.xy * 0.01, osg_SimulationTime) * 1.5, clamp((waterH - wPos.z) * 0.01, 0.0, 1.0) / (1.0 + waterDepth / 1000.0));
+        ao *= mix(1.0, 0.5 + caustics(wPos.xy * 0.01, osg_SimulationTime * 0.5) * 1.5, clamp((waterH - wPos.z) * 0.01, 0.0, 1.0) / (1.0 + waterDepth / 1000.0));
     #endif
 
     gl_FragData[0].xyz = getPbr(
