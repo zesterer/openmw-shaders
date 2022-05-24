@@ -80,9 +80,8 @@ void main()
     */
 
     vec3 emission = getEmissionColor().xyz * emissiveMult;
-
 #if @emissiveMap
-    emission *= texture2D(emissiveMap, emissiveMapUV).xyz;
+    emission += texture2D(emissiveMap, emissiveMapUV).xyz;
 #endif
 
     vec3 color = gl_FragData[0].rgb;
