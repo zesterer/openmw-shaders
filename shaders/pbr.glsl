@@ -184,7 +184,7 @@ vec3 getPbr(
     float ambientFresnel = mix(max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1.0, subsurface);
     vec3 skyColor = getAmbientColor(isntDusk, isInterior) * lcalcDiffuse(0) /* * lcalcAmbient(0)*/ * attenuation;
     // Even ambient light has some directionality, favouring surfaces facing toward the sky. Account for that.
-    float ambientDirectionalBias = (max(dot(surfNorm, vec3(0.0, 0.0, 1.0)), 0.0) * 0.5 + 0.5) * 1.5;
+    float ambientDirectionalBias = (max(dot((osg_ViewMatrixInverse * vec4(surfNorm, 0.0)).xyz, vec3(0.0, 0.0, 1.0)), 0.0) * 0.5 + 0.5) * 1.5;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
 
     for (int i = @startLight; i < @endLight; ++i) {
