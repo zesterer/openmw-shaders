@@ -129,8 +129,9 @@ void main()
         proceduralNormal(wPos, length(passViewPos), viewNormal);
     }
 
+    float waterH = 0.0;
     #if (WAVES == 1)
-        float waterH = doWave(wPos.xy, 0.0, 0.2, 0.0);
+        waterH = doWave(wPos.xy, 0.0, 0.2, 0.0);
         float prevWaterH = doWave(wPos.xy, -1.5, 0.1, 0.5);
         float wave_depth = 5.0;
         if (wPos.z < waterH) {
@@ -142,6 +143,11 @@ void main()
         if (wPos.z > waterH && wPos.z < prevWaterH) {
             roughness *= 0.5;
         }
+    #endif
+
+    #if (CAUSTICS == 1)
+        // TODO: Don't apply to ao, very hacky
+        ao *= mix(1.0, 0.5 + caustics(wPos.xy * 0.01, osg_SimulationTime) * 1.5, clamp((waterH - wPos.z) * 0.01, 0.0, 1.0) / (1.0 + waterDepth / 1000.0));
     #endif
 
     gl_FragData[0].xyz = getPbr(
