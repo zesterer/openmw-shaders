@@ -166,19 +166,14 @@ vec4 textureBicubic(sampler2D sampler, vec2 texCoords){
 }
 */
 
-float h12(vec2 p)
-{
-    return fract(sin(dot(p,vec2(32.52554,45.5634)))*12432.2355);
-}
-
 float n12(vec2 p)
 {
     vec2 i = floor(p);
     vec2 f = fract(p);
     f *= f * (3.-2.*f);
     return mix(
-        mix(h12(i+vec2(0.,0.)),h12(i+vec2(1.,0.)),f.x),
-        mix(h12(i+vec2(0.,1.)),h12(i+vec2(1.,1.)),f.x),
+        mix(hash(i+vec2(0.,0.)),hash(i+vec2(1.,0.)),f.x),
+        mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),
         f.y
     );
 }
