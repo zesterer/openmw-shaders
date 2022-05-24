@@ -106,7 +106,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
     const vec3 interiorSunColor = vec3(1.8, 1.6, 1.3);
     return (isInterior == 1.0) ? (interiorSunColor * interior_strength) : (mix(
         mix(
-            vec3(0.25, 0.65, 1.0),
+            vec3(0.25, 0.65, 1.0) * 1.65,
             // TODO: Actually detect time of day and make dawn/dusk more red
             vec3(6.0, 5.0, 0.5),
             clamp(sunLightLevel * 10.0 - 3.0, 0.0, 1.0)
@@ -176,13 +176,13 @@ vec3 getPbr(
     vec3 attenuation = (waterDepth == 0.0 || isInterior == 1.0) ? vec3(1.0) : exp(-MU_WATER * waterDepth * unitsToMetres);
 
     // Direct sunlight
-    vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) /* * lcalcDiffuse(0)*/ * attenuation;
+    vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * lcalcDiffuse(0) * attenuation;
     light += getLightPbr(surfPos, surfNorm, camDir, sunDir, sunColor, albedo, roughness, baseRefl, metalness, sunShadow, shadowFadeStart, subsurface, ao, mat);
 
     // Sky (ambient)
     // TODO: Better ambiance
     float ambientFresnel = mix(max(dot(surfNorm, -camDir), 0.0) * 0.5 + 0.5, 1.0, subsurface);
-    vec3 skyColor = getAmbientColor(isntDusk, isInterior) /* * lcalcDiffuse(0)*/ * attenuation;
+    vec3 skyColor = getAmbientColor(isntDusk, isInterior) * lcalcDiffuse(0) /* * lcalcAmbient(0)*/ * attenuation;
     // Even ambient light has some directionality, favouring surfaces facing toward the sky. Account for that.
     float ambientDirectionalBias = (max(dot(surfNorm, vec3(0.0, 0.0, 1.0)), 0.0) * 0.5 + 0.5) * 1.5;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
