@@ -81,7 +81,9 @@
     // 1 => Enabled
     #define WAVES 1
 
+    // As-yet undocumented settings
     #define TINT 0.5
+    #define HUE_SHIFT 0.0
 #elif (PRESET == VANILLA)
     #define SATURATION_FACTOR 1.2
     #define NORMAL_MAP_INTENSITY 0.3
@@ -92,16 +94,18 @@
     #define WIND_AMPLITUDE 0.2
     #define WAVES 1
     #define TINT 0.0
+    #define HUE_SHIFT 0.0
 #elif (PRESET == ZESTERER)
     #define SATURATION_FACTOR 1.65
     #define NORMAL_MAP_INTENSITY 0.75
-    #define SUNLIGHT_STRENGTH 0.55
-    #define AMBIANCE_STRENGTH 0.35
+    #define SUNLIGHT_STRENGTH 0.5
+    #define AMBIANCE_STRENGTH 0.45
     #define INTERIOR_STRENGTH 0.5
     #define PROCEDURAL_DETAIL_LEVEL 1.0
     #define WIND_AMPLITUDE 0.75
     #define WAVES 1
     #define TINT 1.0
+    #define HUE_SHIFT -0.015
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.4
     #define NORMAL_MAP_INTENSITY 0.25
@@ -112,6 +116,7 @@
     #define WIND_AMPLITUDE 0.4
     #define WAVES 1
     #define TINT 0.5
+    #define HUE_SHIFT -0.015
 #else
     #error Selected shader preset does not exist!
 #endif

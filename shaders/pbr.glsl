@@ -251,7 +251,7 @@ void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
     vec3 hsv = rgb2hsv(color);
 
     ao = hsv.z;
-    albedo = hsv2rgb(vec3(hsv.x, hsv.y * saturation_factor, 1.0));
+    albedo = hsv2rgb(vec3(hsv.x + HUE_SHIFT, hsv.y * saturation_factor, 1.0));
 
     /*
     ao = min(length(color) * 0.58, 1.0);

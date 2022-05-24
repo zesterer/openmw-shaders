@@ -134,7 +134,7 @@ void main()
         float prevWaterH = doWave(wPos.xy, -1.5, 0.1, 0.5);
         float wave_depth = 5.0;
         if (wPos.z < waterH) {
-            albedo *= vec3(0.7, 0.9, 1.0);
+            albedo *= mix(vec3(1.0), vec3(0.7, 0.8, 1.0), clamp(5.0 - (0.0 - wPos.z) * 1.5, 0.0, 1.0));
         }
         if (wPos.z < waterH && wPos.z > waterH - wave_depth) {
             albedo += clamp(1.0 - (waterH - wPos.z) / wave_depth, 0.0, 1.0) * 1.0;
