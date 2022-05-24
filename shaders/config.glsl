@@ -80,6 +80,7 @@
     // 0 => Disabled
     // 1 => Enabled
     #define WAVES 1
+    #define WAVE_HEIGHT 6.0
 
     // As-yet undocumented settings
     #define TINT 0.5
@@ -94,6 +95,7 @@
     #define PROCEDURAL_DETAIL_LEVEL 0.5
     #define WIND_AMPLITUDE 0.2
     #define WAVES 1
+    #define WAVE_HEIGHT 6.0
     #define TINT 0.0
     #define HUE_SHIFT 0.0
     #define CAUSTICS 1
@@ -106,6 +108,7 @@
     #define PROCEDURAL_DETAIL_LEVEL 1.0
     #define WIND_AMPLITUDE 0.75
     #define WAVES 1
+    #define WAVE_HEIGHT 8.0
     #define TINT 1.0
     #define HUE_SHIFT -0.015
     #define CAUSTICS 1
@@ -118,6 +121,7 @@
     #define PROCEDURAL_DETAIL_LEVEL 0.4
     #define WIND_AMPLITUDE 0.4
     #define WAVES 1
+    #define WAVE_HEIGHT 8.0
     #define TINT 0.5
     #define HUE_SHIFT -0.015
     #define CAUSTICS 1
