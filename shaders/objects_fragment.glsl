@@ -221,7 +221,7 @@ void main()
 #if !PER_PIXEL_LIGHTING
     lighting = passLighting + shadowDiffuseLighting * shadowing;
     #if @darkMap
-        lighting *= texture2D(darkMap, darkMapUV);
+        lighting *= texture2D(darkMap, darkMapUV).rgb;
     #endif
     gl_FragData[0].xyz *= lighting;
 #else
