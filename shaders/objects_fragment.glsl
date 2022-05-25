@@ -230,14 +230,14 @@ void main()
         emission += texture2D(emissiveMap, emissiveMapUV).rgb;
     #endif
 
+    #if @darkMap
+        emission *= texture2D(darkMap, darkMapUV).rgb;
+    #endif
+
     vec3 color = gl_FragData[0].rgb * diffuseColor.rgb;
 
     vec3 albedo; float ao;
     colorToPbr(color, albedo, ao);
-
-    #if @darkMap
-        ao *= dot(texture2D(darkMap, darkMapUV).rgb, vec3(1.0)) * 0.33;
-    #endif
 
     gl_FragData[0].xyz = getPbr(
         osg_ViewMatrixInverse,
