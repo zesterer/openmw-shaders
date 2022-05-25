@@ -236,7 +236,7 @@ void main()
     colorToPbr(color, albedo, ao);
 
     #if @darkMap
-        ao *= texture2D(darkMap, darkMapUV);
+        ao *= dot(texture2D(darkMap, darkMapUV).rgb, vec3(1.0)) * 0.33;
     #endif
 
     gl_FragData[0].xyz = getPbr(
