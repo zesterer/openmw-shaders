@@ -66,3 +66,7 @@ There are various presets and parameters that can be changed via
 ## Getting Help & Feedback
 
 Got a question or a suggestion? Feel free to [open a discussion topic](https://github.com/zesterer/openmw-shaders/discussions/new).
+
+## License
+
+The code in this repository is derived from the OpenMW vanilla shaders. Accordingly, the code in this repository is similarly licensed under GPL v3.
