@@ -81,7 +81,7 @@ vec3 getLightPbr(
     kDiff *= 1.0 - metalness;
 
     // Color of specular reflections is determined by metalness and surface alignment and angle of incidence
-    vec3 specular_albedo = vec3(1.0);//mix(vec3(1.0), albedo, metalness);
+    const vec3 specular_albedo = vec3(1.0);//mix(vec3(1.0), albedo, metalness);
 
     // The final diffuse and specular reflectance of the surface
     vec3 brdf = kDiff * albedo * INV_PI + kSpec * specular * specular_albedo;
@@ -89,13 +89,13 @@ vec3 getLightPbr(
     // Some surfaces scatter light internally. This models that effect, but non-physically
     float max_scatter_dist_inv = 1.0 / shadowFadeStart;
     float scatter_factor = max(1.0 - length(surfPos) * max_scatter_dist_inv, 0.0);
-    vec3 subsurfaceScatter = ((subsurface == 0.0) ? 0.0 : (ao * isShadow * subsurface * pow(max(glare, 0.0), 4.0) * 0.5 * scatter_factor)) * albedo;
+    vec3 subsurfaceScatter = ((subsurface == 0.0) ? 0.0 : (ao * isShadow * subsurface * pow(max(glare, 0.0), 4.0) * 0.1 * scatter_factor)) * albedo;
 
     // How occluded is the light by other shadow casters (isShadow), the object itself (ao), or the surface angle?
     float occlusion = isShadow * ao;
 
     vec3 solidLight = brdf * occlusion;
-    vec3 leafLight = mix(solidLight * 0.3, (glare * 0.25 + 0.75) * 0.2 * ao * isShadow * albedo, scatter_factor); // Non-physical
+    vec3 leafLight = mix(solidLight * 0.3, 0.2 * ao * isShadow * albedo, scatter_factor); // Non-physical
 
     // Combine reflected light and sub-surface scattering together with the incoming radiance to find the final light
     // reflected/emitted

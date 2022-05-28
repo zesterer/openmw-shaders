@@ -91,7 +91,7 @@ void main()
     vec4 diffuseColor = getDiffuseColor();
     gl_FragData[0].a *= diffuseColor.a;
 
-    float roughness = 0.6;
+    float roughness = 1.0;
     float reflectance = 1.0;
     float metalness = 0.0;
 
@@ -104,7 +104,6 @@ void main()
 #else
     vec3 matSpec = getSpecularColor().xyz;
     matSpecToPbr(matSpec, roughness, metalness, reflectance);
-    roughness *= 0.75;
     shininess = min(shininess * 20.0, 1.0); // Why the hell is this necessary?!
     roughness *= mix(0.9, 0.1, shininess);
     metalness *= mix(0.0, 0.75, shininess);

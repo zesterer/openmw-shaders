@@ -321,7 +321,7 @@ void main(void)
         (gl_ModelViewMatrix * position).xyz,
         (gl_ModelViewMatrix * vec4(normal, 0.0)).xyz,
         waterColor,
-        0.1,
+        0.02,
         1.0,
         1.0,
         shadow,
