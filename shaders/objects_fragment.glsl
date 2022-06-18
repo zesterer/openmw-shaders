@@ -63,10 +63,7 @@ uniform sampler2D glossMap;
 varying vec2 glossMapUV;
 #endif
 
-uniform bool simpleWater;
-
-varying float euclideanDepth;
-varying float linearDepth;
+uniform vec2 screenRes;
 varying float leafiness;
 varying vec4 modelPos;
 
@@ -93,6 +90,7 @@ uniform mat4 projectionMatrix;
 #include "lighting.glsl"
 #include "parallax.glsl"
 #include "alpha.glsl"
+#include "fog.glsl"
 
 #if @softParticles
 #include "softparticles.glsl"
@@ -216,7 +214,7 @@ void main()
     metalness *= mix(0.0, 0.75, shininess);
 #endif
 
-    float shadowing = unshadowedLightRatio(linearDepth);
+    float shadowing = unshadowedLightRatio(passViewPos.z);
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
     lighting = passLighting + shadowDiffuseLighting * shadowing;
@@ -267,18 +265,7 @@ void main()
 
     clampLightingResult(gl_FragData[0].xyz);
 
-#if @radialFog
-    float depth;
-    // For the less detailed mesh of simple water we need to recalculate depth on per-pixel basis
-    if (simpleWater)
-        depth = length(passViewPos);
-    else
-        depth = euclideanDepth;
-    float fogValue = clamp((depth - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
-#else
-    float fogValue = clamp((linearDepth - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
-#endif
-    gl_FragData[0].xyz = mix(gl_FragData[0].xyz, gl_Fog.color.xyz, fogValue);
+    gl_FragData[0] = applyFogAtPos(gl_FragData[0], passViewPos);
 
 #if !defined(FORCE_OPAQUE) && @softParticles
     gl_FragData[0].a *= calcSoftParticleFade();
