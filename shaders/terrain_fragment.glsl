@@ -34,12 +34,15 @@ centroid varying vec3 shadowDiffuseLighting;
 varying vec3 passViewPos;
 varying vec3 passNormal;
 
+uniform vec2 screenRes;
+
 #include "vertexcolors.glsl"
 #include "shadows_fragment.glsl"
 #include "lighting.glsl"
 #include "parallax.glsl"
 #include "rand.glsl"
 #include "wave.glsl"
+#include "fog.glsl"
 
 void main()
 {
@@ -174,12 +177,7 @@ void main()
 
     clampLightingResult(gl_FragData[0].xyz);
 
-#if @radialFog
-    float fogValue = clamp((euclideanDepth - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
-#else
-    float fogValue = clamp((linearDepth - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
-#endif
-    gl_FragData[0].xyz = mix(gl_FragData[0].xyz, gl_Fog.color.xyz, fogValue);
+    gl_FragData[0] = applyFogAtDist(gl_FragData[0], euclideanDepth, linearDepth);
 
     applyShadowDebugOverlay();
 }

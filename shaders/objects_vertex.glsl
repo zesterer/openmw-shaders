@@ -51,8 +51,6 @@ varying vec2 specularMapUV;
 varying vec2 glossMapUV;
 #endif
 
-varying float euclideanDepth;
-varying float linearDepth;
 varying vec4 modelPos;
 
 #define PER_PIXEL_LIGHTING (@normalMap || @forcePPL)
@@ -95,10 +93,7 @@ void main(void)
     gl_Position = projectionMatrix * (gl_ModelViewMatrix * modelPos);
 
     vec4 viewPos = (gl_ModelViewMatrix * modelPos);
-
     gl_ClipVertex = viewPos;
-    euclideanDepth = length(viewPos.xyz);
-    linearDepth = getLinearDepth(gl_Position.z, viewPos.z);
 
 #if (@envMap || !PER_PIXEL_LIGHTING || @shadows_enabled)
     vec3 viewNormal = normalize((gl_NormalMatrix * gl_Normal).xyz);
