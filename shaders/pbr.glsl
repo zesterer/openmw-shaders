@@ -219,6 +219,10 @@ vec3 getPbr(
         light += albedo * ao * baseRefl * lightColor * 0.05;
     }
 
+    // Experimental water silt
+    //vec3 wDir = (osg_ViewMatrixInverse * vec4(camDir, 0.0)).xyz;
+    //light = mix(vec3(0.3, 0.2, 0.05), light, 1.0 / exp(waterDepth * 0.02 / abs(wDir.z)));
+
     return light;
 }
 
