@@ -4,20 +4,18 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 
 ## Screenshots
 
-![Early morning in the grasslands east of Vivec](https://i.imgur.com/09AvjA6.png)
+![Early morning in Balmora](https://i.imgur.com/1Fa85UT.png)
 
-*Note that these screenshots have color saturation set relatively high, but this is not hard-coded into the shaders. See
-[the configuration section](#configuration) for more information.*
+*Note that these screenshots were taken with additional mods installed, such as [Morrowind Rebirth](https://www.nexusmods.com/morrowind/mods/37795/).*
 
 <details>
     <summary>More screenshots</summary>
-    <img src="https://i.imgur.com/CGpw7mC.png" alt="Dusk from the cantons of Vivec">
-    <img src="https://i.imgur.com/eZNMSha.png" alt="A night with the guars outside Vivec">
-    <img src="https://i.imgur.com/01WujVO.png" alt="A mid-afternoon view of Vivec, looking south">
-    <img src="https://i.imgur.com/6v5QQf9.png" alt="Vivec's waistworks">
-    <img src="https://i.imgur.com/cJ94PHK.png" alt="Midnight in Balmora">
-    <img src="https://i.imgur.com/Ypxz3oj.png" alt="Dawn breaks in Balmora">
-    <img src="https://i.imgur.com/WeZGIGe.png" alt="Light attenuation in water">
+    <img src="https://i.imgur.com/2zXznGS.png" alt="An early morning view of Vivec">
+    <img src="https://i.imgur.com/4g9iOHa.png" alt="The beaches and tidal pools outside Vivec">
+    <img src="https://i.imgur.com/rbRCWZO.png" alt="Lanterns in the night outside Vivec">
+    <img src="https://i.imgur.com/EPqGexZ.png" alt="Inside a building in Balmora">
+    <img src="https://i.imgur.com/XyPXu0y.png" alt="A tavern in Pelagiad">
+    <img src="https://i.imgur.com/GPPWZP1.png" alt="The grasslands outside Vivec on a misty afternoon">
 </details>
 
 ## Features
@@ -58,10 +56,13 @@ There are various presets and parameters that can be changed via
 
 ## Recommendations
 
-- This mod works well with my [Volumetric Clouds & Mist Mod](https://github.com/zesterer/openmw-volumetric-clouds).
-- Use high-resolution textures, normal maps, etc. where possible
-- Enable [per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting)
-- Disable [light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting)
+This mod works best with:
+
+- My [Volumetric Clouds & Mist Mod](https://github.com/zesterer/openmw-volumetric-clouds).
+- High-resolution textures, normal maps, etc. where possible
+- Wazabear's [post-processing shader effects](https://gitlab.com/glassmancody.info/omwfx-shaders/-/tree/main/)
+- [Per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting) enabled
+- [Light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting) disabled
 
 ## Getting Help & Feedback
 
