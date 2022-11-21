@@ -85,6 +85,8 @@ uniform mat4 osg_ModelViewMatrix;
 
 uniform mat4 projectionMatrix;
 
+uniform bool isReflection;
+
 #include "vertexcolors.glsl"
 #include "shadows_fragment.glsl"
 #include "lighting.glsl"
@@ -149,7 +151,7 @@ void main()
     vec4 diffuseColor = getDiffuseColor();
     gl_FragData[0].a *= diffuseColor.a;
 
-    vec3 wPos = (osg_ViewMatrixInverse * vec4(passViewPos, 1)).xyz;
+    vec3 wPos = (osg_ViewMatrixInverse * vec4(passViewPos, 1)).xyz * vec3(1.0, 1.0, isReflection ? -1.0 : 1.0);
     bool inMinimap = projectionMatrix[0][3] == 0.0 && projectionMatrix[1][3] == 0.0 && projectionMatrix[2][3] == 0.0;
     float waterDepth = inMinimap ? 0.0 : max(-wPos.z, 0);
 

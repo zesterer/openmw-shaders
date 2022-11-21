@@ -36,6 +36,8 @@ varying vec3 passNormal;
 
 uniform vec2 screenRes;
 
+uniform bool isReflection;
+
 #include "vertexcolors.glsl"
 #include "shadows_fragment.glsl"
 #include "lighting.glsl"
@@ -82,9 +84,8 @@ void main()
     normalize(worldNormal);
 #endif
 
-    vec3 wPos = (osg_ViewMatrixInverse * vec4(passViewPos, 1)).xyz;
-    vec3 wPosModel = (gl_ModelViewMatrixInverse * vec4(passViewPos, 1)).xyz;
-    float waterDepth = max(-wPosModel.z + doWave(wPos.xy), 0);
+    vec3 wPos = (osg_ViewMatrixInverse * vec4(passViewPos, 1)).xyz * vec3(1.0, 1.0, isReflection ? -1.0 : 1.0);
+    float waterDepth = max(-wPos.z + doWave(wPos.xy), 0);
 
     if (PROCEDURAL_DETAIL_LEVEL > 0.0) {
         //proceduralUV(wPos, length(passViewPos), adjustedUV);
