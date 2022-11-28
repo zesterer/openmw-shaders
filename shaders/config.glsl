@@ -10,10 +10,14 @@
 #define ZESTERER 2 // Colorful and intense fantasy lighting
 #define MGE_XE 3 // An attempt at emulating the soft lighting of MGE XE
 
-// Change this value to quickly switch presets
+// IMPORTANT: Change this variable to quickly switch presets
+//            ,--------.
 #define PRESET ZESTERER
+//            '------- '
 
 #if (PRESET == CUSTOM)
+    // IMPORTANT: For these settings to have an effect, the 'PRESET' variable above must be set to 'CUSTOM'
+    //
     // Change these values to edit your custom preset
     // Each value comes with an explanation, and recommended values.
 
@@ -82,10 +86,15 @@
     #define WAVES 1
     #define WAVE_HEIGHT 6.0
 
-    // As-yet undocumented settings
+    // Whether caustics (refractive light from waves on the water surface) are applied to underwater scenes
+    // Recommended values:
+    // 0 => Disabled
+    // 1 => Enabled
+    #define CAUSTICS 1
+
+    // As-yet undocumented settings. Play with them if you wish!
     #define TINT 0.5
     #define HUE_SHIFT 0.0
-    #define CAUSTICS 1
 #elif (PRESET == VANILLA)
     #define SATURATION_FACTOR 1.2
     #define NORMAL_MAP_INTENSITY 0.3
