@@ -1,6 +1,6 @@
-# Zesterer's OpenMW Shaders
+# Zesterer's OpenMW Shader Pack
 
-Play Morrowind with PBR shaders like it's 2022, not 2002.
+Play Morrowind with beautiful shaders like it's 2022, not 2002.
 
 ## Screenshots
 
@@ -34,9 +34,6 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 
 ## Installation Guide
 
-*Ensure that you have the [latest development build](https://openmw.org/downloads/) of OpenMW. If you find that the mod
-does not work with the latest development build, please open an issue!*
-
 1. [Download the shader pack](#download).
 
 2. Locate your [`resources/`](https://modding-openmw.com/tips/custom-shaders/#installing) directory.
@@ -46,11 +43,9 @@ before doing this, should something go wrong). This should result in the followi
 
 ```
 resources/
-  |
   |-- shaders/
-  |    |
-  |    '-- <glsl shader files>
-  |
+  |    |-- config.glsl
+  |    '-- <other shader files>
   '-- README.md
 ```
 
@@ -67,8 +62,9 @@ about installing custom shader packs.
 
 ## Download
 
-This shader pack currently supports both development builds of OpenMW and OpenMW 0.48 (still in pre-release). Where
-possible, I'd recommend using a development build of OpenMW to get access to all of the latest funky features.
+This shader pack currently supports both [development builds]((https://openmw.org/downloads/)) of OpenMW and OpenMW
+0.48 (still in pre-release). I recommend using a development build of OpenMW if you can to get access to all of the
+latest funky features of both OpenMW and this shader pack.
 
 - [For OpenMW Development](https://github.com/zesterer/openmw-shaders/archive/refs/heads/main.zip)
 
@@ -86,20 +82,20 @@ This mod works best with:
 - My [Volumetric Clouds & Mist Mod](https://github.com/zesterer/openmw-volumetric-clouds).
 - High-resolution textures, normal maps, etc. where possible
 - Wazabear's [post-processing shader effects](https://gitlab.com/glassmancody.info/omwfx-shaders/-/tree/main/)
-- Enable [per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting)
-- Disable [light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting)
-- Enable [sky blending](https://openmw.readthedocs.io/en/latest/reference/modding/settings/fog.html#sky-blending)
+- Enabled [per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting)
+- Disabled [light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting)
+- Enabled [sky blending](https://openmw.readthedocs.io/en/latest/reference/modding/settings/fog.html#sky-blending)
 
 ## Known Issues
 
-- OpenMW's assets don't differentiate between 'leaves' and 'not leaves'. As a result, the shaders use a primitive
+- Morrowind's assets don't differentiate between 'leaves' and 'not leaves'. As a result, the shaders use a primitive
   heuristic to determine what is and is not a leaf for the wind sway effect. This can sometimes cause some objects that
   are not leaves (candle flames, banners, baskets, etc.) to exhibit strange swaying behaviour too. If this is too
   distracting for you, you can disable wind sway by setting `WIND_AMPLITUDE` to `0.0` in
   [`shaders/config.glsl`](https://github.com/zesterer/openmw-shaders/blob/main/shaders/config.glsl).
 
 - On the version of the mod for OpenMW 0.48, objects reflected in water can have incorrect tinting applied to them. This
-  is fixed in the version of the mod for OpenMW release builds.
+  is fixed in the version of the mod for OpenMW development builds.
 
 ## Getting Help & Feedback
 
