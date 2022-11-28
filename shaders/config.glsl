@@ -31,12 +31,14 @@
     #define SATURATION_FACTOR 1.0
 
     // Normal map mods for Morrowind can often be very extreme and may need toning down.
+    // Note that AI-generated normal maps can often look extremely garish at an intensity of 1.0; consider lowering it
+    // if you're using such AI-generated normal maps.
     // Recommended values:
     // 0.0 => Normal maps have no effect
     // 0.5 => Less intense (smoother surfaces)
     // 1.0 => Default
     // 2.0 => Very intense (rougher surfaces)
-    #define NORMAL_MAP_INTENSITY 0.3
+    #define NORMAL_MAP_INTENSITY 1.0
 
     // The intensity of direct sunlight
     // Recommended values:
@@ -96,8 +98,8 @@
     #define TINT 0.5
     #define HUE_SHIFT 0.0
 #elif (PRESET == VANILLA)
-    #define SATURATION_FACTOR 1.2
-    #define NORMAL_MAP_INTENSITY 0.3
+    #define SATURATION_FACTOR 1.25
+    #define NORMAL_MAP_INTENSITY 0.75
     #define SUNLIGHT_STRENGTH 0.25
     #define AMBIANCE_STRENGTH 0.4
     #define INTERIOR_STRENGTH 0.6
@@ -106,11 +108,11 @@
     #define WAVES 1
     #define WAVE_HEIGHT 6.0
     #define TINT 0.0
-    #define HUE_SHIFT 0.0
+    #define HUE_SHIFT -0.01
     #define CAUSTICS 1
 #elif (PRESET == ZESTERER)
     #define SATURATION_FACTOR 1.55
-    #define NORMAL_MAP_INTENSITY 0.75
+    #define NORMAL_MAP_INTENSITY 1.0
     #define SUNLIGHT_STRENGTH 0.5
     #define AMBIANCE_STRENGTH 0.4
     #define INTERIOR_STRENGTH 0.5
@@ -123,7 +125,7 @@
     #define CAUSTICS 1
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.4
-    #define NORMAL_MAP_INTENSITY 0.25
+    #define NORMAL_MAP_INTENSITY 0.65
     #define SUNLIGHT_STRENGTH 0.3
     #define AMBIANCE_STRENGTH 0.4
     #define INTERIOR_STRENGTH 0.7

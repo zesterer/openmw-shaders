@@ -104,7 +104,7 @@ vec3 getLightPbr(
 
 vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
     const vec3 interiorSunColor = vec3(1.8, 1.6, 1.3);
-    return (isInterior == 1.0) ? (interiorSunColor * interior_strength) : (mix(
+    return (isInterior > 0.5) ? (interiorSunColor * interior_strength) : (mix(
         mix(
             vec3(0.25, 0.65, 1.0) * 1.65,
             // TODO: Actually detect time of day and make dawn/dusk more red
@@ -118,7 +118,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
 
 vec3 getAmbientColor(float isntDusk, float isInterior) {
     const vec3 interiorAmbientColor = vec3(0.4, 0.35, 0.2);
-    return (isInterior == 1.0) ? (interiorAmbientColor * interior_strength) : (mix(
+    return (isInterior > 0.5) ? (interiorAmbientColor * interior_strength) : (mix(
         vec3(0.15, 0.2, 0.4),
         vec3(1.5 - TINT * 0.3, 1.5, 1.5 + TINT * 0.3),
         isntDusk
@@ -173,7 +173,7 @@ vec3 getPbr(
     const vec3 MU_WATER = vec3(0.6, 0.04, 0.01);
     const float unitsToMetres = 0.014;
     // Light attenuation in water
-    vec3 attenuation = (waterDepth == 0.0 || isInterior == 1.0) ? vec3(1.0) : exp(-MU_WATER * waterDepth * unitsToMetres);
+    vec3 attenuation = (waterDepth == 0.0 || isInterior > 0.5) ? vec3(1.0) : exp(-MU_WATER * waterDepth * unitsToMetres);
 
     // Direct sunlight
     vec3 sunColor = getSunColor(sunLightLevel, isntDusk, isInterior) * attenuation;
