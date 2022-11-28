@@ -32,22 +32,47 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 - **Wave shader**: Dynamic waves, froth, and backwash on beaches
 - **Easy to configure**: if you prefer realism over bright colours, you can [tweak the shaders](#configuration) accordingly!
 
-## Installation
+## Installation Guide
 
 *Ensure that you have the [latest development build](https://openmw.org/downloads/) of OpenMW. If you find that the mod
 does not work with the latest development build, please open an issue!*
 
-1. [Download the shader pack](https://github.com/zesterer/openmw-shaders/archive/refs/heads/main.zip).
+1. [Download the shader pack](#download).
 
 2. Locate your [`resources/`](https://modding-openmw.com/tips/custom-shaders/#installing) directory.
 
-3. Copy the extracted contents of the shader pack into `resources/` (make sure to back up anything that was in there
-before doing this, should something go wrong).
+3. Copy the extracted shader pack into `resources/` (make sure to back up anything that was in there
+before doing this, should something go wrong). This should result in the following directory structure:
 
-4. Start OpenMW and have fun!
+```
+resources/
+  |
+  |-- shaders/
+  |    |
+  |    '-- <glsl shader files>
+  |
+  '-- README.md
+```
+
+4. Enable required settings
+
+- Enable [per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting)
+- Disable [light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting)
+- Set [lighting method](https://openmw.readthedocs.io/en/latest/reference/modding/settings/shaders.html#lighting-method) to 'shaders'
+
+5. Start OpenMW and have fun!
 
 See the [OpenMW Modding Guide](https://modding-openmw.com/tips/custom-shaders/#installing) for more detailed information
 about installing custom shader packs.
+
+## Download
+
+This shader pack currently supports both development builds of OpenMW and OpenMW 0.48 (still in pre-release). Where
+possible, I'd recommend using a development build of OpenMW to get access to all of the latest funky features.
+
+- [For OpenMW Development](https://github.com/zesterer/openmw-shaders/archive/refs/heads/main.zip)
+
+- [For OpenMW 0.48](https://github.com/zesterer/openmw-shaders/archive/refs/heads/openmw-0.48.zip)
 
 ## Configuration
 
@@ -61,12 +86,28 @@ This mod works best with:
 - My [Volumetric Clouds & Mist Mod](https://github.com/zesterer/openmw-volumetric-clouds).
 - High-resolution textures, normal maps, etc. where possible
 - Wazabear's [post-processing shader effects](https://gitlab.com/glassmancody.info/omwfx-shaders/-/tree/main/)
-- [Per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting) enabled
-- [Light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting) disabled
+- Enable [per-pixel lighting](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#force-per-pixel-lighting)
+- Disable [light clamping](https://openmw.readthedocs.io/en/stable/reference/modding/settings/shaders.html#clamp-lighting)
+- Enable [sky blending](https://openmw.readthedocs.io/en/latest/reference/modding/settings/fog.html#sky-blending)
+
+## Known Issues
+
+- OpenMW's assets don't differentiate between 'leaves' and 'not leaves'. As a result, the shaders use a primitive
+  heuristic to determine what is and is not a leaf for the wind sway effect. This can sometimes cause some objects that
+  are not leaves (candle flames, banners, baskets, etc.) to exhibit strange swaying behaviour too. If this is too
+  distracting for you, you can disable wind sway by setting `WIND_AMPLITUDE` to `0.0` in
+  [`shaders/config.glsl`](https://github.com/zesterer/openmw-shaders/blob/main/shaders/config.glsl).
+
+- On the version of the mod for OpenMW 0.48, objects reflected in water can have incorrect tinting applied to them. This
+  is fixed in the version of the mod for OpenMW release builds.
 
 ## Getting Help & Feedback
 
 Got a question or a suggestion? Feel free to [open a discussion topic](https://github.com/zesterer/openmw-shaders/discussions/new).
+
+Please note that I'm not responsible for whatever happens if you use this mod. Pretty much all settings in `config.glsl`
+are safe to play around with, but if you somehow manage to make your graphics card explode by plugging in stupid
+numbers, that's on you.
 
 ## License
 
