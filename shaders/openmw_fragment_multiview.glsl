@@ -30,9 +30,18 @@ float mw_sampleRefractionDepthMap(vec2 uv)
 
 #endif
 
-//uniform sampler2DArray omw_SamplerLastShader;
+uniform sampler2DArray omw_SamplerLastShader;
 
 vec4 mw_samplerLastShader(vec2 uv)
 {
     return texture2DArray(omw_SamplerLastShader, vec3((uv), gl_ViewID_OVR));
 }
+
+#if @skyBlending
+uniform sampler2DArray sky;
+
+vec3 mw_sampleSkyColor(vec2 uv)
+{
+    return texture2DArray(sky, vec3((uv), gl_ViewID_OVR)).xyz;
+}
+#endif
