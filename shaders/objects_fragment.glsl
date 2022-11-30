@@ -101,6 +101,7 @@ uniform bool isReflection;
 void main()
 {
     vec3 worldNormal = normalize(passNormal);
+    vec3 viewVec = normalize(passViewPos.xyz);
 
 #if @diffuseMap
     vec2 adjustedDiffuseUV = diffuseMapUV;
@@ -118,7 +119,7 @@ void main()
     vec3 viewNormal = gl_NormalMatrix * worldNormal;
 #endif
 
-#if (!@normalMap && (@parallax || @forcePPL))
+#if (!@normalMap && (@parallax || @forcePPL || @softParticles))
     vec3 viewNormal = gl_NormalMatrix * worldNormal;
 #endif
 
@@ -156,6 +157,7 @@ void main()
     float waterDepth = inMinimap ? 0.0 : max(-wPos.z, 0);
 
 #if @darkMap
+    gl_FragData[0] *= texture2D(darkMap, darkMapUV);
     gl_FragData[0].a *= coveragePreservingAlphaScale(darkMap, darkMapUV);
 #endif
 
@@ -177,7 +179,6 @@ void main()
 
 #if @normalMap
     // if using normal map + env map, take advantage of per-pixel normals for envTexCoordGen
-    vec3 viewVec = normalize(passViewPos.xyz);
     vec3 r = reflect( viewVec, viewNormal );
     float m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1.0)*(r.z+1.0) );
     envTexCoordGen = vec2(r.x/m + 0.5, r.y/m + 0.5);
@@ -275,7 +276,7 @@ void main()
     gl_FragData[0] = applyFogAtPos(gl_FragData[0], passViewPos);
 
 #if !defined(FORCE_OPAQUE) && @softParticles
-    gl_FragData[0].a *= calcSoftParticleFade();
+    gl_FragData[0].a *= calcSoftParticleFade(viewVec, viewNormal, passViewPos);
 #endif
 
 #if defined(FORCE_OPAQUE) && FORCE_OPAQUE
@@ -283,7 +284,7 @@ void main()
     gl_FragData[0].a = 1.0;
 #endif
 
-#if !@disableNormals
+#if !defined(FORCE_OPAQUE) && !@disableNormals
     gl_FragData[1].xyz = worldNormal * 0.5 + 0.5;
 #endif
 
