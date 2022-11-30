@@ -268,7 +268,8 @@ void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
 }
 
 // Derive PBR parameters from coloured specular, if possible. If not, old values will be used.
-void matSpecToPbr(vec3 specMat, inout float roughness, inout float reflectance, inout float metalness) {
+void matSpecToPbr(vec3 specMat, inout float roughness, inout float metalness, inout float reflectance, inout float shininess) {
     // The only thing we can do is to look at the magnitude of the specular element and use that as 1 - roughness
-    roughness = mix(0.8, 0.5, length(specMat) * 0.58);
+    metalness = mix(0.0, 0.75, clamp(length(specMat) * 5.0, 0.0, 1.0));
+    roughness = 0.9 / (1.0 + sqrt(shininess) * 0.25 + metalness * 0.5);
 }

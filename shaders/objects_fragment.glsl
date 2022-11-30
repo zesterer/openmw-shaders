@@ -208,22 +208,16 @@ void main()
 
     float roughness = 0.6;
     float reflectance = 1.0;
-    float metalness = 0.0;
+    float metalness = 0.1;
 
-    float shininess = clamp(gl_FrontMaterial.shininess * 0.0039, 0.0, 1.0);
+    float shininess = gl_FrontMaterial.shininess;
 
 #if @specularMap
-    vec4 specTex = texture2D(specularMap, specularMapUV);
-    vec3 matSpec = specTex.xyz;
-    matSpecToPbr(matSpec, roughness, metalness, reflectance);
-    roughness *= mix(1.0, 0.3, shininess * specTex.a);
+    vec3 matSpec = texture2D(specularMap, specularMapUV).xyz;
 #else
     vec3 matSpec = getSpecularColor().xyz;
-    matSpecToPbr(matSpec, roughness, metalness, reflectance);
-    //shininess = min(shininess * 20.0, 1.0); // Why the hell is this necessary?!
-    roughness *= mix(0.9, 0.1, shininess);
-    metalness *= mix(0.0, 0.75, shininess);
 #endif
+    matSpecToPbr(matSpec, roughness, metalness, reflectance, shininess);
 
     float shadowing = unshadowedLightRatio(passViewPos.z);
     vec3 lighting;

@@ -105,19 +105,14 @@ void main()
     float reflectance = 1.0;
     float metalness = 0.0;
 
-    float shininess = clamp(gl_FrontMaterial.shininess * 0.0039 * 30.0, 0.0, 1.0);
+    float shininess = gl_FrontMaterial.shininess;
 
 #if @specularMap
     vec3 matSpec = vec3(diffuseTex.a);
-    matSpecToPbr(matSpec, roughness, metalness, reflectance);
-    roughness *= mix(1.0, 0.3, shininess);
 #else
     vec3 matSpec = getSpecularColor().xyz;
-    matSpecToPbr(matSpec, roughness, metalness, reflectance);
-    shininess = min(shininess * 20.0, 1.0); // Why the hell is this necessary?!
-    roughness *= mix(0.9, 0.1, shininess);
-    metalness *= mix(0.0, 0.75, shininess);
 #endif
+    matSpecToPbr(matSpec, roughness, metalness, reflectance, shininess);
 
     float shadowing = unshadowedLightRatio(linearDepth);
     vec3 lighting;

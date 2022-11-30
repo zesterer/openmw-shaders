@@ -40,10 +40,10 @@
 
     // The intensity of direct sunlight
     // Recommended values:
-    // 1.0 => Weak, closer to the original game
-    // 1.25 => Bright, but not overpowering
-    // 1.5 => Solar flare, take cover!
-    #define SUNLIGHT_STRENGTH 0.8
+    // 0.25 => Weak, closer to the original game
+    // 0.6 => Bright, but not overpowering
+    // 1.0 => Solar flare, take cover!
+    #define SUNLIGHT_STRENGTH 0.6
 
     // The intensity of ambient light
     // Recommended values:
@@ -109,10 +109,10 @@
     #define HUE_SHIFT 0.0
     #define CAUSTICS 1
 #elif (PRESET == ZESTERER)
-    #define SATURATION_FACTOR 1.55
-    #define NORMAL_MAP_INTENSITY 0.75
-    #define SUNLIGHT_STRENGTH 0.5
-    #define AMBIANCE_STRENGTH 0.4
+    #define SATURATION_FACTOR 1.45
+    #define NORMAL_MAP_INTENSITY 1.0
+    #define SUNLIGHT_STRENGTH 0.65
+    #define AMBIANCE_STRENGTH 0.5
     #define INTERIOR_STRENGTH 0.5
     #define PROCEDURAL_DETAIL_LEVEL 1.0
     #define WIND_AMPLITUDE 0.75
