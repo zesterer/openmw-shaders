@@ -85,6 +85,12 @@ uniform mat4 osg_ModelViewMatrix;
 
 uniform mat4 projectionMatrix;
 
+uniform bool isReflection;
+
+#if @additiveBlending
+#define ADDITIVE_BLENDING
+#endif
+
 #include "vertexcolors.glsl"
 #include "shadows_fragment.glsl"
 #include "lighting.glsl"

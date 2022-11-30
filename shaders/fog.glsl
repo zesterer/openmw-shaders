@@ -17,12 +17,20 @@ vec4 applyFogAtDist(vec4 color, float euclideanDist, float linearDist)
 #else
     float fogValue = clamp((dist - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
 #endif
+#ifdef ADDITIVE_BLENDING
+    color.xyz *= 1.0 - fogValue;
+#else
     color.xyz = mix(color.xyz, gl_Fog.color.xyz, fogValue);
+#endif
 
 #if @skyBlending && !@useOVR_multiview
     float fadeValue = clamp((far - dist) / (far - skyBlendingStart), 0.0, 1.0);
     vec3 skyColor = texture2D(sky, gl_FragCoord.xy / screenRes).xyz;
-    color.xyz = mix(skyColor, color.xyz, fadeValue * fadeValue);
+#ifdef ADDITIVE_BLENDING
+    color.xyz *= fadeValue;
+#else
+    color.xyz = mix(mw_sampleSkyColor(gl_FragCoord.xy / screenRes), color.xyz, fadeValue);
+#endif
 #endif
 
     return color;
