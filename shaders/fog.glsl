@@ -37,7 +37,11 @@ vec4 applyFogAtDist(vec4 color, float euclideanDist, float linearDist)
     return color;
 }
 
-vec4 applyFogAtPos(vec4 color, vec3 pos)
-{
-    return applyFogAtDist(color, length(pos), pos.z);
-}
+#if (BUILTIN_FOG == 1)
+    vec4 applyFogAtPos(vec4 color, vec3 pos)
+    {
+        return applyFogAtDist(color, length(pos), pos.z);
+    }
+#else
+    vec4 applyFogAtPos(in vec4 color, in vec3 pos) { return color; }
+#endif
