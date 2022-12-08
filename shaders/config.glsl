@@ -95,6 +95,8 @@
     // As-yet undocumented settings. Play with them if you wish!
     #define TINT 0.5
     #define HUE_SHIFT 0.0
+    #define BUILTIN_FOG 1
+    #define POINT_LIGHT_MODERATION 1
 #elif (PRESET == VANILLA)
     #define SATURATION_FACTOR 1.2
     #define NORMAL_MAP_INTENSITY 0.3
@@ -108,6 +110,8 @@
     #define TINT 0.0
     #define HUE_SHIFT 0.0
     #define CAUSTICS 1
+    #define BUILTIN_FOG 1
+    #define POINT_LIGHT_MODERATION 1
 #elif (PRESET == ZESTERER)
     #define SATURATION_FACTOR 1.45
     #define NORMAL_MAP_INTENSITY 1.0
@@ -121,6 +125,8 @@
     #define TINT 1.0
     #define HUE_SHIFT -0.015
     #define CAUSTICS 1
+    #define BUILTIN_FOG 0
+    #define POINT_LIGHT_MODERATION 1
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.4
     #define NORMAL_MAP_INTENSITY 0.25
@@ -134,6 +140,8 @@
     #define TINT 0.5
     #define HUE_SHIFT -0.015
     #define CAUSTICS 1
+    #define BUILTIN_FOG 1
+    #define POINT_LIGHT_MODERATION 1
 #else
     #error Selected shader preset does not exist!
 #endif
