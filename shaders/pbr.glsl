@@ -102,7 +102,7 @@ vec3 getLightPbr(
     return radiance * (mix(solidLight * lambert, leafLight, mat) + subsurfaceScatter);
 }
 
-vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
+vec3 getSunColor(float sunLightLevel, in float isntDusk, in float isInterior) {
     const vec3 interiorSunColor = vec3(1.8, 1.6, 1.3);
     return (isInterior > 0.5) ? (interiorSunColor * interior_strength) : (mix(
         mix(
@@ -116,7 +116,7 @@ vec3 getSunColor(float sunLightLevel, float isntDusk, float isInterior) {
     ) * lcalcDiffuse(0) * sunlight_strength);
 }
 
-vec3 getAmbientColor(float isntDusk, float isInterior) {
+vec3 getAmbientColor(in float isntDusk, in float isInterior) {
     const vec3 interiorAmbientColor = vec3(0.4, 0.35, 0.2);
     return (isInterior > 0.5) ? (interiorAmbientColor * interior_strength) : (mix(
         vec3(0.15, 0.2, 0.4),
@@ -187,6 +187,7 @@ vec3 getPbr(
     float ambientDirectionalBias = (max(dot((osg_ViewMatrixInverse * vec4(surfNorm, 0.0)).xyz, vec3(0.0, 0.0, 1.0)), 0.0) * 0.5 + 0.5) * 1.5;
     light += albedo * ao * baseRefl * skyColor * ambientFresnel * ambientDirectionalBias;
 
+    vec3 point_light = vec3(0.0);
     for (int i = @startLight; i < @endLight; ++i) {
         int lightIdx =
         #if @lightingMethodUBO
@@ -213,11 +214,16 @@ vec3 getPbr(
             // Final cap to make sure that lights don't abruptly cut off beyond the maximum light distance
             * min((1.0 - lightDist / lightMaxRadius) * 3.0, 1.0);
 
-        light += getLightPbr(surfPos, surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1.0, 1.0, subsurface, ao, mat);
+        point_light += getLightPbr(surfPos, surfNorm, camDir, lightDir, lightColor, albedo, roughness, baseRefl, metalness, 1.0, 1.0, subsurface, ao, mat);
 
         // Ambiance from the point light
-        light += albedo * ao * baseRefl * lightColor * 0.05;
+        point_light += albedo * ao * baseRefl * lightColor * 0.05;
     }
+    #if (POINT_LIGHT_MODERATION == 1)
+        light += point_light / (1.0 + length(point_light) * 0.35);
+    #else
+        light += point_light;
+    #endif
 
     // Experimental water silt
     //vec3 wDir = (osg_ViewMatrixInverse * vec4(camDir, 0.0)).xyz;
