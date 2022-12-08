@@ -1,3 +1,6 @@
+#ifndef LIGHTING_UTIL_GLSL
+#define LIGHTING_UTIL_GLSL
+
 #if !@lightingMethodFFP
 float quickstep(float x)
 {
@@ -138,3 +141,5 @@ void clampLightingResult(inout vec3 lighting)
     lighting = max(lighting, 0.0);
 #endif
 }
+
+#endif
