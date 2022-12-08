@@ -166,7 +166,7 @@ vec3 getPbr(
     float isntDusk = clamp(lcalcDiffuse(0).r * 2.0 - 0.25, 0.0, 1.0);
 
     // Extremely silly hack to determine whether we're indoors or not
-    float isInterior = step(0.9, dot(sunWDir, vec3(0.0, 0.0, 1.0))) * step(lcalcDiffuse(0).b, 0.2);
+    float isInterior = step(0.0, sunWDir.y);//step(0.9, dot(sunWDir, vec3(0.0, 0.0, 1.0))) * step(lcalcDiffuse(0).b, 0.2);
 
     // Linear RGB, attenuation coefficients for water at roughly R, G, B wavelengths.
     // See https://en.wikipedia.org/wiki/Electromagnetic_absorption_by_water
