@@ -103,7 +103,7 @@ vec3 getLightPbr(
 }
 
 vec3 getSunColor(float sunLightLevel, in float isntDusk, in float isInterior) {
-    const vec3 interiorSunColor = vec3(1.8, 1.6, 1.3);
+    const vec3 interiorSunColor = vec3(1.7, 1.6, 1.5);
     return (isInterior > 0.5) ? (interiorSunColor * interior_strength) : (mix(
         mix(
             vec3(0.25, 0.65, 1.0) * 1.65,
@@ -199,7 +199,7 @@ vec3 getPbr(
 
         vec3 lightDelta = lcalcPosition(lightIdx) - surfPos;
         float lightMaxRadius = lcalcRadius(lightIdx) * 3.0;
-        float lightDist = length(lightDelta) * 0.65;
+        float lightDist = length(lightDelta) * 0.75;
 
         // Skip this light if it's too far away
         if (lightDist > lightMaxRadius) { continue; }
@@ -208,7 +208,7 @@ vec3 getPbr(
 
         vec3 lightColor = lcalcDiffuse(lightIdx)
             // The strength of a light reduces with distance
-            * lcalcIllumination(lightIdx, lightDist) * 7.5
+            * lcalcIllumination(lightIdx, lightDist) * 9.0
             // Make lights less powerful during the day (otherwise, they're a bit overpowering)
             * max(1.0 - sunLightLevel, 0.5)
             // Final cap to make sure that lights don't abruptly cut off beyond the maximum light distance
