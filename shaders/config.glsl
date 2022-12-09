@@ -127,7 +127,7 @@
     #define TINT 1.0
     #define HUE_SHIFT -0.015
     #define CAUSTICS 1
-    #define BUILTIN_FOG 0
+    #define BUILTIN_FOG 1
     #define POINT_LIGHT_MODERATION 1
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.4
