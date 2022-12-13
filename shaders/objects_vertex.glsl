@@ -8,8 +8,7 @@
     #extension GL_EXT_gpu_shader4: require
 #endif
 
-uniform mat4 projectionMatrix;
-
+#include "openmw_vertex.h.glsl"
 #if @diffuseMap
 varying vec2 diffuseMapUV;
 #endif
@@ -90,9 +89,9 @@ void main(void)
     #if @diffuseMap
         doSway(diffuseMap, diffuseMapUV, modelPos.xyz, leafiness);
     #endif
-    gl_Position = projectionMatrix * (gl_ModelViewMatrix * modelPos);
+    gl_Position = mw_modelToClip(modelPos);
 
-    vec4 viewPos = (gl_ModelViewMatrix * modelPos);
+    vec4 viewPos = mw_modelToView(modelPos);
     gl_ClipVertex = viewPos;
 
 #if (@envMap || !PER_PIXEL_LIGHTING || @shadows_enabled)
@@ -104,6 +103,10 @@ void main(void)
     vec3 r = reflect( viewVec, viewNormal );
     float m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1.0)*(r.z+1.0) );
     envMapUV = vec2(r.x/m + 0.5, r.y/m + 0.5);
+#endif
+
+#if @diffuseMap
+    diffuseMapUV = (gl_TextureMatrix[@diffuseMapUV] * gl_MultiTexCoord@diffuseMapUV).xy;
 #endif
 
 #if @darkMap

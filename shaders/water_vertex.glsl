@@ -1,6 +1,6 @@
 #version 120
 
-uniform mat4 projectionMatrix;
+#include "openmw_vertex.h.glsl"
 
 varying vec4  position;
 varying float linearDepth;
@@ -11,14 +11,14 @@ varying float linearDepth;
 
 void main(void)
 {
-    vec4 mpos = gl_Vertex;
+    vec4 modelPos = gl_Vertex;
     //mpos.z += doWave();
 
-    gl_Position = projectionMatrix * (gl_ModelViewMatrix * mpos);
+    gl_Position = mw_modelToClip(modelPos);
 
-    position = mpos;
+    position = modelPos;
 
-    vec4 viewPos = gl_ModelViewMatrix * mpos;
+    vec4 viewPos = mw_modelToView(modelPos);
     linearDepth = getLinearDepth(gl_Position.z, viewPos.z);
 
     setupShadowCoords(viewPos, normalize((gl_NormalMatrix * gl_Normal).xyz));
