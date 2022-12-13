@@ -6,9 +6,9 @@ varying vec2 diffuseMapUV;
 varying float alphaPassthrough;
 
 uniform mat4 osg_ViewMatrixInverse;
-uniform mat4 osg_ModelViewMatrix;
 uniform sampler2D diffuseMap;
 
+#include "openmw_vertex.h.glsl"
 #include "vertexcolors.glsl"
 #include "sway.glsl"
 
@@ -19,7 +19,7 @@ void main()
     vec4 modelPos = gl_Vertex;
     float leafiness;
     doSway(diffuseMap, diffuseMapUV, modelPos.xyz, leafiness);
-    gl_Position = projectionMatrix * (gl_ModelViewMatrix * modelPos);
+    gl_Position = mw_modelToClip(modelPos);
 
     if (colorMode == 2)
         alphaPassthrough = gl_Color.a;
