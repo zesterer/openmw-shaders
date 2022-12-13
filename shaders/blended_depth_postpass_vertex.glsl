@@ -1,4 +1,12 @@
-#version 140
+#version 120
+
+#if @useUBO
+    #extension GL_ARB_uniform_buffer_object : require
+#endif
+
+#if @useGPUShader4
+    #extension GL_EXT_gpu_shader4: require
+#endif
 
 uniform mat4 projectionMatrix;
 
