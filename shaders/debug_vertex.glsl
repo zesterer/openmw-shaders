@@ -1,12 +1,31 @@
 #version 120
 
-uniform mat4 projectionMatrix;
+#include "openmw_vertex.h.glsl"
+
+uniform vec3 color;
+uniform vec3 trans;
+uniform vec3 scale;
+uniform bool  useNormalAsColor;
+uniform bool  useAdvancedShader = false;
 
 centroid varying vec4 passColor;
+varying vec3 vertexNormal;
 
 void main()
 {
-    gl_Position = projectionMatrix * (gl_ModelViewMatrix * gl_Vertex);
+    if(!useAdvancedShader)
+    {
+        gl_Position = mw_modelToClip( vec4(gl_Vertex));
+        vertexNormal = vec3(1., 1., 1.);
+        passColor  = gl_Color;
+    }
+    else
+    {
+        gl_Position = mw_modelToClip( vec4(gl_Vertex.xyz * scale + trans,1));
 
-    passColor = gl_Color;
+        vertexNormal = useNormalAsColor ? vec3(1., 1., 1.) : gl_Normal.xyz;
+        vec3 colorOut = useNormalAsColor? gl_Normal.xyz : color;
+        passColor = vec4(colorOut, 1.);
+    }
+
 }
