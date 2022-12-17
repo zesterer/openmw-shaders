@@ -23,6 +23,7 @@ varying vec3 passViewPos;
 varying vec3 passNormal;
 
 #include "vertexcolors.glsl"
+#include "warp.glsl"
 #include "shadows_vertex.glsl"
 
 #include "lighting.glsl"
@@ -35,6 +36,9 @@ void main(void)
     vec4 viewPos = mw_modelToView(gl_Vertex);
     gl_ClipVertex = viewPos;
     euclideanDepth = length(viewPos.xyz);
+
+    gl_Position = warp_position(viewPos.xyz);
+
     linearDepth = getLinearDepth(gl_Position.z, viewPos.z);
 
 #if (!PER_PIXEL_LIGHTING || @shadows_enabled)

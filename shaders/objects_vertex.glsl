@@ -64,13 +64,13 @@ varying vec3 passNormal;
 varying float normZ;
 varying float normZ2;
 
-uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ModelViewMatrix;
 uniform sampler2D diffuseMap;
 
 varying float leafiness;
 
 #include "vertexcolors.glsl"
+#include "warp.glsl"
 #include "shadows_vertex.glsl"
 
 #include "lighting.glsl"
@@ -93,6 +93,8 @@ void main(void)
 
     vec4 viewPos = mw_modelToView(modelPos);
     gl_ClipVertex = viewPos;
+
+    gl_Position = warp_position(viewPos.xyz);
 
 #if (@envMap || !PER_PIXEL_LIGHTING || @shadows_enabled)
     vec3 viewNormal = normalize((gl_NormalMatrix * gl_Normal).xyz);

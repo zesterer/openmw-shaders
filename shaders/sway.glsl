@@ -2,7 +2,6 @@
 
 uniform float osg_SimulationTime;
 
-// TODO: Including this file results in an error due to an undefined shader attribute, figure out a way around this
 #include "lighting_util.glsl"
 
 void doSway(sampler2D diffuseMap, vec2 diffuseMapUV, inout vec3 modelPos, inout float leafiness) {

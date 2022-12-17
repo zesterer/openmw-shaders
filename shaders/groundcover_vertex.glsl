@@ -10,6 +10,8 @@
 
 #define GROUNDCOVER
 
+#include "openmw_vertex.h.glsl"
+
 attribute vec4 aOffset;
 attribute vec3 aRotation;
 
@@ -38,14 +40,12 @@ centroid varying vec3 shadowDiffuseLighting;
 
 varying vec3 passNormal;
 
-uniform mat4 osg_ViewMatrix;
-
 #include "shadows_vertex.glsl"
+#include "warp.glsl"
 #include "lighting.glsl"
 #include "depth.glsl"
 
 uniform float osg_SimulationTime;
-uniform mat4 osg_ViewMatrixInverse;
 uniform float windSpeed;
 uniform vec3 playerPos;
 uniform mat4 projectionMatrix;
@@ -145,7 +145,7 @@ void main(void)
     if (length(gl_ModelViewMatrix * vec4(position, 1.0)) > @groundcoverFadeEnd)
         gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
     else
-        gl_Position = projectionMatrix * viewPos;
+        gl_Position = warp_position(viewPos.xyz);
 
     linearDepth = getLinearDepth(gl_Position.z, viewPos.z);
 
