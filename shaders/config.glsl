@@ -103,6 +103,7 @@
     #define FORWARD_TONEMAPPING 1
     #define FORWARD_TONEMAPPING_GAMMA 1.4
     #define FORWARD_TONEMAPPING_EXPOSURE 1.75
+    #define PBR_TEXTURES 1
 #elif (PRESET == VANILLA)
     #define SATURATION_FACTOR 1.25
     #define NORMAL_MAP_INTENSITY 0.75
@@ -122,6 +123,7 @@
     #define FORWARD_TONEMAPPING 1
     #define FORWARD_TONEMAPPING_GAMMA 1.4
     #define FORWARD_TONEMAPPING_EXPOSURE 1.75
+    #define PBR_TEXTURES 1
 #elif (PRESET == ZESTERER)
     #define SATURATION_FACTOR 1.45
     #define NORMAL_MAP_INTENSITY 1.0
@@ -141,6 +143,7 @@
     #define FORWARD_TONEMAPPING 1
     #define FORWARD_TONEMAPPING_GAMMA 1.4
     #define FORWARD_TONEMAPPING_EXPOSURE 1.75
+    #define PBR_TEXTURES 1
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.4
     #define NORMAL_MAP_INTENSITY 0.65
@@ -160,6 +163,7 @@
     #define FORWARD_TONEMAPPING 1
     #define FORWARD_TONEMAPPING_GAMMA 1.4
     #define FORWARD_TONEMAPPING_EXPOSURE 1.75
+    #define PBR_TEXTURES 1
 #else
     #error Selected shader preset does not exist!
 #endif
