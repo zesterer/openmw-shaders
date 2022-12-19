@@ -108,9 +108,9 @@ void main()
     float shininess = gl_FrontMaterial.shininess;
 
 #if @specularMap
-    vec3 matSpec = vec3(diffuseTex.a);
+    vec4 matSpec = vec4(diffuseTex.a);
 #else
-    vec3 matSpec = getSpecularColor().xyz;
+    vec4 matSpec = getSpecularColor();
 #endif
     matSpecToPbr(matSpec, roughness, metalness, reflectance, shininess);
 
@@ -174,7 +174,7 @@ void main()
         waterDepth,
         MAT_DEFAULT
     );
-    //gl_FragData[0].xyz = matSpec;
+    //gl_FragData[0].xyz = matSpec.rgb;
 #endif
 
     clampLightingResult(gl_FragData[0].xyz);

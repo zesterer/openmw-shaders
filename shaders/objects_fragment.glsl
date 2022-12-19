@@ -213,9 +213,9 @@ void main()
     float shininess = gl_FrontMaterial.shininess;
 
 #if @specularMap
-    vec3 matSpec = texture2D(specularMap, specularMapUV).xyz;
+    vec4 matSpec = texture2D(specularMap, specularMapUV);
 #else
-    vec3 matSpec = getSpecularColor().xyz;
+    vec4 matSpec = getSpecularColor();
 #endif
     matSpecToPbr(matSpec, roughness, metalness, reflectance, shininess);
 
@@ -262,6 +262,9 @@ void main()
         waterDepth,
         leafiness
     );
+    //#if @specularMap
+    //    gl_FragData[0].xyz = matSpec.rgb;
+    //#endif
 #endif
 
 #if @envMap && !@preLightEnv
