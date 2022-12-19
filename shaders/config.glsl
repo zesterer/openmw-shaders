@@ -97,11 +97,15 @@
     #define HUE_SHIFT 0.0
     #define BUILTIN_FOG 1
     #define POINT_LIGHT_MODERATION 1
+    #define MAJESTIC_WARP 0
+    #define FORWARD_TONEMAPPING 1
+    #define FORWARD_TONEMAPPING_GAMMA 1.4
+    #define FORWARD_TONEMAPPING_EXPOSURE 1.75
 #elif (PRESET == VANILLA)
     #define SATURATION_FACTOR 1.2
     #define NORMAL_MAP_INTENSITY 0.3
     #define SUNLIGHT_STRENGTH 0.25
-    #define AMBIANCE_STRENGTH 0.4
+    #define AMBIANCE_STRENGTH 0.5
     #define INTERIOR_STRENGTH 0.6
     #define PROCEDURAL_DETAIL_LEVEL 0.5
     #define WIND_AMPLITUDE 0.2
@@ -112,21 +116,29 @@
     #define CAUSTICS 1
     #define BUILTIN_FOG 1
     #define POINT_LIGHT_MODERATION 1
+    #define MAJESTIC_WARP 0
+    #define FORWARD_TONEMAPPING 1
+    #define FORWARD_TONEMAPPING_GAMMA 1.4
+    #define FORWARD_TONEMAPPING_EXPOSURE 1.75
 #elif (PRESET == ZESTERER)
     #define SATURATION_FACTOR 1.45
     #define NORMAL_MAP_INTENSITY 1.0
-    #define SUNLIGHT_STRENGTH 0.75
-    #define AMBIANCE_STRENGTH 0.4
+    #define SUNLIGHT_STRENGTH 0.8
+    #define AMBIANCE_STRENGTH 0.5
     #define INTERIOR_STRENGTH 0.5
     #define PROCEDURAL_DETAIL_LEVEL 1.0
     #define WIND_AMPLITUDE 0.75
     #define WAVES 1
     #define WAVE_HEIGHT 8.0
-    #define TINT 1.0
+    #define TINT 1.25
     #define HUE_SHIFT -0.015
     #define CAUSTICS 1
     #define BUILTIN_FOG 1
-    #define POINT_LIGHT_MODERATION 1
+    #define POINT_LIGHT_MODERATION 0
+    #define MAJESTIC_WARP 0
+    #define FORWARD_TONEMAPPING 1
+    #define FORWARD_TONEMAPPING_GAMMA 1.4
+    #define FORWARD_TONEMAPPING_EXPOSURE 1.75
 #elif (PRESET == MGE_XE)
     #define SATURATION_FACTOR 1.4
     #define NORMAL_MAP_INTENSITY 0.25
@@ -142,6 +154,10 @@
     #define CAUSTICS 1
     #define BUILTIN_FOG 1
     #define POINT_LIGHT_MODERATION 1
+    #define MAJESTIC_WARP 0
+    #define FORWARD_TONEMAPPING 1
+    #define FORWARD_TONEMAPPING_GAMMA 1.4
+    #define FORWARD_TONEMAPPING_EXPOSURE 1.75
 #else
     #error Selected shader preset does not exist!
 #endif

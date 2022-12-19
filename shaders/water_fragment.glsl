@@ -385,5 +385,7 @@ void main(void)
     gl_FragData[1].rgb = normal * 0.5 + 0.5;
 #endif
 
+    tonemap(gl_FragData[0].rgb);
+
     applyShadowDebugOverlay();
 }

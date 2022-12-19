@@ -279,3 +279,11 @@ void matSpecToPbr(vec3 specMat, inout float roughness, inout float metalness, in
     metalness = mix(0.0, 0.75, clamp(length(specMat) * 5.0, 0.0, 1.0));
     roughness = 0.9 / (1.0 + sqrt(shininess) * 0.25 + metalness * 0.5);
 }
+
+void tonemap(inout vec3 color) {
+    #if (FORWARD_TONEMAPPING == 1)
+        const float gamma = FORWARD_TONEMAPPING_GAMMA;
+        const float exposure = FORWARD_TONEMAPPING_EXPOSURE;
+        color = pow(vec3(1.0) - exp(-color * exposure), vec3(gamma));
+    #endif
+}
