@@ -113,7 +113,7 @@ void main()
 #else
     vec4 matSpec = getSpecularColor();
 #endif
-    matSpecToPbr(matSpec, roughness, metalness, reflectance, shininess);
+    matSpecToPbr(matSpec, 0.0, roughness, metalness, reflectance, shininess);
 
     float shadowing = unshadowedLightRatio(linearDepth);
     vec3 lighting;
