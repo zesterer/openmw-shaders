@@ -217,9 +217,9 @@ void main()
 #else
     vec4 matSpec = getSpecularColor();
 #endif
-    matSpecToPbr(matSpec, roughness, metalness, reflectance, shininess);
+    matSpecToPbr(matSpec, leafiness, roughness, metalness, reflectance, shininess);
 
-    float shadowing = unshadowedLightRatio(passViewPos.z);
+    float shadowing = unshadowedLightRatio(-passViewPos.z);
     vec3 lighting;
 #if !PER_PIXEL_LIGHTING
     lighting = passLighting + shadowDiffuseLighting * shadowing;
@@ -265,6 +265,7 @@ void main()
     //#if @specularMap
     //    gl_FragData[0].xyz = matSpec.rgb;
     //#endif
+    //gl_FragData[0].xyz = vec3(reflectance);
 #endif
 
 #if @envMap && !@preLightEnv
