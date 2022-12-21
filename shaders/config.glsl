@@ -197,6 +197,17 @@
     #error Selected shader preset does not exist!
 #endif
 
+// Enable this to check that your texture mods are loaded correctly.
+// Bands of colour correspond to material properties:
+// Red = Normal maps are present
+// Yellow = Parallax maps are present
+// Purple = Dark maps are present
+// Green = Bump maps are present
+// Orange = Gloss maps are present
+// Blue = Specular maps / PBR parameters are present
+// Pink = Emissive maps are present
+#define DEBUG_MATERIALS 1
+
 const float saturation_factor = SATURATION_FACTOR;
 const float normal_map_intensity = NORMAL_MAP_INTENSITY;
 const float sunlight_strength = SUNLIGHT_STRENGTH;
