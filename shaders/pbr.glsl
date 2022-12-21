@@ -256,14 +256,23 @@ void untonemap(inout vec3 color) {
     color = vec3(1.0) - exp2(color * -k);
 }
 
+vec3 srgb_to_linear(vec3 srgb) {
+    vec3 cutoff = step(vec3(0.04045), -srgb);
+    vec3 higher = pow((srgb + vec3(0.055))/vec3(1.055), vec3(2.4));
+    vec3 lower = srgb/vec3(12.92);
+
+    return mix(higher, lower, cutoff);
+}
+
 // We need to derive PBR inputs from Morrowind's extremely ad-hoc, non-PBR textures.
 // As a result, this entire thing is an enormous hack that lets us do that!
 void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
     untonemap(color);
+    color = srgb_to_linear(color);
 
     vec3 hsv = rgb2hsv(color);
 
-    ao = hsv.z;
+    ao = hsv.z * 4.5;
     albedo = hsv2rgb(vec3(hsv.x + HUE_SHIFT, hsv.y * saturation_factor, 1.0));
 
     /*
