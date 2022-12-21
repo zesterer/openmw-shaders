@@ -268,11 +268,11 @@ vec3 srgb_to_linear(vec3 srgb) {
 // As a result, this entire thing is an enormous hack that lets us do that!
 void colorToPbr(vec3 color, out vec3 albedo, out float ao) {
     untonemap(color);
-    color = srgb_to_linear(color);
+    //color = srgb_to_linear(color);
 
     vec3 hsv = rgb2hsv(color);
 
-    ao = hsv.z * 4.5;
+    ao = hsv.z * 1.2;
     albedo = hsv2rgb(vec3(hsv.x + HUE_SHIFT, hsv.y * saturation_factor, 1.0));
 
     /*
