@@ -15,6 +15,7 @@ varying vec2 diffuseMapUV;
 #endif
 
 #if @darkMap
+#define DARK_MAP
 uniform sampler2D darkMap;
 varying vec2 darkMapUV;
 #endif
@@ -30,6 +31,7 @@ varying vec2 decalMapUV;
 #endif
 
 #if @emissiveMap
+#define EMISSIVE_MAP
 uniform sampler2D emissiveMap;
 varying vec2 emissiveMapUV;
 #endif
@@ -52,6 +54,7 @@ varying vec2 specularMapUV;
 #endif
 
 #if @bumpMap
+#define BUMP_MAP
 uniform sampler2D bumpMap;
 varying vec2 bumpMapUV;
 uniform vec2 envMapLumaBias;
@@ -59,6 +62,7 @@ uniform mat2 bumpMapMatrix;
 #endif
 
 #if @glossMap
+#define GLOSS_MAP
 uniform sampler2D glossMap;
 varying vec2 glossMapUV;
 #endif
@@ -291,6 +295,7 @@ void main()
 #endif
 
     tonemap(gl_FragData[0].rgb);
+    debug_materials(gl_FragData[0].rgb);
 
     applyShadowDebugOverlay();
 }

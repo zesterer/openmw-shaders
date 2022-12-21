@@ -187,6 +187,7 @@ void main()
 #endif
 
     tonemap(gl_FragData[0].rgb);
+    debug_materials(gl_FragData[0].rgb);
 
     applyShadowDebugOverlay();
 }
