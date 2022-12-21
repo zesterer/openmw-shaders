@@ -206,7 +206,7 @@
 // Orange = Gloss maps are present
 // Blue = Specular maps / PBR parameters are present
 // Pink = Emissive maps are present
-#define DEBUG_MATERIALS 1
+#define DEBUG_MATERIALS 0
 
 const float saturation_factor = SATURATION_FACTOR;
 const float normal_map_intensity = NORMAL_MAP_INTENSITY;
