@@ -313,26 +313,29 @@ void tonemap(inout vec3 color) {
 
 void debug_materials(inout vec3 color) {
     #if (DEBUG_MATERIALS == 1)
-        #if @normalMap
+        #ifdef NORMAL_MAP
             if (abs(fract(passViewPos.x * 0.02) - 0.0 - 0.05) < 0.05) color = mix(color, vec3(1.0, 0.0, 0.0), vec3(0.5));
         #endif
-        #if @parallax
+        #ifdef PARALLAX
             if (abs(fract(passViewPos.x * 0.02) - 0.1 - 0.05) < 0.05) color = mix(color, vec3(1.0, 1.0, 0.0), vec3(0.5));
         #endif
         #ifdef DARK_MAP
             if (abs(fract(passViewPos.x * 0.02) - 0.2 - 0.05) < 0.05) color = mix(color, vec3(0.7, 0.0, 1.0), vec3(0.5));
         #endif
         #ifdef BUMP_MAP
-            if (abs(fract(passViewPos.x * 0.02) - 0.3 - 0.05) < 0.05) color = mix(color, vec3(0.0, 1.0, 0.0), vec3(0.5));
+            if (abs(fract(passViewPos.x * 0.02) - 0.3 - 0.05) < 0.05) color = mix(color, vec3(0.0, 0.7, 0.2), vec3(0.5));
         #endif
         #ifdef GLOSS_MAP
             if (abs(fract(passViewPos.x * 0.02) - 0.4 - 0.05) < 0.05) color = mix(color, vec3(1.0, 0.6, 0.0), vec3(0.5));
         #endif
-        #if @specularMap
+        #ifdef SPECULAR_MAP
             if (abs(fract(passViewPos.x * 0.02) - 0.5 - 0.05) < 0.05) color = mix(color, vec3(0.0, 0.4, 1.0), vec3(0.5));
         #endif
         #ifdef EMISSIVE_MAP
             if (abs(fract(passViewPos.x * 0.02) - 0.6 - 0.05) < 0.05) color = mix(color, vec3(1.0, 0.0, 0.3), vec3(0.5));
+        #endif
+        #ifdef BLEND_MAP
+            if (abs(fract(passViewPos.x * 0.02) - 0.7 - 0.05) < 0.05) color = mix(color, vec3(0.5, 1.0, 0.0), vec3(0.5));
         #endif
     #endif
 }

@@ -13,10 +13,12 @@ varying vec2 uv;
 uniform sampler2D diffuseMap;
 
 #if @normalMap
+#define NORMAL_MAP
 uniform sampler2D normalMap;
 #endif
 
 #if @blendMap
+#define BLEND_MAP
 uniform sampler2D blendMap;
 #endif
 
