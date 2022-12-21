@@ -21,11 +21,13 @@ Play Morrowind with PBR shaders like it's 2022, not 2002.
 ## Features
 
 - **Efficient**: in my (very unscientific) tests, only a ~12% framerate hit compared to vanilla OpenMW shaders
-- **PBR (Physically-Based Rendering) lighting**: surfaces reflect light consistently and realistically
+- **PBR (Physically-Based Rendering) lighting model**: surfaces reflect light consistently and realistically
+- **Support for PBR textures (via specular maps)**: PBR texture mods correctly inform surface lighting
 - **Improved sun light colours**: dawn and dusk are red, midday is yellow, night is blue
 - **Better ambient illumination**: ambient light is omnidirectional scattered light from the sky, not direct sunlight
 - **Brighter point lights**: lights in the scene emit more light, illuminating the world in a more immersive manner
 - **Underwater light attenuation**: objects under the water shift towards blue with depth, adding realism
+- **Underwater caustics**: underwater scenes experience wavy lighting caused by surface refraction
 - **Leaves sway in the wind**: unfortunately, Morrowind has no realiable way to mark leaves so detection is imperfect
 - **Sub-surface scattering**: thin objects like grass and leaves allow bright direct light to scatter through them
 - **Procedural detail for distant land**: terrain in the distance maintains sharp details
