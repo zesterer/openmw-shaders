@@ -12,14 +12,12 @@ uniform mat4 osg_ViewMatrixInverse;
 uniform mat4 osg_ModelViewMatrix;
 uniform sampler2D diffuseMap;
 
-#include "sway.glsl"
-
 void main(void)
 {
     vec4 modelPos = gl_Vertex;
     float leafiness;
     diffuseMapUV = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-    doSway(diffuseMap, diffuseMapUV, modelPos.xyz, leafiness);
+    //doSway(diffuseMap, diffuseMapUV, modelPos.xyz, leafiness);
     gl_Position = gl_ModelViewProjectionMatrix * modelPos;
 
     vec4 viewPos = (gl_ModelViewMatrix * gl_Vertex);

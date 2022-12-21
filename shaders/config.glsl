@@ -204,10 +204,11 @@
 // Red = Normal maps are present
 // Yellow = Parallax maps are present
 // Purple = Dark maps are present
-// Green = Bump maps are present
+// Dark green = Bump maps are present
 // Orange = Gloss maps are present
 // Blue = Specular maps / PBR parameters are present
 // Pink = Emissive maps are present
+// Lime = Blend maps are present
 #define DEBUG_MATERIALS 0
 
 const float saturation_factor = SATURATION_FACTOR;

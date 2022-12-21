@@ -37,6 +37,7 @@ varying vec2 emissiveMapUV;
 #endif
 
 #if @normalMap
+#define NORMAL_MAP
 uniform sampler2D normalMap;
 varying vec2 normalMapUV;
 varying vec4 passTangent;
@@ -49,6 +50,7 @@ uniform vec4 envMapColor;
 #endif
 
 #if @specularMap
+#define SPECULAR_MAP
 uniform sampler2D specularMap;
 varying vec2 specularMapUV;
 #endif
@@ -132,6 +134,8 @@ void main()
 #endif
 
 #if @parallax
+    #define PARALLAX
+
     vec3 cameraPos = (gl_ModelViewMatrixInverse * vec4(0,0,0,1)).xyz;
     vec3 objectPos = (gl_ModelViewMatrixInverse * vec4(passViewPos, 1)).xyz;
     vec3 eyeDir = normalize(cameraPos - objectPos);

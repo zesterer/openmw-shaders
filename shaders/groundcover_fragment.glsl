@@ -16,6 +16,7 @@ varying vec2 diffuseMapUV;
 #endif
 
 #if @normalMap
+#define NORMAL_MAP
 uniform sampler2D normalMap;
 varying vec2 normalMapUV;
 varying vec4 passTangent;
