@@ -77,8 +77,20 @@ varying float leafiness;
 #include "depth.glsl"
 #include "sway.glsl"
 
+#if @particleOcclusion
+varying vec3 orthoDepthMapCoord;
+
+uniform mat4 depthSpaceMatrix;
+//uniform mat4 osg_ViewMatrixInverse;
+#endif
+
 void main(void)
 {
+#if @particleOcclusion
+    mat4 model = osg_ViewMatrixInverse * gl_ModelViewMatrix;
+    orthoDepthMapCoord = ((depthSpaceMatrix * model) * vec4(gl_Vertex.xyz, 1.0)).xyz;
+#endif
+
     #if @diffuseMap
         diffuseMapUV = (gl_TextureMatrix[@diffuseMapUV] * gl_MultiTexCoord@diffuseMapUV).xy;
     #endif
