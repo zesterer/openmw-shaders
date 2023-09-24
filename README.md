@@ -46,8 +46,9 @@ before doing this, should something go wrong). This should result in the followi
 ```
 resources/
   |-- shaders/
-  |    |-- config.glsl
-  |    '-- <other shader files>
+  |    |-- compatibility/
+  |    |-- core/
+  |    |-- lib/
   '-- README.md
 ```
 
@@ -75,7 +76,7 @@ latest funky features of both OpenMW and this shader pack.
 ## Configuration
 
 There are various presets and parameters that can be changed via
-[`shaders/config.glsl`](https://github.com/zesterer/openmw-shaders/blob/main/shaders/config.glsl).
+[`shaders/lib/zesterer/config.glsl`](https://github.com/zesterer/openmw-shaders/blob/main/shaders/lib/zesterer/config.glsl).
 
 ## Recommendations
 
