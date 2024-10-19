@@ -18,6 +18,15 @@ Play Morrowind with beautiful shaders like it's 2022, not 2002.
     <img src="https://i.imgur.com/GPPWZP1.png" alt="The grasslands outside Vivec on a misty afternoon">
 </details>
 
+## Status
+
+Sadly, core shaders for OpenMW are a hack, with no compatibility guarantees. That means that almost every OpenMW release results in the shaders breaking
+in some manner. I don't find myself with enough time in my life to keep the shaders up to date with these changes. Occasionally some kind soul sends me a
+patch that updates them, but no guarantees are provided about these shaders work with the current version of OpenMW.
+
+I've noticed that several people have confused this mod with my [Volumetric Clouds & Mist Mod](https://github.com/zesterer/openmw-volumetric-clouds).
+The latter is a properly supported mod, and should continue to work with OpenMW for the forseeable future.
+
 ## Features
 
 - **Efficient**: in my (very unscientific) tests, only a ~12% framerate hit compared to vanilla OpenMW shaders
